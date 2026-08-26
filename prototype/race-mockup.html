@@ -1,4 +1,8 @@
-<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'></head><body><title>결정 장애 레이스</title>
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body>
+<title>결정 장애 레이스</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
@@ -98,6 +102,28 @@ a{color:var(--b)}
   text-shadow:0 4px 24px rgba(0,0,0,.6);
 }
 .stamp.hit{animation:stamp .9s cubic-bezier(.2,1.4,.4,1) forwards}
+
+.hud{position:absolute; top:8px; right:10px; width:84px; height:84px; pointer-events:none}
+.hud svg{display:block; width:100%; height:100%; overflow:visible}
+#ringWrap{transform-origin:42px 42px}
+#ringWrap.beat{animation:beat .95s ease-out infinite}
+@keyframes beat{
+  0%{transform:scale(1)} 12%{transform:scale(1.11)} 34%{transform:scale(1)} 100%{transform:scale(1)}
+}
+#ringWrap.burst{animation:ringburst .5s ease-out forwards}
+@keyframes ringburst{
+  0%{transform:scale(1); opacity:1}
+  100%{transform:scale(1.9); opacity:0; filter:blur(3px)}
+}
+.hud .dot{transition:fill .25s ease, r .25s cubic-bezier(.2,1.6,.4,1)}
+
+.vignette{
+  position:absolute; inset:0; pointer-events:none; opacity:0;
+  background:radial-gradient(120% 90% at 50% 50%, transparent 48%, rgba(244,104,91,.42) 100%);
+  transition:opacity .3s ease;
+}
+.vignette.on{animation:vig .95s ease-out infinite}
+@keyframes vig{0%{opacity:0} 20%{opacity:.85} 60%{opacity:0} 100%{opacity:0}}
 @keyframes stamp{
   0%{opacity:0; transform:translate(-50%,-50%) scale(1.9) rotate(-8deg)}
   22%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-4deg)}
@@ -253,6 +279,11 @@ tbody tr:last-child td{border-bottom:none}
 .phase b{font-size:16px; display:block; margin-bottom:3px}
 .phase span{font-size:14px; color:var(--ink-2); line-height:1.6}
 .phase.key{border-color:var(--gold); background:var(--gold-soft)}
+.phase.done b{color:var(--ink-3)}
+.phase.done .tick{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+  color:var(--b); margin-left:6px; font-weight:500;
+}
 .phase.key .phase-n, .phase.key .phase-days{color:var(--gold)}
 
 pre{
@@ -267,6 +298,7 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
 
 @media (max-width:640px){
   .stage{height:190px}
+  .hud{width:66px; height:66px; top:6px; right:8px}
   .layer{grid-template-columns:1fr; gap:4px}
   .phase{grid-template-columns:1fr; gap:6px}
   .phase-days{padding-top:0}
@@ -299,6 +331,19 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
       <svg id="track" preserveAspectRatio="none" aria-hidden="true"></svg>
       <canvas id="fx"></canvas>
       <div class="stamp" id="stamp">다수!</div>
+      <div class="vignette" id="vignette"></div>
+      <div class="hud" id="hud">
+        <svg viewBox="0 0 84 84" aria-hidden="true">
+          <g id="ringWrap">
+            <circle cx="42" cy="42" r="25" fill="rgba(17,23,28,.7)" stroke="#2C3941" stroke-width="4"></circle>
+            <circle id="ringArc" cx="42" cy="42" r="25" fill="none" stroke="#3FB0CE" stroke-width="4"
+                    stroke-linecap="round" transform="rotate(-90 42 42)"></circle>
+            <text id="ringNum" x="42" y="48" text-anchor="middle" fill="#E9EEF1"
+                  font-family="IBM Plex Mono, monospace" font-size="19" font-weight="600">10</text>
+          </g>
+          <g id="dots"></g>
+        </svg>
+      </div>
     </div>
 
     <div class="deck">
@@ -445,6 +490,50 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
       달릴 때 <strong>squash &amp; stretch</strong>를 넣으면 코드 몇 줄로 체감 퀄리티가 두 배가 된다.
       대신 <span class="mono">prefers-reduced-motion</span> 대응과 화면흔들림 OFF 옵션은 필수.
     </p>
+
+    <h3 style="margin-top:32px">타이머 이펙트</h3>
+    <p>
+      10초 카운트다운은 단순한 숫자가 아니라 <strong>이 게임의 긴장 그 자체</strong>다.
+      레이스 화면 우측 상단에 원형 링 게이지로 띄운다. 위 목업에서 직접 돌아가고 있다.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>색이 시간을 말한다</h3>
+        <p>
+          남은 시간에 따라 링 색이 흐른다 &mdash; <strong>시안(여유) → 앰버(주의) → 코랄(촉박)</strong>.
+          단계별로 툭툭 바뀌는 게 아니라 RGB 보간으로 이어지고, 마지막 3초 구간은
+          <span class="mono">pow(t, 2)</span> 커브를 태워서 빨강이 빨리 온다. 숫자를 안 읽어도 몸이 먼저 안다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>잠금 점 &mdash; 가장 중요한 부분</h3>
+        <p>
+          링 둘레에 인원수만큼 점이 돈다. 누군가 선택을 확정할 때마다 점이 하나씩 켜진다.
+          <strong>몇 명이 이미 골랐는지는 보이지만, 뭘 골랐는지는 안 보인다.</strong>
+          정보는 한 톨도 안 흘리면서 압박만 정확히 전달하는 장치다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>마지막 3초</h3>
+        <p>
+          링이 심장박동처럼 <span class="mono">scale 1 → 1.11</span>로 뛰고, 화면 가장자리에
+          붉은 비네트가 같은 박자로 숨 쉰다. 앱에서는 여기에 햅틱 진동을 얹는다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>끝나는 방식 두 가지</h3>
+        <p>
+          내가 고르면 링이 골드로 잠긴다. 시간이 다 되면 링이 부풀며 흩어지고 자동 랜덤 선택 &mdash;
+          한 명 때문에 게임이 멈추면 안 되니까.
+        </p>
+      </div>
+    </div>
+    <p>
+      구현은 <span class="mono">setInterval</span>이 아니라 <span class="mono">performance.now()</span> 기준
+      <span class="mono">requestAnimationFrame</span>으로 간다. setInterval은 탭을 옮기거나 프레임이 밀리면
+      시간이 조금씩 어긋나는데, 온라인에서 그 오차는 <strong>내 화면과 남의 화면의 마감 시각이 달라진다</strong>는 뜻이라 그냥 버그다.
+      reduced-motion에서는 pulse와 비네트만 끄고 링은 남긴다 &mdash; 남은 시간은 연출이 아니라 정보다.
+    </p>
   </section>
 
   <section>
@@ -551,8 +640,10 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   <b>data/</b>dilemmas.json
   <b>race/</b>                 <i>// 시각화</i>
     Track.tsx  Racer.tsx  Camera.ts  Particles.ts  Parallax.tsx
-  <b>ui/</b>
+  <b>ui/</b>                   <i>// 공용 컴포넌트</i>
+    Stage.tsx           <i>//   9:16 프레임</i>
     DilemmaCard.tsx  Timer.tsx  Leaderboard.tsx  TallyBar.tsx
+  <b>screens/</b>              <i>// Title / Lobby / Race / Result</i>
   <b>net/</b>
     NetAdapter.ts       <i>// ← 인터페이스</i>
     LocalAdapter.ts     <i>//   싱글: 봇이 로컬에서 굴러감</i>
@@ -571,9 +662,13 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     <p class="sec-lede">약 12~14일. 시각화가 앞에 오는 게 이 순서의 전부다.</p>
 
     <div class="phases">
-      <div class="phase">
+      <div class="phase done">
         <span class="phase-n">PHASE 0</span>
-        <span><b>준비</b><span>Vite + React + TS 세팅, 폴더 구조, 세로 9:16 레이아웃 셸, 배포 파이프라인</span></span>
+        <span><b>준비 <span class="tick">✓ 완료</span></b><span>
+          Vite + React + TS 세팅, 폴더 구조, 세로 9:16 레이아웃 셸, GitHub Pages 배포 워크플로.
+          <span class="mono">.stage</span>가 9:16을 강제하고 데스크톱에서는 레터박스로 감싼다 &mdash;
+          두 벌이 아니라 <strong>같은 레이아웃 한 벌</strong>이라, Capacitor 래핑이 재작성이 아니라 감싸기로 끝난다.
+        </span></span>
         <span class="phase-days">0.5일</span>
       </div>
       <div class="phase key">
@@ -644,6 +739,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
 (function(){
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function clamp(v, lo, hi){ return v < lo ? lo : v > hi ? hi : v; }
 
   var CELLS = 40, ROUNDS = 12;
   var TRACK_W = 3400, TRACK_H = 300, VIEW_W = 1200;   // VIEW_W is recomputed from the stage aspect
@@ -690,6 +786,11 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var segA = document.getElementById("segA"), segB = document.getElementById("segB");
   var note = document.getElementById("note");
   var btnA = document.getElementById("btnA"), btnB = document.getElementById("btnB");
+  var ringWrap = document.getElementById("ringWrap");
+  var ringArc = document.getElementById("ringArc");
+  var ringNum = document.getElementById("ringNum");
+  var dotsG = document.getElementById("dots");
+  var vignette = document.getElementById("vignette");
 
   /* ---------- build the curved track ---------- */
   var NS = "http://www.w3.org/2000/svg";
@@ -807,6 +908,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     svg.setAttribute("viewBox", camX + " 0 " + VIEW_W + " " + TRACK_H);
     racers.forEach(place);
     tickFx();
+    tickTimer(performance.now());
     requestAnimationFrame(frame);
   }
 
@@ -862,8 +964,101 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     ctx.globalAlpha = 1;
   }
 
+  /* ---------- countdown ---------- */
+  var LIMIT = 10;                                   // seconds per round
+  var CIRC = 2 * Math.PI * 25;
+  ringArc.setAttribute("stroke-dasharray", CIRC);
+
+  // one lock-in dot per player, orbiting the ring: it shows HOW MANY have
+  // committed, never WHAT they picked. That is the pressure, without the leak.
+  var dotEls = racers.map(function(r, i){
+    var ang = (-90 + i * (360 / racers.length)) * Math.PI / 180;
+    var c = el("circle", {
+      class:"dot", cx:(42 + Math.cos(ang) * 35), cy:(42 + Math.sin(ang) * 35),
+      r:"2.6", fill:"#33414A"
+    });
+    dotsG.appendChild(c);
+    r.dot = c;
+    return c;
+  });
+
+  var timer = {on:false, endAt:0, warned:false};
+
+  function lerpHex(c1, c2, t){
+    function ch(c, i){ return parseInt(c.substr(1 + i * 2, 2), 16); }
+    var out = "#";
+    for (var i = 0; i < 3; i++){
+      var v = Math.round(ch(c1, i) + (ch(c2, i) - ch(c1, i)) * t);
+      out += ("0" + v.toString(16)).slice(-2);
+    }
+    return out;
+  }
+
+  function ringColor(frac){                          // frac = time remaining
+    if (frac > 0.5) return "#3FB0CE";                          // 여유
+    if (frac > 0.3) return lerpHex("#F0B429", "#3FB0CE", (frac - 0.3) / 0.2); // 주의
+    return lerpHex("#F4685B", "#F0B429", Math.pow(frac / 0.3, 2)); // 촉박
+  }
+
+  function paintRing(frac, color){
+    ringArc.setAttribute("stroke-dashoffset", CIRC * (1 - clamp(frac, 0, 1)));
+    ringArc.setAttribute("stroke", color);
+    ringNum.setAttribute("fill", color);
+  }
+
+  function resetTimer(){
+    timer.on = false; timer.warned = false;
+    ringWrap.classList.remove("beat", "burst");
+    vignette.classList.remove("on");
+    racers.forEach(function(r){
+      r.locked = false;
+      r.dot.setAttribute("fill", "#33414A");
+      r.dot.setAttribute("r", "2.6");
+    });
+    paintRing(1, "#3FB0CE");
+    ringNum.textContent = LIMIT;
+  }
+
+  function startTimer(){
+    if (busy || finished || timer.on) return;
+    timer.on = true;
+    timer.endAt = performance.now() + LIMIT * 1000;
+    // bots commit at their own pace - the dots are the only tell
+    racers.forEach(function(r){
+      r.lockAt = r.me ? Infinity : timer.endAt - (1 + Math.random() * 7.4) * 1000;
+    });
+  }
+
+  function lockRacer(r, color){
+    if (r.locked) return;
+    r.locked = true;
+    r.dot.setAttribute("fill", color || "#8FA0AC");
+    r.dot.setAttribute("r", "4");
+  }
+
+  function tickTimer(now){
+    if (!timer.on) return;
+    var remain = (timer.endAt - now) / 1000;
+    var frac = clamp(remain / LIMIT, 0, 1);
+    paintRing(frac, ringColor(frac));
+    ringNum.textContent = remain > 0 ? remain.toFixed(1) : "0.0";
+
+    racers.forEach(function(r){ if (now >= r.lockAt) lockRacer(r); });
+
+    if (!timer.warned && remain <= 3){
+      timer.warned = true;
+      if (!reduce){ ringWrap.classList.add("beat"); vignette.classList.add("on"); }
+    }
+    if (remain <= 0){
+      timer.on = false;
+      ringWrap.classList.remove("beat");
+      vignette.classList.remove("on");
+      if (!reduce) ringWrap.classList.add("burst");
+      play(Math.random() < 0.5 ? "a" : "b", true);   // 무응답 → 자동 랜덤
+    }
+  }
+
   /* ---------- game ---------- */
-  function clamp(v, lo, hi){ return v < lo ? lo : v > hi ? hi : v; }
 
   function botChoice(bot, bias){
     var p = bias;
@@ -885,6 +1080,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     note.textContent = "";
     btnA.disabled = false; btnB.disabled = false;
     racers.forEach(function(r){ r.ring.setAttribute("stroke", "none"); });
+    resetTimer();
   }
 
   function drawBoard(){
@@ -917,10 +1113,17 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     requestAnimationFrame(step);
   }
 
-  function play(myChoice){
+  function play(myChoice, timedOut){
     if (busy || finished) return;
     busy = true;
+    timer.on = false;
+    ringWrap.classList.remove("beat");
+    vignette.classList.remove("on");
     btnA.disabled = true; btnB.disabled = true;
+
+    lockRacer(racers[0], timedOut ? "#F4685B" : GOLD);
+    racers.forEach(function(r){ lockRacer(r); });
+    if (!timedOut) paintRing(1, GOLD);
 
     racers[0].choice = myChoice;
     for (var i = 1; i < racers.length; i++) racers[i].choice = botChoice(racers[i].ai, card.bias);
@@ -967,6 +1170,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
       });
 
       var msgs = [];
+      if (timedOut) msgs.push("<b>시간 초과 &mdash; 자동 랜덤 선택</b>");
       msgs.push(tie ? "동점 &mdash; 아무도 못 읽었다 &rarr; 전원 +1칸"
               : share >= 0.8 ? "압도 " + Math.round(share * 100) + "% &rarr; 다수 +1칸"
               : share <= 0.6 ? "박빙 " + Math.round(share * 100) + "% &rarr; 다수 <b>+3칸</b>"
@@ -991,11 +1195,16 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
       round++;
       deal();
       busy = false;
+      startTimer();
     }, 2600);
   }
 
   btnA.addEventListener("click", function(){ play("a"); });
   btnB.addEventListener("click", function(){ play("b"); });
+
+  // Round 1 holds its clock until you touch the mockup - nothing should
+  // start ticking at someone who is still reading the page.
+  screen.addEventListener("pointerdown", function(){ startTimer(); });
 
   sizeCanvas();
   deal();
@@ -1005,4 +1214,6 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   requestAnimationFrame(frame);
 })();
 </script>
-</body></html>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+/* ---- tokens ------------------------------------------------------------ */
+/* The game reads as a screen, not a document, so it commits to one dark
+   world in every theme. Only colors defined here are used downstream. */
+:root {
+  --screen: #11171c;
+  --screen-2: #1a232a;
+  --screen-3: #222d35;
+  --line: #2c373f;
+
+  --ink: #e9eef1;
+  --ink-2: #b3c1ca;
+  --ink-3: #7f919d;
+
+  --a: #f4685b;        /* 선택지 A */
+  --b: #3fb0ce;        /* 선택지 B */
+  --gold: #f0b429;     /* 다수 · 부스터 · 나 */
+
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: #0a0e11;
+  color: var(--ink);
+  font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---- the 9:16 frame ---------------------------------------------------- */
+/* Everything is authored for a phone. On desktop we letterbox the same
+   layout instead of building a second one - that is what makes the
+   Capacitor build a wrap rather than a rewrite. */
+.shell {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #16202a 0%, #0a0e11 70%);
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  height: min(100dvh - 32px, 920px);
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--screen);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  padding-top: var(--safe-t);
+  padding-bottom: var(--safe-b);
+}
+
+@media (max-width: 520px) {
+  .stage {
+    aspect-ratio: auto;
+    width: 100%;
+    height: 100dvh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
