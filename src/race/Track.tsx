@@ -9,17 +9,20 @@ const PATH = buildTrackPath();
  */
 export default function Track({
   measureRef,
+  roadRef,
   tickPoints,
 }: {
   measureRef: (el: SVGPathElement | null) => void;
+  roadRef: (part: 0 | 1 | 2) => (el: SVGPathElement | null) => void;
   tickPoints: { x: number; y: number; cell: number; finish: boolean }[];
 }) {
   return (
     <g>
-      <path d={PATH} fill="none" stroke="#4a5a65" strokeWidth={ROAD_W + 7} strokeLinecap="round" />
-      <path d={PATH} fill="none" stroke="#333f49" strokeWidth={ROAD_W} strokeLinecap="round" />
+      <path ref={roadRef(0)} d={PATH} fill="none" stroke="#4a5a65" strokeWidth={ROAD_W + 7} strokeLinecap="round" />
+      <path ref={roadRef(1)} d={PATH} fill="none" stroke="#333f49" strokeWidth={ROAD_W} strokeLinecap="round" />
       <path
-        d={PATH} fill="none" stroke="#5a6b77" strokeWidth={1.6}
+        ref={roadRef(2)}
+        d={PATH} fill="none" stroke="#5f7079" strokeWidth={1.6}
         strokeDasharray="10 15" strokeLinecap="round"
       />
       <path ref={measureRef} d={PATH} fill="none" stroke="none" />

@@ -10,7 +10,9 @@ export const WORLD = { w: 1200, h: 250 } as const;
 export const CELLS = 40;
 export const LANE_GAP = 13;
 export const RACER_R = 7;
-export const ROAD_W = 105;
+/** chassis size in world units - 15px on a phone at the default zoom */
+export const CAR = { len: 17, w: 9 } as const;
+export const ROAD_W = 112;
 /** A half-lane of along-track stagger so neighbouring lanes never touch.
  *  0.125 of a cell - visible separation, no misread of who is ahead. */
 export const LANE_STAGGER = 3.5;

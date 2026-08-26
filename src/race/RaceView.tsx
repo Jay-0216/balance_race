@@ -1,9 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Camera } from "./Camera";
 import { Particles } from "./Particles";
-import Parallax, { PARALLAX_FACTORS, type ParallaxRefs } from "./Parallax";
+import Backdrop, { PARALLAX_FACTORS, THEMES, mixColors, themeWeights } from "./Backdrop";
+import Car from "./Racer";
 import Track from "./Track";
-import { CELLS, LANE_GAP, LANE_STAGGER, RACER_R, WORLD, type RacerView } from "./world";
+import { CAR, CELLS, LANE_GAP, LANE_STAGGER, WORLD, type RacerView } from "./world";
 import "./RaceView.css";
 
 const MOVE_MS = 800;
@@ -29,7 +30,9 @@ export default function RaceView({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const measureRef = useRef<SVGPathElement | null>(null);
   const nodesRef = useRef<Node[]>([]);
-  const parallaxRef = useRef<ParallaxRefs>({ far: null, mid: null, near: null });
+  const roadRefs = useRef<(SVGPathElement | null)[]>([null, null, null]);
+  const themeRefs = useRef<(SVGGElement | null)[]>([]);
+  const bandRefs = useRef<(SVGGElement | null)[][]>(THEMES.map(() => [null, null, null]));
 
   const camRef = useRef(new Camera());
   const fxRef = useRef(new Particles());
@@ -142,10 +145,27 @@ export default function RaceView({
       svg.setAttribute("viewBox", cam.viewBox());
 
       const camX = cam.x;
-      const pl = parallaxRef.current;
-      if (pl.far) pl.far.setAttribute("transform", `translate(${camX * (1 - PARALLAX_FACTORS.far)} 0)`);
-      if (pl.mid) pl.mid.setAttribute("transform", `translate(${camX * (1 - PARALLAX_FACTORS.mid)} 0)`);
-      if (pl.near) pl.near.setAttribute("transform", `translate(${camX * (1 - PARALLAX_FACTORS.near)} 0)`);
+      const shift = [
+        `translate(${camX * (1 - PARALLAX_FACTORS.far)} 0)`,
+        `translate(${camX * (1 - PARALLAX_FACTORS.mid)} 0)`,
+        `translate(${camX * (1 - PARALLAX_FACTORS.near)} 0)`,
+      ];
+      // theme follows the leader: the backdrop IS the progress bar
+      const weights = themeWeights(lead / CELLS);
+      for (let part = 0; part < 3; part++) {
+        roadRefs.current[part]?.setAttribute(
+          "stroke",
+          mixColors(THEMES.map((t) => t.road[part]), weights)
+        );
+      }
+      for (let t = 0; t < THEMES.length; t++) {
+        const g = themeRefs.current[t];
+        if (g) g.setAttribute("opacity", weights[t].toFixed(3));
+        if (weights[t] <= 0) continue;
+        for (let b = 0; b < 3; b++) {
+          bandRefs.current[t][b]?.setAttribute("transform", shift[b]);
+        }
+      }
 
       for (let i = 0; i < list.length; i++) {
         const node = nodesRef.current[i];
@@ -164,23 +184,25 @@ export default function RaceView({
 
         // squash & stretch along the direction of travel - a few lines of
         // transform that buy most of the perceived weight
-        const speed = Math.min(1, Math.abs(d - (prevRef.current[i] ?? d)) / 0.08);
+        const speed = Math.min(1, Math.abs(d - (prevRef.current[i] ?? d)) / 0.055);
         prevRef.current[i] = d;
+        // A car stretching along its own length reads as motion blur, so this
+        // can be pushed much further than it could on a circle.
         if (!reduce && node.squash) {
           node.squash.setAttribute(
             "transform",
-            `scale(${1 + speed * 0.16} ${1 - speed * 0.11})`
+            `scale(${1 + speed * 0.62} ${1 - speed * 0.28})`
           );
         }
 
         if (!reduce && speed > 0.2) {
           // spawn behind the racer, not on top of it
-          const bx = wx - Math.cos(p.ang) * (RACER_R + 2);
-          const by = wy - Math.sin(p.ang) * (RACER_R + 2);
+          const bx = wx - Math.cos(p.ang) * (CAR.len * 0.6);
+          const by = wy - Math.sin(p.ang) * (CAR.len * 0.6);
           if (Math.random() < 0.7) fx.dust(sx(bx), sy(by), 1, "#6b7d89");
           if (speed > 0.35) {
             const scale = px / vbW;
-            fx.trail(sx(bx), sy(by), RACER_R * scale * 0.8, list[i].color);
+            fx.trail(sx(bx), sy(by), CAR.w * scale * 0.42, list[i].color);
           }
           if (speed > 0.6 && Math.random() < 0.35) {
             fx.speedLine(sx(wx), sy(wy), list[i].color);
@@ -212,8 +234,16 @@ export default function RaceView({
     nodesRef.current[i][k] = el;
   };
 
-  const setParallax = (k: keyof ParallaxRefs) => (el: SVGGElement | null) => {
-    parallaxRef.current[k] = el;
+  const setRoad = (part: 0 | 1 | 2) => (el: SVGPathElement | null) => {
+    roadRefs.current[part] = el;
+  };
+
+  const setTheme = (i: number) => (el: SVGGElement | null) => {
+    themeRefs.current[i] = el;
+  };
+
+  const setBand = (i: number, layer: 0 | 1 | 2) => (el: SVGGElement | null) => {
+    bandRefs.current[i][layer] = el;
   };
 
   return (
@@ -225,33 +255,25 @@ export default function RaceView({
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#0a1015" />
-            <stop offset="0.58" stopColor="#1b2a37" />
-            <stop offset="1" stopColor="#263a4b" />
-          </linearGradient>
-        </defs>
-        <rect x={-500} y={-200} width={WORLD.w + 1400} height={WORLD.h + 400} fill="url(#sky)" />
-        <Parallax refs={setParallax} />
-        <Track measureRef={(el) => (measureRef.current = el)} tickPoints={ticks} />
+        <Backdrop themeRef={setTheme} bandRef={setBand} />
+        <Track
+          measureRef={(el) => (measureRef.current = el)}
+          roadRef={setRoad}
+          tickPoints={ticks}
+        />
 
         {racers.map((r, i) => (
           <g key={r.id} ref={setNode(i, "root")}>
             <g ref={setNode(i, "spin")}>
               <g ref={setNode(i, "squash")}>
-                <ellipse
-                  cy={RACER_R * 0.95} rx={RACER_R * 1.15} ry={RACER_R * 0.42}
-                  fill="rgba(0,0,0,0.38)"
-                />
-                <circle r={RACER_R + 3.5} fill="none" stroke="none" />
-                <circle r={RACER_R} fill={r.color} stroke="#0e141a" strokeWidth={1.8} />
+                <Car color={r.color} />
               </g>
             </g>
             {r.me && (
               <text
-                y={-14} textAnchor="middle" fill="#e9eef1"
+                y={-15} textAnchor="middle" fill="#e9eef1"
                 fontSize={11} fontWeight={700}
+                stroke="#0d1216" strokeWidth={2} paintOrder="stroke"
                 fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
               >
                 {r.name}

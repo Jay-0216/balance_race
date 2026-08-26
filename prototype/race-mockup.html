@@ -296,7 +296,7 @@ tbody tr:last-child td{border-bottom:none}
 .phase span{font-size:14px; color:var(--ink-2); line-height:1.6}
 .phase.key{border-color:var(--gold); background:var(--gold-soft)}
 .phase.done b{color:var(--ink-3)}
-.phase.done .tick{
+.tick{
   font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
   color:var(--b); margin-left:6px; font-weight:500;
 }
@@ -480,7 +480,7 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
       <div class="layer"><span class="layer-tech">Canvas</span><span><b>파티클 레이어</b>먼지, 스피드라인, 부스터 불꽃, 결승 컨페티. 수백 개가 도는 건 캔버스가 압도적으로 빠르다</span></div>
       <div class="layer"><span class="layer-tech">DOM</span><span><b>캐릭터 레이어</b>러너 8명. DOM으로 두면 CSS 애니메이션과 개발자도구 디버깅이 쉽다</span></div>
       <div class="layer"><span class="layer-tech">SVG</span><span><b>트랙 레이어</b>곡선 path, 칸 눈금, 결승선</span></div>
-      <div class="layer"><span class="layer-tech">CSS</span><span><b>배경 레이어</b>패럴랙스 3겹 &mdash; 먼 산 0.2배속 / 중간 0.5배속 / 앞쪽 풀 1.2배속</span></div>
+      <div class="layer"><span class="layer-tech">CSS</span><span><b>배경 레이어</b>패럴랙스 3겹 (0.2 / 0.5 / 1.2배속) × 테마 4종</span></div>
     </div>
 
     <div class="grid-2">
@@ -500,10 +500,29 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         </p>
       </div>
       <div class="card">
-        <h3>배경이 진행도다</h3>
+        <h3>배경이 진행도다 <span class="tick">✓ 구현</span></h3>
         <p>
-          라운드가 갈수록 테마가 바뀐다. <strong>학교 복도 → 운동장 → 도시 밤거리 → 우주.</strong>
-          "많이 왔구나"가 숫자가 아니라 눈으로 보인다.
+          <strong>새벽 학교 → 한낮 운동장 → 도시 밤 → 우주.</strong> 라운드가 아니라
+          <strong>선두의 진행도</strong>에 물려 있다. 네 테마를 겹쳐 쌓고 인접한 둘의 opacity를
+          교차시켜서 컷이 아니라 디졸브로 넘어간다. 숫자를 안 봐도 얼마나 왔는지 보인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>도로 색도 같이 바뀌어야 한다</h3>
+        <p>
+          배경만 밝히면 <strong>도로가 땅에 묻힌다.</strong> 테두리·노면·중앙선 3색을 테마별로 두고
+          배경과 같은 가중치로 RGB 보간한다. 한낮에는 밝은 회색 아스팔트에 흰 중앙선,
+          우주에서는 보라 노면에 네온 중앙선.
+          <strong>이래서 배경 테마를 Phase 3이 아니라 Phase 1에서 당겨 넣었다</strong> &mdash;
+          나중에 넣으면 레이서·도로 팔레트를 처음부터 다시 잡아야 한다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>레이서는 경주용 차</h3>
+        <p>
+          위에서 내려다본 F1 스타일 &mdash; 넓은 뒷바퀴, 뾰족한 코, 리어윙, 콕핏.
+          차 모양이라 <strong>스쿼시를 원보다 훨씬 세게 줄 수 있다.</strong> 원을 늘이면 그냥 깨진 원이지만,
+          차를 제 길이 방향으로 늘이면 모션블러로 읽힌다. 최대 <span class="mono">scale(1.62, 0.72)</span>.
         </p>
       </div>
       <div class="card">
@@ -757,8 +776,9 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
       <div class="phase done">
         <span class="phase-n">PHASE 1</span>
         <span><b>레이스 시각화 프로토타입 <span class="tick">✓ 완료</span></b><span>
-          <span class="mono">src/race/</span> &mdash; SVG 곡선 트랙, 레이서 8명, ease-out 이동,
-          스쿼시&amp;스트레치, 잔상·먼지·스피드라인 파티클, 패럴랙스 3겹, 팩 프레이밍 카메라, 체커 결승선.
+          <span class="mono">src/race/</span> &mdash; SVG 곡선 트랙, 경주용 차 8대, ease-out 이동,
+          스쿼시&amp;스트레치, 잔상·먼지·스피드라인 파티클, <strong>테마 4종 패럴랙스 배경</strong>,
+          팩 프레이밍 카메라, 체커 결승선.
           게임 로직은 일부러 하나도 없다. <strong>폰·노트북 모두 60fps.</strong>
         </span></span>
         <span class="phase-days">2~3일</span>
@@ -774,7 +794,8 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
       </div>
       <div class="phase">
         <span class="phase-n">PHASE 3</span>
-        <span><b>연출 다듬기</b><span>결과 공개 타임라인 전체, 사운드(클릭·대시·도장·컨페티), 특수 라운드 연출, reduced-motion</span></span>
+        <span><b>연출 다듬기</b><span>결과 공개 타임라인 전체, 사운드(클릭·대시·도장·컨페티), 특수 라운드 연출.
+          배경 테마 전환과 reduced-motion은 Phase 1에서 끝났다.</span></span>
         <span class="phase-days">2일</span>
       </div>
       <div class="phase">
