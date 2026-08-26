@@ -138,9 +138,25 @@ a{color:var(--b)}
 
 /* dilemma card + choices */
 .deck{padding:16px; border-top:1px solid var(--screen-line); background:var(--screen-2)}
+.deck-top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:10px;
+}
 .deck-cat{
   font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--screen-ink-3); margin-bottom:10px;
+  text-transform:uppercase; color:var(--screen-ink-3);
+}
+.locks{display:flex; align-items:center; gap:9px}
+.pips{display:flex; gap:3px}
+.pip{
+  width:5px; height:11px; border-radius:2px; background:#2C3941;
+  transition:background .2s ease, transform .2s cubic-bezier(.2,1.6,.4,1);
+}
+.pip.on{background:#7F919D; transform:scaleY(1.18)}
+.pip.mine{background:var(--gold-lit)}
+.locks-n{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.06em;
+  color:var(--screen-ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;
 }
 .choices{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .choice{
@@ -296,6 +312,26 @@ pre i{color:var(--ink-3); font-style:normal}
 
 footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); font-size:13.5px}
 
+/* Laptops are short, not narrow. At 768px tall the hero used to push the
+   whole demo below the fold, so compress by height, not by width. */
+@media (max-height:840px){
+  .hero{padding:34px 0 24px}
+  .hero h1{font-size:clamp(36px,5.4vw,54px); margin-bottom:14px}
+  .hero .eyebrow{margin-bottom:12px}
+  .hero .lede{font-size:16px}
+  .stage{height:196px}
+  .deck{padding:13px 16px}
+  .board{padding:2px 16px 13px}
+  .caption{margin-bottom:40px}
+  section{padding:36px 0}
+}
+
+/* The board is a ranking, not a feed - two columns halve its height and it
+   still reads 1..8 down each side. */
+@media (min-width:640px){
+  .board-list{display:grid; grid-template-columns:1fr 1fr; column-gap:18px; row-gap:4px}
+}
+
 @media (max-width:640px){
   .stage{height:190px}
   .hud{width:66px; height:66px; top:6px; right:8px}
@@ -341,13 +377,18 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
             <text id="ringNum" x="42" y="48" text-anchor="middle" fill="#E9EEF1"
                   font-family="IBM Plex Mono, monospace" font-size="19" font-weight="600">10</text>
           </g>
-          <g id="dots"></g>
         </svg>
       </div>
     </div>
 
     <div class="deck">
-      <div class="deck-cat" id="cat">학교생활</div>
+      <div class="deck-top">
+        <span class="deck-cat" id="cat">학교생활</span>
+        <span class="locks">
+          <span class="pips" id="pips"></span>
+          <span class="locks-n" id="locksN">0 / 8 선택</span>
+        </span>
+      </div>
       <div class="choices">
         <button class="choice" data-side="a" id="btnA"><span class="tag">A</span><span id="txtA"></span></button>
         <button class="choice" data-side="b" id="btnB"><span class="tag">B</span><span id="txtB"></span></button>
@@ -506,11 +547,12 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         </p>
       </div>
       <div class="card">
-        <h3>잠금 점 &mdash; 가장 중요한 부분</h3>
+        <h3>잠금 핍 &mdash; 가장 중요한 부분</h3>
         <p>
-          링 둘레에 인원수만큼 점이 돈다. 누군가 선택을 확정할 때마다 점이 하나씩 켜진다.
-          <strong>몇 명이 이미 골랐는지는 보이지만, 뭘 골랐는지는 안 보인다.</strong>
-          정보는 한 톨도 안 흘리면서 압박만 정확히 전달하는 장치다.
+          딜레마 카드 바로 위에 인원수만큼 핍이 놓이고, 누군가 선택을 확정할 때마다
+          왼쪽부터 하나씩 채워진다. <strong>몇 명이 이미 골랐는지는 보이지만, 뭘 골랐는지는 안 보인다.</strong>
+          정보는 한 톨도 안 흘리면서 압박만 정확히 전달한다.
+          링 둘레에 점으로 돌려봤더니 <strong>영락없는 타이어</strong>라, 고민하는 자리인 카드 쪽으로 내렸다.
         </p>
       </div>
       <div class="card">
@@ -789,7 +831,8 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var ringWrap = document.getElementById("ringWrap");
   var ringArc = document.getElementById("ringArc");
   var ringNum = document.getElementById("ringNum");
-  var dotsG = document.getElementById("dots");
+  var pipsEl = document.getElementById("pips");
+  var locksN = document.getElementById("locksN");
   var vignette = document.getElementById("vignette");
 
   /* ---------- build the curved track ---------- */
@@ -969,18 +1012,16 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var CIRC = 2 * Math.PI * 25;
   ringArc.setAttribute("stroke-dasharray", CIRC);
 
-  // one lock-in dot per player, orbiting the ring: it shows HOW MANY have
-  // committed, never WHAT they picked. That is the pressure, without the leak.
-  var dotEls = racers.map(function(r, i){
-    var ang = (-90 + i * (360 / racers.length)) * Math.PI / 180;
-    var c = el("circle", {
-      class:"dot", cx:(42 + Math.cos(ang) * 35), cy:(42 + Math.sin(ang) * 35),
-      r:"2.6", fill:"#33414A"
-    });
-    dotsG.appendChild(c);
-    r.dot = c;
-    return c;
+  // One pip per player, filling left to right as people commit. It shows HOW
+  // MANY have chosen, never WHAT they chose - pressure with no information leak.
+  // (These started life orbiting the ring, which just made it look like a tire.)
+  var pipEls = racers.map(function(){
+    var d = document.createElement("span");
+    d.className = "pip";
+    pipsEl.appendChild(d);
+    return d;
   });
+  var lockCount = 0;
 
   var timer = {on:false, endAt:0, warned:false};
 
@@ -1010,11 +1051,10 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     timer.on = false; timer.warned = false;
     ringWrap.classList.remove("beat", "burst");
     vignette.classList.remove("on");
-    racers.forEach(function(r){
-      r.locked = false;
-      r.dot.setAttribute("fill", "#33414A");
-      r.dot.setAttribute("r", "2.6");
-    });
+    racers.forEach(function(r){ r.locked = false; });
+    lockCount = 0;
+    pipEls.forEach(function(d){ d.className = "pip"; });
+    locksN.textContent = "0 / " + racers.length + " 선택";
     paintRing(1, "#3FB0CE");
     ringNum.textContent = LIMIT;
   }
@@ -1029,11 +1069,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     });
   }
 
-  function lockRacer(r, color){
+  function lockRacer(r) {
     if (r.locked) return;
     r.locked = true;
-    r.dot.setAttribute("fill", color || "#8FA0AC");
-    r.dot.setAttribute("r", "4");
+    var pip = pipEls[lockCount++];
+    if (pip) pip.className = "pip on" + (r.me ? " mine" : "");
+    locksN.textContent = lockCount + " / " + racers.length + " 선택";
   }
 
   function tickTimer(now){
@@ -1121,8 +1162,8 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     vignette.classList.remove("on");
     btnA.disabled = true; btnB.disabled = true;
 
-    lockRacer(racers[0], timedOut ? "#F4685B" : GOLD);
-    racers.forEach(function(r){ lockRacer(r); });
+    lockRacer(racers[0]);
+    racers.forEach(lockRacer);
     if (!timedOut) paintRing(1, GOLD);
 
     racers[0].choice = myChoice;

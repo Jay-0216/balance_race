@@ -1,4 +1,5 @@
 import type { Screen } from "../App";
+import TrackPreview from "../ui/TrackPreview";
 import "./TitleScreen.css";
 
 const MENU: { key: Screen; label: string; hint: string }[] = [
@@ -19,6 +20,8 @@ export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void })
         </h1>
         <p>다수와 같은 선택을 하면 전진한다.</p>
       </div>
+
+      <TrackPreview />
 
       <nav className="title-menu">
         {MENU.map((m) => (

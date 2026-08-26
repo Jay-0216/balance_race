@@ -1,10 +1,21 @@
 .title {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 48px 24px 32px;
-  gap: 32px;
+  gap: 24px;
+}
+
+.title-mark { flex: none; }
+
+/* Laptops are short: at 768px tall the frame is ~140px shorter than a
+   phone's, and the title block is what has to give. */
+@media (max-height: 800px) {
+  .title { padding: 32px 22px 24px; gap: 16px; }
+  .title h1 { font-size: clamp(32px, 8vw, 42px); }
+  .title-eyebrow { margin-bottom: 10px; }
+  .title-btn { padding: 14px 18px; }
 }
 
 .title-eyebrow {
