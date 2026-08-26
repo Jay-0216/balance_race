@@ -5,8 +5,9 @@ import "./PlaceholderScreen.css";
  * Phase 0 ships the frame, not the game. Each route says which phase
  * fills it in so the shell is never mistaken for a broken build.
  */
-const PENDING: Record<Exclude<Screen, "title">, { title: string; phase: string }> = {
-  solo: { title: "혼자 하기", phase: "Phase 2 — 싱글 게임 루프" },
+type Pending = Exclude<Screen, "title" | "solo">;
+
+const PENDING: Record<Pending, { title: string; phase: string }> = {
   host: { title: "방 만들기", phase: "Phase 4 — 온라인 멀티" },
   join: { title: "참가하기", phase: "Phase 4 — 온라인 멀티" },
 };
@@ -15,7 +16,7 @@ export default function PlaceholderScreen({
   screen,
   onBack,
 }: {
-  screen: Exclude<Screen, "title">;
+  screen: Pending;
   onBack: () => void;
 }) {
   const { title, phase } = PENDING[screen];

@@ -532,6 +532,47 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
       대신 <span class="mono">prefers-reduced-motion</span> 대응과 화면흔들림 OFF 옵션은 필수.
     </p>
 
+    <h3 style="margin-top:32px">Phase 1에서 실제로 부딪힌 것</h3>
+    <p>
+      위 목업은 <strong>가로 화면</strong>이고 앱은 세로 9:16이다. 그대로 옮길 수 없어서 수치를 다시 잡았고,
+      그 과정에서 나온 것들이 아래 넷이다. 전부 세로 화면 특유의 문제라 미리 알아둘 값어치가 있다.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>레이스 뷰는 밴드다</h3>
+        <p>
+          세로 박스에 가로 트랙을 넣으면 위아래가 통째로 빈다. 화면을 채우지 말고
+          <strong>13:9 밴드로 고정</strong>하는 게 답이었다. 남는 아래 공간이 딱 딜레마 카드와
+          순위표 자리라, 결국 실제 게임 레이아웃과 같아진다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>8명 레인이 세로를 다 먹는다</h3>
+        <p>
+          간격을 좁히면 한 덩어리로 뭉치고 넓히면 하늘이 사라진다. 레인 간격은 13으로 두고
+          <strong>트랙 방향으로 ±3.5씩 지그재그</strong>를 줘서 풀었다. 0.125칸이라
+          순위를 오독할 정도는 아니고, 눈으로는 확실히 갈린다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>카메라로 전원을 담으려 하지 말 것</h3>
+        <p>
+          막판엔 스프레드가 트랙 전체라 다 담으면 전부 점이 된다. <strong>줌 상한 1.7배</strong>를 두고
+          넘으면 꼴찌는 화면 밖으로 보낸다 &mdash; 그러라고 순위표가 있다.
+          그리고 줌아웃하면 월드 바닥 아래가 보이므로, 배경 언덕은 <span class="mono">WORLD.h + 400</span>까지
+          채워야 밝은 이음선이 안 생긴다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>애니메이션은 React 밖에서</h3>
+        <p>
+          칸 위치만 state로 두고 화면 좌표·스쿼시·카메라는 ref에 직접 DOM으로 쓴다.
+          8명이 달려도 리렌더가 0이다. 참고로 <strong>스쿼시는 생각보다 훨씬 약해야 한다</strong> &mdash;
+          <span class="mono">0.45</span>로 넣었더니 캐릭터가 그냥 타원이 됐고, <span class="mono">0.16</span>이 적당했다.
+        </p>
+      </div>
+    </div>
+
     <h3 style="margin-top:32px">타이머 이펙트</h3>
     <p>
       10초 카운트다운은 단순한 숫자가 아니라 <strong>이 게임의 긴장 그 자체</strong>다.
@@ -713,13 +754,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         </span></span>
         <span class="phase-days">0.5일</span>
       </div>
-      <div class="phase key">
+      <div class="phase done">
         <span class="phase-n">PHASE 1</span>
-        <span><b>레이스 시각화 프로토타입</b><span>
-          게임 로직 없이, 버튼 누르면 캐릭터가 랜덤하게 전진하는 것만.
-          곡선 트랙 · 이동 애니메이션 · 카메라 추적 · 파티클 · 패럴랙스.
-          <strong>여기서 "와 재밌겠다" 소리가 안 나오면 다음으로 넘어가지 않는다.</strong>
-          대신 3일 타임박스 &mdash; 여기서 무한정 붙잡히면 게임이 안 나온다.
+        <span><b>레이스 시각화 프로토타입 <span class="tick">✓ 완료</span></b><span>
+          <span class="mono">src/race/</span> &mdash; SVG 곡선 트랙, 레이서 8명, ease-out 이동,
+          스쿼시&amp;스트레치, 잔상·먼지·스피드라인 파티클, 패럴랙스 3겹, 팩 프레이밍 카메라, 체커 결승선.
+          게임 로직은 일부러 하나도 없다. <strong>폰·노트북 모두 60fps.</strong>
         </span></span>
         <span class="phase-days">2~3일</span>
       </div>

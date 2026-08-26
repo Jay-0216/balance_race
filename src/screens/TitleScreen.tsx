@@ -3,7 +3,7 @@ import TrackPreview from "../ui/TrackPreview";
 import "./TitleScreen.css";
 
 const MENU: { key: Screen; label: string; hint: string }[] = [
-  { key: "solo", label: "혼자 하기", hint: "봇 7명과 대결" },
+  { key: "solo", label: "혼자 하기", hint: "레이스 프로토타입" },
   { key: "host", label: "방 만들기", hint: "친구를 코드로 초대" },
   { key: "join", label: "참가하기", hint: "6자리 코드 입력" },
 ];
