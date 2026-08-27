@@ -1,44 +1,72 @@
 .boost {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 11px;
-  border-radius: 10px;
+  gap: 12px;
+  padding: 8px 12px 8px 8px;
+  border-radius: 12px;
   background: var(--screen-3);
   border: 1.5px solid var(--line);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.25s ease, background 0.25s ease;
 }
-.boost.full { border-color: var(--gold); }
-.boost.armed { background: rgba(240, 180, 41, 0.12); }
-
-.boost-bars { display: flex; gap: 3px; }
-
-.boost-bar {
-  width: 6px;
-  height: 15px;
-  border-radius: 2px;
-  background: #2c373f;
-  transition: background 0.35s var(--ease-out), transform 0.35s var(--ease-out);
-}
-.boost-bar.on { background: var(--gold); transform: scaleY(1.12); }
+.boost.full { border-color: rgba(240, 180, 41, 0.55); }
+.boost.armed { border-color: var(--gold); background: rgba(240, 180, 41, 0.12); }
 
 .boost-btn {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--ink-3);
-  border: 1.5px solid var(--line);
-  white-space: nowrap;
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  transition: transform 0.16s var(--ease-out), background 0.25s ease;
 }
-.boost.full .boost-btn { color: var(--gold); border-color: var(--gold); }
-.boost.armed .boost-btn { background: var(--gold); color: #11171c; border-color: var(--gold); }
-.boost-btn:disabled { cursor: default; opacity: 0.75; }
+.boost-btn:disabled { cursor: default; }
+.boost-btn:not(:disabled):hover { transform: translateY(-2px); }
+.boost-btn:not(:disabled):active { transform: translateY(0) scale(0.96); }
 
-.boost-hint { font-size: 11px; color: var(--ink-3); line-height: 1.35; }
+.boost-btn svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-@media (max-width: 400px) {
-  .boost { grid-template-columns: auto 1fr; }
-  .boost-hint { grid-column: 1 / -1; }
+.boost-track {
+  fill: rgba(17, 23, 28, 0.5);
+  stroke: var(--line);
+  stroke-width: 5;
+}
+
+.boost-fill {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.55s var(--ease-out);
+}
+
+.boost-icon {
+  position: relative;
+  font-size: 19px;
+  line-height: 1;
+  filter: grayscale(1) brightness(1.6);
+  opacity: 0.45;
+  transition: filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+.boost.full .boost-icon { filter: none; opacity: 1; }
+
+/* Full but unpressed: the ring breathes to say the button is now live. */
+.boost.full:not(.armed) .boost-fill { animation: boost-ready 1.5s ease-in-out infinite; }
+.boost.armed .boost-icon { transform: scale(1.15); }
+.boost.armed .boost-fill { stroke: var(--gold); }
+.boost.armed .boost-btn { background: rgba(240, 180, 41, 0.22); }
+
+@keyframes boost-ready {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.boost-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.boost-text b { font-size: 13px; font-weight: 600; }
+.boost.full .boost-text b { color: var(--gold); }
+.boost-text span { font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .boost-fill { animation: none; transition: none; }
 }
