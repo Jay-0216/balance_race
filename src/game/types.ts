@@ -28,8 +28,12 @@ export type Player = {
   profile?: BotProfile;
   /** position in cells - this is the score */
   pos: number;
-  /** cashes on the next round won */
-  booster: boolean;
+  /**
+   * Booster charge, 0..BOOSTER_CHARGE_MAX. Picking the minority fills it; it
+   * is never spent automatically. The owner decides which round to spend it
+   * on, which is the whole point - an automatic payout is not a gamble.
+   */
+  charge: number;
 };
 
 /** Special rounds are announced before they are played; that is the point. */
@@ -41,8 +45,10 @@ export type Move = {
   to: number;
   /** did this player end up on the advancing side */
   advanced: boolean;
+  /** spent a full charge on this round */
   boosterFired: boolean;
-  boosterGained: boolean;
+  /** charge earned this round by taking the small side */
+  chargeGained: number;
   stake?: number;
 };
 

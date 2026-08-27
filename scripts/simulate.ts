@@ -4,7 +4,7 @@
  * order settle early? If a profile dominates or rank 1 never changes after
  * round 3, the rules are wrong, not the renderer.
  */
-import { collectBotChoices } from "../src/game/bots";
+import { collectBotBoosts, collectBotChoices } from "../src/game/bots";
 import { applyOutcome, CELLS, isOver, ranked, resolveRound, roundKind, ROUNDS } from "../src/game/rules";
 import { dealDeck, makePlayers } from "../src/game/setup";
 import type { Choice, Player } from "../src/game/types";
@@ -30,6 +30,7 @@ type Stats = {
   boosterFires: number;
   rounds: number[];
   reachedFinish: number;
+  specialsPlayed: number;
 };
 
 function playGame(seed: number, stats: Stats) {
@@ -47,7 +48,8 @@ function playGame(seed: number, stats: Stats) {
     const kind = roundKind(round);
     const dilemma = deck[(round - 1) % deck.length];
     const choices = collectBotChoices(players, dilemma, kind, rng) as Record<number, Choice>;
-    const outcome = resolveRound(players, choices, kind);
+    const boosts = collectBotBoosts(players, kind, rng);
+    const outcome = resolveRound(players, choices, kind, {}, boosts);
 
     if (outcome.tie) stats.ties++;
     stats.boosterFires += outcome.moves.filter((m) => m.boosterFired).length;
@@ -65,6 +67,7 @@ function playGame(seed: number, stats: Stats) {
   stats.leadChanges.push(leadChanges);
   stats.finalSpread.push(order[0].pos - order[order.length - 1].pos);
   stats.rounds.push(round - 1);
+  stats.specialsPlayed += Math.min(3, [4, 7, 10].filter((r) => r < round).length);
   if (players.some((p) => p.pos >= CELLS)) stats.reachedFinish++;
   void isOver;
 }
@@ -72,7 +75,7 @@ function playGame(seed: number, stats: Stats) {
 const N = Number(process.argv[2] ?? 1000);
 const stats: Stats = {
   wins: {}, leadChanges: [], finalSpread: [], ties: 0,
-  boosterFires: 0, rounds: [], reachedFinish: 0,
+  boosterFires: 0, rounds: [], reachedFinish: 0, specialsPlayed: 0,
 };
 for (let i = 1; i <= N; i++) playGame(i, stats);
 
@@ -96,3 +99,4 @@ console.log(`평균 라운드 수    : ${mean(stats.rounds).toFixed(1)}`);
 console.log(`결승선 도달로 종료: ${pct(stats.reachedFinish)}`);
 console.log(`동점 라운드       : ${(stats.ties / N).toFixed(2)}회/게임`);
 console.log(`부스터 발동       : ${(stats.boosterFires / N).toFixed(2)}회/게임`);
+console.log(`특수 라운드 도달  : ${(stats.specialsPlayed / N).toFixed(2)} / 3`);

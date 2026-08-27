@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
-import { ranked } from "../game/rules";
+import { BOOSTER_CHARGE_MAX, ranked } from "../game/rules";
 import type { Player } from "../game/types";
 import "./Leaderboard.css";
 
@@ -62,12 +62,23 @@ export default function Leaderboard({
           <span className="board-rank">{i + 1}</span>
           <span className="board-dot" style={{ background: p.color }} />
           <span className="board-name">{p.name}</span>
-          {p.booster && <span className="board-boost" title="부스터 보유">⚡</span>}
+          <BoosterPips charge={p.charge} />
           <span className="board-pos">
             {p.pos}/{cells}
           </span>
         </li>
       ))}
     </ol>
+  );
+}
+
+/** The gauge, small enough to sit in a standings row. */
+function BoosterPips({ charge }: { charge: number }) {
+  if (charge <= 0) return <span className="board-boost" />;
+  const full = charge >= BOOSTER_CHARGE_MAX;
+  return (
+    <span className={"board-boost" + (full ? " full" : "")} title={`부스터 ${charge}/${BOOSTER_CHARGE_MAX}`}>
+      {full ? "⚡" : "·".repeat(charge)}
+    </span>
   );
 }

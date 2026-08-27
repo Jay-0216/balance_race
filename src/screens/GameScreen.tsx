@@ -4,6 +4,7 @@ import { CELLS, KIND_LABEL, ROUNDS, TIME_LIMIT } from "../game/rules";
 import RaceView from "../race/RaceView";
 import type { RaceEffect } from "../race/effects";
 import type { RacerView } from "../race/world";
+import BoosterGauge from "../ui/BoosterGauge";
 import DilemmaCard from "../ui/DilemmaCard";
 import Leaderboard from "../ui/Leaderboard";
 import LockPips from "../ui/LockPips";
@@ -122,6 +123,13 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
           onPick={g.pick}
         />
 
+        <BoosterGauge
+          charge={g.players[0].charge}
+          armed={g.useBoost}
+          disabled={g.phase !== "choosing"}
+          onToggle={() => g.setUseBoost(!g.useBoost)}
+        />
+
         {g.kind === "allin" && (
           <StakePicker
             pos={g.players[0].pos}
@@ -174,11 +182,11 @@ function RoundNote({ g }: { g: ReturnType<typeof useGame> }) {
   }
 
   const fired = o.moves.filter((m) => m.boosterFired);
-  const gained = o.moves.filter((m) => m.boosterGained);
+  const gained = o.moves.filter((m) => m.chargeGained > 0);
   const name = (id: number) => g.players.find((p) => p.id === id)?.name ?? "";
 
   if (fired.length) parts.push(`⚡ 부스터 — ${fired.map((m) => name(m.playerId)).join(", ")}`);
-  if (gained.length) parts.push(`극소수 ${gained.map((m) => name(m.playerId)).join(", ")} 부스터 획득`);
+  if (gained.length) parts.push(`소수 ${gained.map((m) => name(m.playerId)).join(", ")} 충전`);
 
   return <>{parts.join("  ·  ")}</>;
 }

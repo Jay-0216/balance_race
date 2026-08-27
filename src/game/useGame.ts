@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { collectBotChoices } from "./bots";
+import { collectBotBoosts, collectBotChoices } from "./bots";
 import {
   ALLIN_STAKE, applyOutcome, CELLS, ranked, resolveRound, roundKind, ROUNDS,
   TIME_LIMIT,
@@ -45,6 +45,7 @@ export function useGame() {
   const [deadline, setDeadline] = useState(() => performance.now() + TIME_LIMIT * 1000);
   const [timedOut, setTimedOut] = useState(false);
   const [stake, setStake] = useState(ALLIN_STAKE);
+  const [useBoost, setUseBoost] = useState(false);
 
   const timers = useRef<number[]>([]);
   const botLockAt = useRef<number[]>([]);
@@ -72,6 +73,7 @@ export function useGame() {
     setMyLockIndex(-1);
     setMyChoice(null);
     setTimedOut(false);
+    setUseBoost(false);          // spending is a per-round decision
     setOutcome(null);
     settled.current = false;
     setPhase("choosing");
@@ -91,7 +93,8 @@ export function useGame() {
       const botChoices = collectBotChoices(players, dilemma, kind);
       const choices: Record<number, Choice> = { ...botChoices, 0: choice };
       // bots bet the default share; only the player picks one
-      const result = resolveRound(players, choices, kind, { 0: stake });
+      const boosts = { ...collectBotBoosts(players, kind), 0: useBoost };
+      const result = resolveRound(players, choices, kind, { 0: stake }, boosts);
 
       setMyChoice(choice);
       setTimedOut(viaTimeout);
@@ -122,7 +125,7 @@ export function useGame() {
         });
       }, REVEAL_MS + MOVING_MS);
     },
-    [players, dilemma, kind, round]
+    [players, dilemma, kind, round, stake, useBoost]
   );
 
   /** Pips light as bots commit; the clock running out picks for you. */
@@ -174,6 +177,7 @@ export function useGame() {
     lockedCount, myLockIndex, deadline, timedOut,
     winner: phase === "done" ? ranked(players)[0] : null,
     stake, setStake,
+    useBoost, setUseBoost,
     pick, restart,
   };
 }

@@ -22,7 +22,7 @@ export function makePlayers(botCount = 7): Player[] {
     color: PLAYER_COLORS[0],
     isBot: false,
     pos: 0,
-    booster: false,
+    charge: 0,
   };
   const bots = BOT_ROSTER.slice(0, botCount).map((b, i) => ({
     id: i + 1,
@@ -31,7 +31,7 @@ export function makePlayers(botCount = 7): Player[] {
     isBot: true,
     profile: b.profile,
     pos: 0,
-    booster: false,
+    charge: 0,
   }));
   return [me, ...bots];
 }

@@ -5,15 +5,21 @@ import type { Choice, Move, Player, RoundKind, RoundOutcome } from "./types";
  * averaged about 14 cells - so the chequered flag was decoration and the
  * fourth backdrop theme (which is keyed to leader progress) never appeared.
  */
-export const CELLS = 20;
+export const CELLS = 24;
 export const ROUNDS = 12;
 export const TIME_LIMIT = 10;
 
-/** Announced in advance - knowing a reverse round is coming is the whole game. */
+/**
+ * Announced in advance - knowing a reverse round is coming is the whole game.
+ *
+ * They sit at 4 / 7 / 10 rather than 5 / 8 / 12 because the simulation says a
+ * game runs about ten rounds before somebody crosses the line. With the all-in
+ * round parked at 12, most games simply never had one.
+ */
 export function roundKind(round: number): RoundKind {
-  if (round === 5) return "double";
-  if (round === 8) return "reverse";
-  if (round === ROUNDS) return "allin";
+  if (round === 4) return "double";
+  if (round === 7) return "reverse";
+  if (round === 10) return "allin";
   return "normal";
 }
 
@@ -44,8 +50,31 @@ export function baseGain(majorityShare: number): number {
   return 2;                              // 5-3 or 6-2
 }
 
-/** The minority bet: it pays nothing now and a lot on the next round won. */
-export const BOOSTER_GAIN = 6;
+/**
+ * The booster is charged, not granted.
+ *
+ * It used to be a flag: land in a small enough minority and the next round you
+ * won paid a flat +6 - a third of the whole track, handed out automatically,
+ * on a round you did not choose. That is not a gamble, it is a windfall, and
+ * it swung games on its own.
+ *
+ * Now taking the small side fills a gauge. Once it is full the owner may spend
+ * it on a round of their choosing, and it doubles that round's gain. Spend it
+ * on a round you then lose and it is simply gone. The cost of being wrong is
+ * what makes choosing when to use it interesting.
+ */
+export const BOOSTER_CHARGE_MAX = 2;
+export const BOOSTER_MULTIPLIER = 4;
+
+/** charge earned for being on the losing side, by how small that side was */
+export function chargeFor(minorityShare: number): number {
+  if (minorityShare <= 0) return 0;
+  return minorityShare < MINORITY_BOOSTER_THRESHOLD ? 2 : 1;
+}
+
+export function isArmed(charge: number) {
+  return charge >= BOOSTER_CHARGE_MAX;
+}
 
 export const MINORITY_BOOSTER_THRESHOLD = 0.3;
 /** default share of your cells put up in the all-in round */
@@ -67,7 +96,9 @@ export function resolveRound(
   choices: Record<number, Choice>,
   kind: RoundKind = "normal",
   /** per-player all-in share, 0..1; anyone missing bets ALLIN_STAKE */
-  stakes: Record<number, number> = {}
+  stakes: Record<number, number> = {},
+  /** who is spending a full booster charge on this round */
+  boosts: Record<number, boolean> = {}
 ): RoundOutcome {
   const countA = players.filter((p) => choices[p.id] === "a").length;
   const countB = players.length - countA;
@@ -87,39 +118,45 @@ export function resolveRound(
   const moves: Move[] = players.map((p) => {
     const from = p.pos;
 
-    // A tie means nobody read the room, so nobody has earned a booster payout
-    // either - it is neither spent nor granted.
+    // A tie means nobody read the room: everyone inches forward, nobody
+    // charges, and a spent booster is not consumed.
     if (tie) {
       return {
         playerId: p.id, from, to: Math.min(CELLS, from + gain),
-        advanced: true, boosterFired: false, boosterGained: false,
+        advanced: true, boosterFired: false, chargeGained: 0,
       };
     }
 
     const advanced = choices[p.id] === advancingSide;
+    // spending needs a full gauge; asking without one is simply ignored
+    const spending = !!boosts[p.id] && isArmed(p.charge);
 
     if (kind === "allin") {
       const stake = stakeFor(from, stakes[p.id] ?? ALLIN_STAKE);
       const to = advanced
-        ? Math.min(CELLS, from + stake)
+        ? Math.min(CELLS, from + stake * (spending ? BOOSTER_MULTIPLIER : 1))
         : Math.max(0, from - stake);
-      return { playerId: p.id, from, to, advanced, boosterFired: false, boosterGained: false, stake };
-    }
-
-    if (advanced) {
-      const boosterFired = p.booster;
-      const step = boosterFired ? BOOSTER_GAIN : gain;
       return {
-        playerId: p.id, from, to: Math.min(CELLS, from + step),
-        advanced: true, boosterFired, boosterGained: false,
+        playerId: p.id, from, to, advanced,
+        boosterFired: spending, chargeGained: 0, stake,
       };
     }
 
-    // Being in a tiny minority is a bet, not just a loss: it buys the next win.
-    const boosterGained = !p.booster && minorityShare < MINORITY_BOOSTER_THRESHOLD && minorityShare > 0;
+    if (advanced) {
+      const step = spending ? gain * BOOSTER_MULTIPLIER : gain;
+      return {
+        playerId: p.id, from, to: Math.min(CELLS, from + step),
+        advanced: true, boosterFired: spending, chargeGained: 0,
+      };
+    }
+
+    // Taking the small side pays nothing now; it fills the gauge instead.
+    // Spending on a round you then lose burns the charge for nothing - that
+    // risk is what makes the timing a decision rather than a formality.
     return {
       playerId: p.id, from, to: from,
-      advanced: false, boosterFired: false, boosterGained,
+      advanced: false, boosterFired: spending,
+      chargeGained: spending ? 0 : chargeFor(minorityShare),
     };
   });
 
@@ -132,11 +169,10 @@ export function applyOutcome(players: Player[], outcome: RoundOutcome): Player[]
   return players.map((p) => {
     const m = byId.get(p.id);
     if (!m) return p;
-    return {
-      ...p,
-      pos: m.to,
-      booster: m.boosterFired ? false : m.boosterGained ? true : p.booster,
-    };
+    const charge = m.boosterFired
+      ? 0
+      : Math.min(BOOSTER_CHARGE_MAX, p.charge + m.chargeGained);
+    return { ...p, pos: m.to, charge };
   });
 }
 

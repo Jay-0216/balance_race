@@ -1,5 +1,5 @@
 import type { BotProfile, Choice, Dilemma, Player, RoundKind } from "./types";
-import { MINORITY_BOOSTER_THRESHOLD } from "./rules";
+import { isArmed, MINORITY_BOOSTER_THRESHOLD } from "./rules";
 
 /**
  * Bot personalities are meant to be readable. Once a player learns that
@@ -22,7 +22,8 @@ export type BotContext = {
   kind: RoundKind;
   /** trailing badly makes the risky play more attractive */
   behindBy: number;
-  hasBooster: boolean;
+  /** the gauge is full, so the minority is worth less than spending */
+  armed: boolean;
   rng?: () => number;
 };
 
@@ -43,9 +44,9 @@ export function choiceProbability(
   p += profile.conformity * lean * 0.8;
   p -= profile.contrarian * lean * 1.4;
 
-  // Chasing the booster means deliberately joining the small side. Only worth
-  // it without one in hand, and more tempting the further behind you are.
-  if (!ctx.hasBooster && ctx.kind === "normal") {
+  // Chasing charge means deliberately joining the small side. Pointless once
+  // the gauge is full, and more tempting the further behind you are.
+  if (!ctx.armed && ctx.kind === "normal") {
     const appetite = profile.risk * clamp(ctx.behindBy / 12, 0, 1);
     p -= Math.sign(lean) * appetite * MINORITY_BOOSTER_THRESHOLD;
   }
@@ -74,8 +75,29 @@ export function collectBotChoices(
   for (const p of players) {
     if (!p.isBot || !p.profile) continue;
     out[p.id] = botChoice(p.profile, dilemma, {
-      kind, behindBy: leader - p.pos, hasBooster: p.booster, rng,
+      kind, behindBy: leader - p.pos, armed: isArmed(p.charge), rng,
     });
+  }
+  return out;
+}
+
+/**
+ * When a bot spends a full gauge. Doubling a round you go on to lose burns it
+ * for nothing, so the appetite comes from risk, from being behind, and from
+ * the round being worth doubling in the first place.
+ */
+export function collectBotBoosts(
+  players: Player[],
+  kind: RoundKind,
+  rng: () => number = Math.random
+): Record<number, boolean> {
+  const leader = Math.max(...players.map((p) => p.pos));
+  const out: Record<number, boolean> = {};
+  for (const p of players) {
+    if (!p.isBot || !p.profile || !isArmed(p.charge)) continue;
+    const behind = clamp((leader - p.pos) / 8, 0, 1);
+    const worth = kind === "double" || kind === "allin" ? 0.55 : 0.28;
+    out[p.id] = rng() < worth + p.profile.risk * 0.3 + behind * 0.25;
   }
   return out;
 }

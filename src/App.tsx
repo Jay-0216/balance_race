@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
-import PlaceholderScreen from "./screens/PlaceholderScreen";
 import GameScreen from "./screens/GameScreen";
+import LobbyScreen from "./screens/LobbyScreen";
 import RaceScreen from "./screens/RaceScreen";
 
 export type Screen = "title" | "solo" | "proto" | "host" | "join";
@@ -19,7 +19,7 @@ export default function App() {
       ) : screen === "proto" ? (
         <RaceScreen onBack={() => setScreen("title")} />
       ) : (
-        <PlaceholderScreen screen={screen} onBack={() => setScreen("title")} />
+        <LobbyScreen mode={screen} onBack={() => setScreen("title")} />
       )}
     </Stage>
   );

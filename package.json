@@ -11,6 +11,7 @@
     "simulate": "esbuild scripts/simulate.ts --bundle --platform=node --format=esm --loader:.json=json --outfile=node_modules/.tmp/sim.mjs --log-level=warning && node node_modules/.tmp/sim.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
