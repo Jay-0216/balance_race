@@ -470,7 +470,7 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         <tbody>
           <tr><td>기본</td><td class="val">+2칸</td><td>무난한 판</td></tr>
           <tr><td>압도 &mdash; 다수 85%↑ (7-1, 8-0)</td><td class="val">+1칸</td><td>뻔한 선택은 이득이 적다</td></tr>
-          <tr><td>극소수 &mdash; 소수 30% 미만 (1~2명)</td><td class="val up">부스터</td><td>다음 라운드 다수면 +6칸</td></tr>
+          <tr><td>소수</td><td class="val up">충전 +1</td><td>소수가 30% 미만이면 +2</td></tr>
           <tr><td>동점</td><td class="val">전원 +1칸</td><td>아무도 못 읽은 판. 레이스는 멈추지 않는다</td></tr>
         </tbody>
       </table>
@@ -493,6 +493,32 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
     </div>
 
     <div class="callout">
+      <span class="eyebrow">⚡ 부스터는 자동 지급이 아니라 충전 게이지다</span>
+      <p>
+        <strong>예전 설계는 밸런스를 무너뜨렸다.</strong> 소수에 들면 부스터가 저절로 생기고,
+        그다음에 이긴 라운드에서 자동으로 <strong>+6칸</strong>이 터졌다.
+        24칸 트랙에서 한 방에 4분의 1이, <strong>내가 고르지도 않은 라운드에</strong> 굴러 들어온다.
+        그건 도박이 아니라 횡재고, 그것만으로 게임이 뒤집혔다.
+      </p>
+      <p>
+        지금은 소수를 고를 때마다 게이지가 차고(극소수면 2칸), <strong>2칸이 다 차야 버튼이 눌린다.</strong>
+        쓸 라운드는 직접 고르고, 성공하면 그 라운드 이동 <strong>×4</strong>,
+        그 라운드에 소수였으면 <strong>충전이 그냥 날아간다.</strong>
+        틀렸을 때 잃는다는 게 타이밍 고르는 걸 결정으로 만든다.
+      </p>
+      <p>
+        <strong>게이지는 버튼을 두르는 링이다</strong> &mdash; 차오르는 것과 누르는 것이 같은 물건이어야
+        "이게 준비되면 내가 쓴다"가 설명 없이 읽힌다. 링이 가득 차도 저절로 터지지 않는다.
+      </p>
+      <p>
+        충전 비용과 배수도 시뮬레이션으로 정했다. <strong>3칸/×2는 순응형이 25.5%로 오히려 악화</strong>됐다 &mdash;
+        2~3라운드를 버려서 +2칸 얻는 건 아무도 안 할 거래라 소수 전략이 죽는다.
+        2칸/×2는 24.6%, 2칸/×3은 19.7%, <strong>2칸/×4가 16.4%로 가장 고르다.</strong>
+        이 하나로 <strong>순응형이 20.1% 1위권에서 14.4% 3위로 내려가고, 청개구리가 15.8%로 2위가 됐다.</strong>
+      </p>
+    </div>
+
+    <div class="callout">
       <span class="eyebrow">부스터가 이 게임의 심장</span>
       <p>
         "다들 A 고를 것 같은데&hellip; 일부러 B로 가서 부스터 먹고 다음 판에 크게 갈까?"
@@ -506,9 +532,9 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
       <table>
         <thead><tr><th>라운드</th><th>이름</th><th>규칙</th></tr></thead>
         <tbody>
-          <tr><td class="mono">05</td><td><strong>더블</strong></td><td>이동 거리 2배</td></tr>
-          <tr><td class="mono">08</td><td><strong>역전</strong></td><td>소수가 전진, 다수 제자리 &mdash; 시작 전 미리 공지</td></tr>
-          <tr><td class="mono">12</td><td><strong>올인</strong></td><td>자기 칸 수 일부를 베팅. 다수면 2배, 소수면 잃음</td></tr>
+          <tr><td class="mono">04</td><td><strong>더블</strong></td><td>이동 거리 2배</td></tr>
+          <tr><td class="mono">07</td><td><strong>역전</strong></td><td>소수가 전진, 다수 제자리 &mdash; 시작 전 미리 공지</td></tr>
+          <tr><td class="mono">10</td><td><strong>올인</strong></td><td>자기 칸 수의 10~50%를 베팅. 맞히면 얻고 틀리면 잃는다</td></tr>
         </tbody>
       </table>
     </div>
