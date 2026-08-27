@@ -1,4 +1,4 @@
-import { BOOSTER_CHARGE_MAX, isArmed } from "../game/rules";
+import { BOOSTER_CHARGE_MAX, BOOSTER_MULTIPLIER, isArmed } from "../game/rules";
 import "./BoosterGauge.css";
 
 /**
@@ -38,7 +38,7 @@ export default function BoosterGauge({
 
       <span className="boost-hint">
         {armed
-          ? "이 라운드 다수면 2배 · 소수면 충전이 날아간다"
+          ? `이 라운드 다수면 ${BOOSTER_MULTIPLIER}배 · 소수면 충전이 날아간다`
           : full
             ? "쓸 라운드는 직접 고른다"
             : "소수를 고르면 충전된다"}
