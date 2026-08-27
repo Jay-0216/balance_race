@@ -1,0 +1,95 @@
+.result {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 12, 15, 0.82);
+  backdrop-filter: blur(3px);
+  animation: result-in 0.35s var(--ease-out) both;
+}
+
+@keyframes result-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.result-card {
+  width: 100%;
+  max-width: 340px;
+  padding: 22px 20px 20px;
+  border-radius: 16px;
+  background: var(--screen-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.result-eyebrow {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+
+.result-winner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 8px 0 4px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.result-dot { width: 13px; height: 13px; border-radius: 99px; flex: none; }
+.result-dot.sm { width: 8px; height: 8px; }
+
+.result-sub { margin: 0 0 16px; font-size: 13px; color: var(--ink-3); }
+
+.result-list { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.result-list li {
+  display: grid;
+  grid-template-columns: 16px 76px 1fr 22px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+.result-list li.me { background: rgba(240, 180, 41, 0.12); }
+
+.result-rank { font-family: ui-monospace, monospace; font-size: 10px; color: var(--ink-3); }
+.result-name { display: flex; align-items: center; gap: 6px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.result-bar { height: 6px; border-radius: 99px; background: var(--screen-3); overflow: hidden; }
+.result-bar span { display: block; height: 100%; border-radius: 99px; transition: width 0.6s var(--ease-out); }
+
+.result-pos {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-2);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-actions { display: flex; gap: 8px; }
+
+.result-again {
+  flex: 1;
+  padding: 13px;
+  border-radius: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #11171c;
+  background: var(--gold);
+}
+.result-again:hover { filter: brightness(1.07); }
+
+.result-out {
+  padding: 13px 18px;
+  border-radius: 11px;
+  font-size: 14px;
+  color: var(--ink-2);
+  border: 1.5px solid var(--line);
+}
+.result-out:hover { background: var(--screen-3); }

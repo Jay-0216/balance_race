@@ -1,0 +1,117 @@
+.race-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+.rs-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rs-back { width: 32px; height: 32px; border-radius: 8px; font-size: 17px; color: var(--ink-2); }
+.rs-back:hover { background: var(--screen-2); }
+
+.rs-title { flex: 1; font-size: 14px; font-weight: 600; }
+
+.rs-fps {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.rs-panel {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 16px 16px;
+  background: var(--screen-2);
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rs-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.rs-lead b { color: var(--ink); font-weight: 600; }
+
+.rs-actions { display: flex; gap: 8px; }
+
+.rs-go {
+  flex: 1;
+  padding: 13px;
+  border-radius: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #11171c;
+  background: var(--gold);
+  transition: transform 0.14s var(--ease-out), filter 0.14s ease;
+}
+.rs-go:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.07); }
+.rs-go:active:not(:disabled) { transform: translateY(0); }
+.rs-go:disabled { background: var(--screen-3); color: var(--ink-3); cursor: default; }
+
+.rs-reset {
+  padding: 13px 18px;
+  border-radius: 11px;
+  font-size: 14px;
+  color: var(--ink-2);
+  border: 1.5px solid var(--line);
+}
+.rs-reset:hover { background: var(--screen-3); }
+
+/* The band leaves real estate below it; saying what fills that space beats
+   leaving a hole that reads as a layout bug. */
+.rs-slot {
+  flex: 1;
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--line);
+  border-radius: 11px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.rs-board {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+  row-gap: 2px;
+}
+
+.rs-row {
+  display: grid;
+  grid-template-columns: 14px 8px 1fr auto;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.rs-row.me { background: rgba(240, 180, 41, 0.12); }
+
+.rs-rank {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.rs-dot { width: 8px; height: 8px; border-radius: 99px; }
+.rs-name { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rs-pos {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}

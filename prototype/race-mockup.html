@@ -1,0 +1,1776 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body>
+<title>결정 장애 레이스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  --bg:#E7EAEC; --surface:#F8F9FA; --surface-2:#DCE1E5; --line:#C6CED4;
+  --ink:#141A1F; --ink-2:#3C4851; --ink-3:#6B7982;
+  --a:#C93B31; --b:#1B7288; --gold:#9A6B06;
+  --a-soft:rgba(201,59,49,.10); --b-soft:rgba(27,114,136,.10); --gold-soft:rgba(154,107,6,.12);
+  --shadow:0 1px 2px rgba(20,26,31,.06), 0 8px 24px rgba(20,26,31,.05);
+  /* the game screen holds one look in both themes - it is a screen, not a page surface */
+  --screen:#11171C; --screen-2:#1A232A; --screen-line:#2B373F;
+  --screen-ink:#E9EEF1; --screen-ink-3:#7F919D;
+  --a-lit:#F4685B; --b-lit:#3FB0CE; --gold-lit:#F0B429;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1317; --surface:#161D23; --surface-2:#1E272E; --line:#2A353D;
+    --ink:#E8EDF0; --ink-2:#B5C1C9; --ink-3:#87959F;
+    --a:#F4685B; --b:#43B4D2; --gold:#F0B429;
+    --a-soft:rgba(244,104,91,.13); --b-soft:rgba(67,180,210,.13); --gold-soft:rgba(240,180,41,.13);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1317; --surface:#161D23; --surface-2:#1E272E; --line:#2A353D;
+  --ink:#E8EDF0; --ink-2:#B5C1C9; --ink-3:#87959F;
+  --a:#F4685B; --b:#43B4D2; --gold:#F0B429;
+  --a-soft:rgba(244,104,91,.13); --b-soft:rgba(67,180,210,.13); --gold-soft:rgba(240,180,41,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-weight:400; line-height:1.75; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+*{box-sizing:border-box}
+
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px 96px}
+.col{max-width:680px}
+
+/* ---------- type ---------- */
+h1,h2,h3{text-wrap:balance; line-height:1.2}
+h1{
+  font-family:"Black Han Sans","IBM Plex Sans KR",sans-serif; font-weight:400;
+  font-size:clamp(44px,9vw,84px); letter-spacing:-.01em; margin:0;
+}
+h2{
+  font-family:"Black Han Sans","IBM Plex Sans KR",sans-serif; font-weight:400;
+  font-size:clamp(26px,4vw,36px); margin:0 0 6px;
+}
+h3{font-size:18px; font-weight:600; margin:0 0 8px; letter-spacing:-.005em}
+p{margin:0 0 16px; color:var(--ink-2)}
+.lede{font-size:clamp(17px,2.2vw,20px); color:var(--ink-2); font-weight:300}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:500;
+  letter-spacing:.08em; color:var(--ink-3);
+}
+.mono{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+strong{font-weight:600; color:var(--ink)}
+a{color:var(--b)}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 36px}
+.hero .eyebrow{display:block; margin-bottom:18px}
+.hero h1{margin-bottom:18px}
+.hero .lede{max-width:640px; margin-bottom:0}
+.hero .lede .split-a{color:var(--a); font-weight:600}
+.hero .lede .split-b{color:var(--b); font-weight:600}
+
+/* ---------- the game screen ---------- */
+.screen{
+  background:var(--screen); border:1px solid var(--screen-line); border-radius:14px;
+  overflow:hidden; color:var(--screen-ink); box-shadow:var(--shadow);
+  margin:0 0 12px;
+}
+.screen-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 16px; border-bottom:1px solid var(--screen-line); background:var(--screen-2);
+}
+.screen-head .eyebrow{color:var(--screen-ink-3)}
+.round-pill{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  color:var(--screen-ink); background:rgba(255,255,255,.07);
+  padding:3px 10px; border-radius:99px; font-variant-numeric:tabular-nums;
+}
+.stage{position:relative; width:100%; height:230px; background:var(--screen)}
+.stage svg{display:block; width:100%; height:100%}
+.stage canvas{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.stamp{
+  position:absolute; left:50%; top:38%; transform:translate(-50%,-50%) scale(1.6);
+  font-family:"Black Han Sans",sans-serif; font-size:42px; letter-spacing:.04em;
+  color:var(--gold-lit); opacity:0; pointer-events:none;
+  text-shadow:0 4px 24px rgba(0,0,0,.6);
+}
+.stamp.hit{animation:stamp .9s cubic-bezier(.2,1.4,.4,1) forwards}
+
+.hud{position:absolute; top:8px; right:10px; width:84px; height:84px; pointer-events:none}
+.hud svg{display:block; width:100%; height:100%; overflow:visible}
+#ringWrap{transform-origin:42px 42px}
+#ringWrap.beat{animation:beat .95s ease-out infinite}
+@keyframes beat{
+  0%{transform:scale(1)} 12%{transform:scale(1.11)} 34%{transform:scale(1)} 100%{transform:scale(1)}
+}
+#ringWrap.burst{animation:ringburst .5s ease-out forwards}
+@keyframes ringburst{
+  0%{transform:scale(1); opacity:1}
+  100%{transform:scale(1.9); opacity:0; filter:blur(3px)}
+}
+.hud .dot{transition:fill .25s ease, r .25s cubic-bezier(.2,1.6,.4,1)}
+
+.vignette{
+  position:absolute; inset:0; pointer-events:none; opacity:0;
+  background:radial-gradient(120% 90% at 50% 50%, transparent 48%, rgba(244,104,91,.42) 100%);
+  transition:opacity .3s ease;
+}
+.vignette.on{animation:vig .95s ease-out infinite}
+@keyframes vig{0%{opacity:0} 20%{opacity:.85} 60%{opacity:0} 100%{opacity:0}}
+@keyframes stamp{
+  0%{opacity:0; transform:translate(-50%,-50%) scale(1.9) rotate(-8deg)}
+  22%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-4deg)}
+  70%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-4deg)}
+  100%{opacity:0; transform:translate(-50%,-50%) scale(1.05) rotate(-4deg)}
+}
+.shake{animation:shake .32s ease-out}
+@keyframes shake{
+  0%,100%{transform:translate(0,0)} 20%{transform:translate(-5px,3px)}
+  45%{transform:translate(4px,-3px)} 70%{transform:translate(-3px,-1px)}
+}
+
+/* dilemma card + choices */
+.deck{padding:16px; border-top:1px solid var(--screen-line); background:var(--screen-2)}
+.deck-top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:10px;
+}
+.deck-cat{
+  font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--screen-ink-3);
+}
+.locks{display:flex; align-items:center; gap:9px}
+.pips{display:flex; gap:3px}
+.pip{
+  width:5px; height:11px; border-radius:2px; background:#2C3941;
+  transition:background .2s ease, transform .2s cubic-bezier(.2,1.6,.4,1);
+}
+.pip.on{background:#7F919D; transform:scaleY(1.18)}
+.pip.mine{background:var(--gold-lit)}
+.locks-n{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.06em;
+  color:var(--screen-ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.choices{position:relative; display:grid; grid-template-columns:1fr 1fr; gap:22px}
+
+/* entrance: the two cards collide and VS pops out of the impact.
+   They meet at 38%, so VS starts there and overshoots while they recoil. */
+.choices.slam .choice{animation:slam-a .62s cubic-bezier(.3,.9,.3,1) both}
+.choices.slam .choice[data-side="b"]{animation-name:slam-b}
+@keyframes slam-a{
+  0%{transform:translateX(-260%) rotate(-7deg); opacity:0}
+  10%{opacity:1}
+  38%{transform:translateX(22%) rotate(1.5deg)}
+  52%{transform:translateX(-6%) rotate(-1deg)}
+  72%{transform:translateX(2%)}
+  100%{transform:translateX(0) rotate(0)}
+}
+@keyframes slam-b{
+  0%{transform:translateX(260%) rotate(7deg); opacity:0}
+  10%{opacity:1}
+  38%{transform:translateX(-22%) rotate(-1.5deg)}
+  52%{transform:translateX(6%) rotate(1deg)}
+  72%{transform:translateX(-2%)}
+  100%{transform:translateX(0) rotate(0)}
+}
+.vs{
+  position:absolute; left:50%; top:50%; z-index:2;
+  font-family:"IBM Plex Mono",monospace; font-size:15px; font-weight:600;
+  color:var(--gold-lit); text-shadow:0 2px 10px rgba(0,0,0,.7); pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+.choices.slam .vs{animation:vs-pop .62s cubic-bezier(.2,1.7,.4,1) both}
+@keyframes vs-pop{
+  0%,36%{transform:translate(-50%,-50%) scale(.2); opacity:0}
+  46%{transform:translate(-50%,-50%) scale(1.75) rotate(-8deg); opacity:1}
+  60%{transform:translate(-50%,-50%) scale(.86) rotate(3deg)}
+  76%{transform:translate(-50%,-50%) scale(1.08) rotate(-1deg)}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0); opacity:1}
+}
+.choice{
+  font-family:inherit; font-size:14px; font-weight:500; line-height:1.45; text-align:left;
+  color:var(--screen-ink); background:rgba(255,255,255,.04);
+  border:1.5px solid var(--screen-line); border-radius:10px;
+  padding:14px 14px 12px; cursor:pointer;
+  transition:transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.choice .tag{
+  display:block; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  letter-spacing:.12em; margin-bottom:7px;
+}
+.choice[data-side="a"] .tag{color:var(--a-lit)}
+.choice[data-side="b"] .tag{color:var(--b-lit)}
+.choice:hover:not(:disabled){transform:translateY(-2px); background:rgba(255,255,255,.08)}
+.choice[data-side="a"]:hover:not(:disabled){border-color:var(--a-lit)}
+.choice[data-side="b"]:hover:not(:disabled){border-color:var(--b-lit)}
+.choice:focus-visible{outline:2px solid var(--gold-lit); outline-offset:2px}
+.choice:disabled{opacity:.45; cursor:default}
+
+/* tally */
+.tally{margin-top:14px; display:none}
+.tally.on{display:block}
+.tally-bar{
+  display:flex; height:26px; border-radius:6px; overflow:hidden;
+  background:rgba(255,255,255,.06);
+}
+.tally-seg{
+  display:flex; align-items:center; font-family:"IBM Plex Mono",monospace;
+  font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; color:#11171C;
+  flex:0 0 auto; width:0; transition:width .7s cubic-bezier(.22,1,.36,1);
+}
+.tally-seg.a{background:var(--a-lit); justify-content:flex-start; padding-left:9px}
+.tally-seg.b{background:var(--b-lit); justify-content:flex-end; padding-right:9px}
+.tally-note{
+  margin-top:9px; font-size:12.5px; color:var(--screen-ink-3); min-height:19px;
+}
+.tally-note b{color:var(--gold-lit); font-weight:600}
+
+/* leaderboard */
+.board{padding:4px 16px 16px; background:var(--screen-2); border-top:1px solid var(--screen-line)}
+.board-list{list-style:none; margin:0; padding:12px 0 0; display:flex; flex-direction:column; gap:4px}
+.board-row{
+  display:grid; grid-template-columns:22px 1fr auto auto; align-items:center; gap:10px;
+  font-size:13px; padding:5px 8px; border-radius:6px;
+  transition:transform .5s cubic-bezier(.22,1,.36,1), background .3s ease;
+}
+.board-row.me{background:rgba(240,180,41,.12)}
+.board-rank{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--screen-ink-3); font-variant-numeric:tabular-nums}
+.board-name{display:flex; align-items:center; gap:7px; color:var(--screen-ink); min-width:0}
+.board-dot{width:9px; height:9px; border-radius:99px; flex:none}
+.board-boost{font-size:11px; color:var(--gold-lit); font-family:"IBM Plex Mono",monospace}
+.board-pos{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--screen-ink-3); font-variant-numeric:tabular-nums}
+.caption{font-size:13px; color:var(--ink-3); margin:0 0 56px}
+
+/* ---------- sections ---------- */
+section{padding:44px 0; border-top:1px solid var(--line)}
+section > .eyebrow{display:block; margin-bottom:10px}
+.sec-lede{max-width:680px; margin-bottom:28px}
+
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:14px}
+.grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:11px;
+  padding:18px 18px 16px;
+}
+.card p:last-child{margin-bottom:0}
+.card p{font-size:14.5px; line-height:1.65}
+
+.callout{
+  border-left:3px solid var(--gold); background:var(--gold-soft);
+  padding:16px 18px; border-radius:0 8px 8px 0; margin:22px 0;
+}
+.callout p:last-child{margin-bottom:0}
+.callout .eyebrow{color:var(--gold); display:block; margin-bottom:7px}
+
+.tbl-scroll{overflow-x:auto; margin:0 0 20px}
+table{border-collapse:collapse; width:100%; min-width:520px; font-size:14.5px}
+th,td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+th{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:500; white-space:nowrap;
+}
+td:last-child{font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:none}
+.val{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink); white-space:nowrap}
+.val.up{color:var(--gold)}
+
+/* layer stack */
+.layers{display:flex; flex-direction:column; gap:6px; margin-bottom:20px}
+.layer{
+  display:grid; grid-template-columns:96px 1fr; gap:16px; align-items:baseline;
+  padding:13px 16px; border:1px solid var(--line); border-radius:9px;
+  background:var(--surface); font-size:14px;
+}
+.layer-tech{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+.layer b{display:block; margin-bottom:2px}
+.layer span{color:var(--ink-2); font-size:13.5px; line-height:1.55}
+
+/* reveal timeline */
+.beats{list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column}
+.beat{display:grid; grid-template-columns:56px 1fr; gap:16px; padding:0 0 0 0}
+.beat-t{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--gold);
+  font-variant-numeric:tabular-nums; padding-top:11px;
+}
+.beat-body{
+  border-left:2px solid var(--line); padding:11px 0 11px 20px; position:relative;
+  font-size:14.5px; color:var(--ink-2);
+}
+.beat-body::before{
+  content:""; position:absolute; left:-5px; top:17px; width:8px; height:8px;
+  border-radius:99px; background:var(--gold); border:2px solid var(--bg);
+}
+.beat:last-child .beat-body{border-left-color:transparent}
+.beat-body b{color:var(--ink); font-weight:600}
+
+/* phases */
+.phases{display:flex; flex-direction:column; gap:10px}
+.phase{
+  display:grid; grid-template-columns:78px 1fr auto; gap:18px; align-items:start;
+  background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px 18px;
+}
+.phase-n{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em;
+  color:var(--ink-3); padding-top:3px; white-space:nowrap;
+}
+.phase-days{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);
+  white-space:nowrap; padding-top:3px;
+}
+.phase b{font-size:16px; display:block; margin-bottom:3px}
+.phase span{font-size:14px; color:var(--ink-2); line-height:1.6}
+.phase.key{border-color:var(--gold); background:var(--gold-soft)}
+.phase.done b{color:var(--ink-3)}
+.tick{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+  color:var(--b); margin-left:6px; font-weight:500;
+}
+.phase.key .phase-n, .phase.key .phase-days{color:var(--gold)}
+
+pre{
+  background:var(--surface); border:1px solid var(--line); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:0 0 20px;
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; line-height:1.75; color:var(--ink-2);
+}
+pre b{color:var(--ink); font-weight:600}
+pre i{color:var(--ink-3); font-style:normal}
+
+footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); font-size:13.5px}
+
+/* Laptops are short, not narrow. At 768px tall the hero used to push the
+   whole demo below the fold, so compress by height, not by width. */
+@media (max-height:840px){
+  .hero{padding:34px 0 24px}
+  .hero h1{font-size:clamp(36px,5.4vw,54px); margin-bottom:14px}
+  .hero .eyebrow{margin-bottom:12px}
+  .hero .lede{font-size:16px}
+  .stage{height:196px}
+  .deck{padding:13px 16px}
+  .board{padding:2px 16px 13px}
+  .caption{margin-bottom:40px}
+  section{padding:36px 0}
+}
+
+/* The board is a ranking, not a feed - two columns halve its height and it
+   still reads 1..8 down each side. */
+@media (min-width:640px){
+  .board-list{display:grid; grid-template-columns:1fr 1fr; column-gap:18px; row-gap:4px}
+}
+
+@media (max-width:640px){
+  .stage{height:190px}
+  .hud{width:66px; height:66px; top:6px; right:8px}
+  .layer{grid-template-columns:1fr; gap:4px}
+  .phase{grid-template-columns:1fr; gap:6px}
+  .phase-days{padding-top:0}
+  .beat{grid-template-columns:46px 1fr; gap:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">게임 기획 &middot; 개발 플랜</span>
+    <h1>결정 장애 레이스</h1>
+    <p class="lede">
+      지식이 아니라 <strong>선택</strong>으로 달리는 경주. 매 라운드 둘 중 하나를 고르고,
+      <span class="split-a">다수</span>와 같은 편이면 전진, <span class="split-b">소수</span>면 제자리.
+      정답을 아는 게임이 아니라 <strong>남들이 뭘 고를지 읽는</strong> 게임이다.
+    </p>
+  </header>
+
+  <div class="screen" id="screen">
+    <div class="screen-head">
+      <span class="eyebrow">레이스 시각화 목업</span>
+      <span class="round-pill" id="roundPill">ROUND 1 / 12</span>
+    </div>
+
+    <div class="stage" id="stage">
+      <svg id="track" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <canvas id="fx"></canvas>
+      <div class="stamp" id="stamp">다수!</div>
+      <div class="vignette" id="vignette"></div>
+      <div class="hud" id="hud">
+        <svg viewBox="0 0 84 84" aria-hidden="true">
+          <g id="ringWrap">
+            <circle cx="42" cy="42" r="25" fill="rgba(17,23,28,.7)" stroke="#2C3941" stroke-width="4"></circle>
+            <circle id="ringArc" cx="42" cy="42" r="25" fill="none" stroke="#3FB0CE" stroke-width="4"
+                    stroke-linecap="round" transform="rotate(-90 42 42)"></circle>
+            <text id="ringNum" x="42" y="48" text-anchor="middle" fill="#E9EEF1"
+                  font-family="IBM Plex Mono, monospace" font-size="19" font-weight="600">10</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="deck">
+      <div class="deck-top">
+        <span class="deck-cat" id="cat">학교생활</span>
+        <span class="locks">
+          <span class="pips" id="pips"></span>
+          <span class="locks-n" id="locksN">0 / 8 선택</span>
+        </span>
+      </div>
+      <div class="choices" id="choices">
+        <button class="choice" data-side="a" id="btnA"><span class="tag">A</span><span id="txtA"></span></button>
+        <button class="choice" data-side="b" id="btnB"><span class="tag">B</span><span id="txtB"></span></button>
+        <span class="vs" aria-hidden="true">VS</span>
+      </div>
+      <div class="tally" id="tally">
+        <div class="tally-bar">
+          <div class="tally-seg a" id="segA">0</div>
+          <div class="tally-seg b" id="segB">0</div>
+        </div>
+        <div class="tally-note" id="note"></div>
+      </div>
+    </div>
+
+    <div class="board">
+      <ol class="board-list" id="board"></ol>
+    </div>
+  </div>
+  <p class="caption">직접 골라보세요. 곡선 트랙 · 카메라 추적 · 먼지 파티클 · 순위 재정렬까지 아래 명세 그대로 돌아가는 목업입니다.</p>
+
+  <section>
+    <span class="eyebrow">01 &middot; 라운드 구조</span>
+    <h2>한 라운드 20초</h2>
+    <p class="sec-lede">딜레마 제시(10초) → 전원 동시 선택 → 집계 공개 → 이동 → 순위 갱신. 총 12라운드, 또는 결승선 40칸 선착.</p>
+
+    <div class="grid-3">
+      <div class="card"><h3>제시</h3><p>둘 중 하나. 남의 선택은 끝까지 안 보인다.</p></div>
+      <div class="card"><h3>집계</h3><p>마감 후에만 비율을 공개한다. 이 순간이 게임의 하이라이트.</p></div>
+      <div class="card"><h3>이동</h3><p>다수는 전진, 소수는 제자리. 단, 비율에 따라 거리가 달라진다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">02 &middot; 밸런싱</span>
+    <h2>다수만 이기면 재미없다</h2>
+    <p class="sec-lede">
+      "다수 +1, 소수 0"으로만 두면 무리가 통째로 뭉쳐 이동해서 순위가 끝까지 안 갈린다.
+      1등이 안 바뀌는 레이스는 볼 이유가 없다. 그래서 <strong>비율에 따라 보상을 비틀었다.</strong>
+    </p>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>상황</th><th>이동</th><th>노림수</th></tr></thead>
+        <tbody>
+          <tr><td>기본</td><td class="val">+2칸</td><td>무난한 판</td></tr>
+          <tr><td>압도 &mdash; 다수 85%↑ (7-1, 8-0)</td><td class="val">+1칸</td><td>뻔한 선택은 이득이 적다</td></tr>
+          <tr><td>소수</td><td class="val up">충전 +1</td><td>소수가 30% 미만이면 +2</td></tr>
+          <tr><td>동점</td><td class="val">전원 +1칸</td><td>아무도 못 읽은 판. 레이스는 멈추지 않는다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">🔬 "박빙 +3칸"은 폐기했다 &mdash; 1000판 시뮬레이션</span>
+      <p>
+        <strong>8명에서 나올 수 있는 분할은 5-3(62.5%) / 6-2(75%) / 7-1(87.5%) / 8-0뿐이다.</strong>
+        "51~60%" 구간은 애초에 존재할 수 없어서 +3은 한 번도 발동하지 않는 죽은 코드였다.
+        임계값은 실제로 나올 수 있는 비율 사이에 놓아야 한다.
+      </p>
+      <p>
+        임계를 65%로 고쳐 5-3에 +3을 주자 <strong>오히려 순응형이 유리해졌다.</strong>
+        5-3의 5쪽은 결국 군중이고 순응형 봇이 거기 앉아 있기 때문이다 &mdash;
+        무난이 우승률 18.7% → 19.5%, 선두 교체 3.10회 → 2.46회.
+        좁게 이긴 쪽에 더 주는 건 <strong>읽은 사람이 아니라 따라간 사람에게 주는 보상</strong>이었다.
+        그래서 일반 승리는 일괄 +2, 눈치를 보상하는 무게는 전부 부스터로 옮겼다.
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">⚡ 부스터는 자동 지급이 아니라 충전 게이지다</span>
+      <p>
+        <strong>예전 설계는 밸런스를 무너뜨렸다.</strong> 소수에 들면 부스터가 저절로 생기고,
+        그다음에 이긴 라운드에서 자동으로 <strong>+6칸</strong>이 터졌다.
+        24칸 트랙에서 한 방에 4분의 1이, <strong>내가 고르지도 않은 라운드에</strong> 굴러 들어온다.
+        그건 도박이 아니라 횡재고, 그것만으로 게임이 뒤집혔다.
+      </p>
+      <p>
+        지금은 소수를 고를 때마다 게이지가 차고(극소수면 2칸), <strong>2칸이 다 차야 버튼이 눌린다.</strong>
+        쓸 라운드는 직접 고르고, 성공하면 그 라운드 이동 <strong>×4</strong>,
+        그 라운드에 소수였으면 <strong>충전이 그냥 날아간다.</strong>
+        틀렸을 때 잃는다는 게 타이밍 고르는 걸 결정으로 만든다.
+      </p>
+      <p>
+        <strong>게이지는 버튼을 두르는 링이다</strong> &mdash; 차오르는 것과 누르는 것이 같은 물건이어야
+        "이게 준비되면 내가 쓴다"가 설명 없이 읽힌다. 링이 가득 차도 저절로 터지지 않는다.
+      </p>
+      <p>
+        충전 비용과 배수도 시뮬레이션으로 정했다. <strong>3칸/×2는 순응형이 25.5%로 오히려 악화</strong>됐다 &mdash;
+        2~3라운드를 버려서 +2칸 얻는 건 아무도 안 할 거래라 소수 전략이 죽는다.
+        2칸/×2는 24.6%, 2칸/×3은 19.7%, <strong>2칸/×4가 16.4%로 가장 고르다.</strong>
+        이 하나로 <strong>순응형이 20.1% 1위권에서 14.4% 3위로 내려가고, 청개구리가 15.8%로 2위가 됐다.</strong>
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">부스터가 이 게임의 심장</span>
+      <p>
+        "다들 A 고를 것 같은데&hellip; 일부러 B로 가서 부스터 먹고 다음 판에 크게 갈까?"
+        <strong>지금 지는 걸 감수하고 다음을 노리는 도박</strong>이 생기는 순간, 눈치게임이 두 겹이 된다.
+        한 겹은 "남들이 뭘 고를까", 다른 한 겹은 "남들이 내가 뭘 고를 거라 생각할까".
+      </p>
+    </div>
+
+    <h3>특수 라운드</h3>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>라운드</th><th>이름</th><th>규칙</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">04</td><td><strong>더블</strong></td><td>이동 거리 2배</td></tr>
+          <tr><td class="mono">07</td><td><strong>역전</strong></td><td>소수가 전진, 다수 제자리 &mdash; 시작 전 미리 공지</td></tr>
+          <tr><td class="mono">10</td><td><strong>올인</strong></td><td>자기 칸 수의 10~50%를 베팅. 맞히면 얻고 틀리면 잃는다</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      미리 공지하는 게 핵심이다. 역전 라운드인 걸 다들 아니까 다들 소수를 노리고,
+      그러면 <strong>소수를 노린 쪽이 다수가 된다.</strong> 규칙 한 줄로 심리전이 한 바퀴 더 돈다.
+    </p>
+  </section>
+
+  <section>
+    <span class="eyebrow">03 &middot; 최우선 과제</span>
+    <h2>레이스 시각화</h2>
+    <p class="sec-lede">
+      이 게임은 규칙이 단순해서 <strong>보는 맛이 전부</strong>다. 그래서 게임 로직보다 먼저 만든다.
+      렌더링은 한 기술로 밀어붙이지 않고, 각자 잘하는 걸 시키는 하이브리드로 간다.
+    </p>
+
+    <div class="layers">
+      <div class="layer"><span class="layer-tech">DOM</span><span><b>UI 레이어</b>딜레마 카드 · 타이머 · 순위표 · 집계 바</span></div>
+      <div class="layer"><span class="layer-tech">Canvas</span><span><b>파티클 레이어</b>먼지, 스피드라인, 부스터 불꽃, 결승 컨페티. 수백 개가 도는 건 캔버스가 압도적으로 빠르다</span></div>
+      <div class="layer"><span class="layer-tech">DOM</span><span><b>캐릭터 레이어</b>러너 8명. DOM으로 두면 CSS 애니메이션과 개발자도구 디버깅이 쉽다</span></div>
+      <div class="layer"><span class="layer-tech">SVG</span><span><b>트랙 레이어</b>곡선 path, 칸 눈금, 결승선</span></div>
+      <div class="layer"><span class="layer-tech">CSS</span><span><b>배경 레이어</b>패럴랙스 3겹 (0.2 / 0.5 / 1.2배속) × 테마 4종</span></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>곡선 트랙</h3>
+        <p>
+          직선은 지루하다. SVG <span class="mono">&lt;path&gt;</span>로 구불구불하게 그리고
+          <span class="mono">getPointAtLength(진행도 × 전체길이)</span>로 좌표를 뽑는다.
+          같은 함수로 접선 각도까지 구해 캐릭터를 트랙 방향으로 기울인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>차는 실제로 간다 <span class="tick">✓ 구현</span></h3>
+        <p>
+          처음엔 배경만 흘리는 <strong>트레드밀</strong>로 만들었는데 두 군데서 틀어졌다.
+          <strong>출발 위치에서 차가 제자리 미끄러지는 것처럼 보이고</strong>, 도로가 곡선이라
+          가로로만 미는 배경은 도로 방향과 어긋난다. 그래서 진짜로 전진시킨다 &mdash;
+          도로 위의 모든 것(차·눈금·출발선·결승선)을 <span class="mono">점수 + cruise</span>에 그린다.
+          전부 같은 오프셋이라 서로 간의 거리는 정확히 점수 그대로고, 결승선도 20칸 앞에 그대로 있어서
+          1위가 20칸에 닿는 순간 실제로 만난다. 카메라가 따라가면 패럴랙스는 저절로 흐른다.
+          출발선 <strong>뒤로도 도로를 깔아야</strong> 둥근 끝단이 안 보인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>바람과 불꽃 <span class="tick">✓ 구현</span></h3>
+        <p>
+          전원이 같은 속도로 붙어 가면 대형이 뻣뻣해서, 주기가 다른 사인파 두 개로
+          <strong>±0.25칸 안쪽에서 미세하게 엎치락뒤치락</strong>하게 했다.
+          다수 쪽이 전진할 땐 차 뒤에서 <strong>흰 바람 줄기</strong>가, 부스터가 터질 땐
+          <strong>불꽃이 화르륵</strong> 뿜어져 나온다.
+          바람은 <strong>화면이 아니라 트랙 좌표</strong>에 뿌린다 &mdash; 각 입자가
+          <span class="mono">(칸, 좌우 오프셋)</span>을 들고 뒤로 밀려나며 매 프레임 도로 위로 투영된다.
+          화면 좌표에서 직선으로 날리면 <strong>곡선 구간에서 바깥으로 튀어 나간다.</strong>
+          단 <strong>불꽃이 바람에게 파티클 풀을 뺏긴다</strong> &mdash; 7대가 동시에 바람을 뿜으면
+          풀이 바닥나서 하필 같은 프레임의 부스터가 자리를 못 잡는다.
+          풀을 키우고 <strong>불꽃을 먼저 처리</strong>해야 하고, 이펙트는 연출 공개가 아니라
+          <strong>실제 이동 시점</strong>에 걸어야 한다 &mdash; reveal에 걸었더니 차가 움직이기도 전에 끝나 있었다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>카메라</h3>
+        <p>
+          선두와 꼴찌를 모두 담되 선두 쪽에 여유를 준다. SVG <span class="mono">viewBox</span>를
+          매 프레임 <span class="mono">lerp(0.08)</span>로 보간하고, 순위가 크게 뒤집힐 땐 살짝 줌아웃했다 돌아온다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>배경이 진행도다 <span class="tick">✓ 구현</span></h3>
+        <p>
+          <strong>새벽 학교 → 한낮 운동장 → 도시 밤 → 우주.</strong> 라운드가 아니라
+          <strong>선두의 진행도</strong>에 물려 있다. 네 테마를 겹쳐 쌓고 인접한 둘의 opacity를
+          교차시켜서 컷이 아니라 디졸브로 넘어간다. 숫자를 안 봐도 얼마나 왔는지 보인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>도로 색도 같이 바뀌어야 한다</h3>
+        <p>
+          배경만 밝히면 <strong>도로가 땅에 묻힌다.</strong> 테두리·노면·중앙선 3색을 테마별로 두고
+          배경과 같은 가중치로 RGB 보간한다. 한낮에는 밝은 회색 아스팔트에 흰 중앙선,
+          우주에서는 보라 노면에 네온 중앙선.
+          <strong>이래서 배경 테마를 Phase 3이 아니라 Phase 1에서 당겨 넣었다</strong> &mdash;
+          나중에 넣으면 레이서·도로 팔레트를 처음부터 다시 잡아야 한다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>레이서는 경주용 차</h3>
+        <p>
+          위에서 내려다본 F1 스타일 &mdash; 넓은 뒷바퀴, 뾰족한 코, 리어윙, 콕핏.
+          차 모양이라 <strong>스쿼시를 원보다 훨씬 세게 줄 수 있다.</strong> 원을 늘이면 그냥 깨진 원이지만,
+          차를 제 길이 방향으로 늘이면 모션블러로 읽힌다. 최대 <span class="mono">scale(1.62, 0.72)</span>.
+        </p>
+      </div>
+      <div class="card">
+        <h3>60fps를 깎아먹은 것 셋</h3>
+        <p>
+          <strong>파티클마다 <span class="mono">save/rotate/restore</span></strong> &mdash; 대시 중 60→41fps.
+          알파를 4단계로 버킷팅해 버킷당 <span class="mono">stroke()</span> 한 번으로 바꿨다.
+          <strong>파티클마다 <span class="mono">getPointAtLength</span> 2회</strong> &mdash; 바람 100개면 200회/프레임.
+          트랙을 칸당 4점으로 한 번만 샘플링해 보간한다.
+          <strong>결과 화면의 <span class="mono">backdrop-filter</span></strong> &mdash; <strong>25fps</strong>.
+          블러 뒤에서 캔버스가 계속 다시 그려지고 있었다. 게임이 끝나면 레이스 루프를 아예 멈춘다.
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px">딜레마 카드 등장</h3>
+    <p>
+      A와 B가 <strong>양쪽 화면 밖에서 쾅 날아 들어와 가운데서 부딪힌다.</strong>
+      부딪히는 순간 그 자리에서 <strong>VS가 또잉 하고 튀어나오고</strong>, 카드는 반동으로 좌우로 밀려나
+      제자리에 앉고 VS는 둘 사이 가운데에 남는다. 총 0.62초 &mdash; 위 목업에서 라운드마다 돌아간다.
+      타이밍은 셋이 공유한다: 카드가 만나는 지점이 38%라서 VS도 거기서 시작해,
+      카드가 아직 튕겨 나가는 동안 1.75배까지 오버슈트했다가 가라앉는다.
+    </p>
+
+    <h3 style="margin-top:32px">결과 공개 타임라인</h3>
+    <p>집계가 열리는 2.6초. 여기에 게임의 감정이 전부 몰려 있다.</p>
+    <ul class="beats">
+      <li class="beat"><span class="beat-t">0.0s</span><span class="beat-body">딜레마 카드가 <b>3D flip</b>으로 뒤집힌다</span></li>
+      <li class="beat"><span class="beat-t">0.3s</span><span class="beat-body">집계 바가 좌우에서 차오르고 숫자가 <b>카운트업</b></span></li>
+      <li class="beat"><span class="beat-t">0.8s</span><span class="beat-body"><b>"다수!" 도장 쾅</b> &mdash; scale 1.6→1, 화면 흔들림 5px</span></li>
+      <li class="beat"><span class="beat-t">1.0s</span><span class="beat-body">다수 캐릭터 <b>동시 대시</b> &mdash; 먼지 파티클 + 스피드라인 + 잔상</span></li>
+      <li class="beat"><span class="beat-t">1.8s</span><span class="beat-body">소수 캐릭터 <b>좌절</b> &mdash; 제자리 점프, 땀방울</span></li>
+      <li class="beat"><span class="beat-t">2.2s</span><span class="beat-body">순위표 <b>FLIP 애니메이션</b>으로 재정렬</span></li>
+      <li class="beat"><span class="beat-t">2.6s</span><span class="beat-body">부스터 획득자 머리 위 <b>불꽃 아이콘</b></span></li>
+    </ul>
+    <p>
+      이동은 <span class="mono">cubic-bezier(.22,1,.36,1)</span> 0.8초 &mdash; 확 튀어나갔다 부드럽게 멈춘다.
+      달릴 때 <strong>squash &amp; stretch</strong>를 넣으면 코드 몇 줄로 체감 퀄리티가 두 배가 된다.
+      대신 <span class="mono">prefers-reduced-motion</span> 대응과 화면흔들림 OFF 옵션은 필수.
+    </p>
+
+    <h3 style="margin-top:32px">Phase 1에서 실제로 부딪힌 것</h3>
+    <p>
+      위 목업은 <strong>가로 화면</strong>이고 앱은 세로 9:16이다. 그대로 옮길 수 없어서 수치를 다시 잡았고,
+      그 과정에서 나온 것들이 아래 넷이다. 전부 세로 화면 특유의 문제라 미리 알아둘 값어치가 있다.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>레이스 뷰는 밴드다</h3>
+        <p>
+          세로 박스에 가로 트랙을 넣으면 위아래가 통째로 빈다. 화면을 채우지 말고
+          <strong>13:9 밴드로 고정</strong>하는 게 답이었다. 남는 아래 공간이 딱 딜레마 카드와
+          순위표 자리라, 결국 실제 게임 레이아웃과 같아진다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>8명 레인이 세로를 다 먹는다</h3>
+        <p>
+          간격을 좁히면 한 덩어리로 뭉치고 넓히면 하늘이 사라진다. 레인 간격은 13으로 두고
+          <strong>트랙 방향으로 ±3.5씩 지그재그</strong>를 줘서 풀었다. 0.125칸이라
+          순위를 오독할 정도는 아니고, 눈으로는 확실히 갈린다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>카메라로 전원을 담으려 하지 말 것</h3>
+        <p>
+          막판엔 스프레드가 트랙 전체라 다 담으면 전부 점이 된다. <strong>줌 상한 1.7배</strong>를 두고
+          넘으면 꼴찌는 화면 밖으로 보낸다 &mdash; 그러라고 순위표가 있다.
+          그리고 줌아웃하면 월드 바닥 아래가 보이므로, 배경 언덕은 <span class="mono">WORLD.h + 400</span>까지
+          채워야 밝은 이음선이 안 생긴다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>애니메이션은 React 밖에서</h3>
+        <p>
+          칸 위치만 state로 두고 화면 좌표·스쿼시·카메라는 ref에 직접 DOM으로 쓴다.
+          8명이 달려도 리렌더가 0이다. 참고로 <strong>스쿼시는 생각보다 훨씬 약해야 한다</strong> &mdash;
+          <span class="mono">0.45</span>로 넣었더니 캐릭터가 그냥 타원이 됐고, <span class="mono">0.16</span>이 적당했다.
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px">타이머 이펙트</h3>
+    <p>
+      10초 카운트다운은 단순한 숫자가 아니라 <strong>이 게임의 긴장 그 자체</strong>다.
+      레이스 화면 우측 상단에 원형 링 게이지로 띄운다. 위 목업에서 직접 돌아가고 있다.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>색이 시간을 말한다</h3>
+        <p>
+          남은 시간에 따라 링 색이 흐른다 &mdash; <strong>시안(여유) → 앰버(주의) → 코랄(촉박)</strong>.
+          단계별로 툭툭 바뀌는 게 아니라 RGB 보간으로 이어지고, 마지막 3초 구간은
+          <span class="mono">pow(t, 2)</span> 커브를 태워서 빨강이 빨리 온다. 숫자를 안 읽어도 몸이 먼저 안다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>잠금 핍 &mdash; 가장 중요한 부분</h3>
+        <p>
+          딜레마 카드 바로 위에 인원수만큼 핍이 놓이고, 누군가 선택을 확정할 때마다
+          왼쪽부터 하나씩 채워진다. <strong>몇 명이 이미 골랐는지는 보이지만, 뭘 골랐는지는 안 보인다.</strong>
+          정보는 한 톨도 안 흘리면서 압박만 정확히 전달한다.
+          링 둘레에 점으로 돌려봤더니 <strong>영락없는 타이어</strong>라, 고민하는 자리인 카드 쪽으로 내렸다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>마지막 3초</h3>
+        <p>
+          링이 심장박동처럼 <span class="mono">scale 1 → 1.11</span>로 뛰고, 화면 가장자리에
+          붉은 비네트가 같은 박자로 숨 쉰다. 앱에서는 여기에 햅틱 진동을 얹는다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>끝나는 방식 두 가지</h3>
+        <p>
+          내가 고르면 링이 골드로 잠긴다. 시간이 다 되면 링이 부풀며 흩어지고 자동 랜덤 선택 &mdash;
+          한 명 때문에 게임이 멈추면 안 되니까.
+        </p>
+      </div>
+    </div>
+    <p>
+      구현은 <span class="mono">setInterval</span>이 아니라 <span class="mono">performance.now()</span> 기준
+      <span class="mono">requestAnimationFrame</span>으로 간다. setInterval은 탭을 옮기거나 프레임이 밀리면
+      시간이 조금씩 어긋나는데, 온라인에서 그 오차는 <strong>내 화면과 남의 화면의 마감 시각이 달라진다</strong>는 뜻이라 그냥 버그다.
+      reduced-motion에서는 pulse와 비네트만 끄고 링은 남긴다 &mdash; 남은 시간은 연출이 아니라 정보다.
+    </p>
+  </section>
+
+  <section>
+    <span class="eyebrow">04 &middot; 콘텐츠</span>
+    <h2>딜레마 카드</h2>
+    <p class="sec-lede">
+      시각화가 아무리 좋아도 <strong>딜레마가 시시하면 게임 전체가 시시하다.</strong> 재미의 절반은 여기서 나온다.
+    </p>
+<pre>{
+  <b>"id"</b>: "school_012",
+  <b>"category"</b>: "학교생활",
+  <b>"a"</b>: { "text": "숙제 안 하고 지금 놀기", "emoji": "🎮" },
+  <b>"b"</b>: { "text": "숙제 먼저 하고 나중에 자유시간", "emoji": "📚" },
+  <b>"popularBias"</b>: 0.38   <i>// 사람들이 A를 고를 예상 비율</i>
+}</pre>
+    <p>
+      <span class="mono">popularBias</span>는 봇 AI와 난이도의 기준값이 된다.
+      <strong>상상으로 채우지 말고 친구 20명한테 실제로 물어보고 채운다.</strong>
+      카테고리는 학교생활 / 인간관계 / 먹을거 / 도덕적 딜레마 / 미래·진로 / 완전 헛소리.
+      MVP 40장(12라운드 × 3판 안 겹침), 정식 150장.
+    </p>
+  </section>
+
+  <section>
+    <span class="eyebrow">05 &middot; 봇</span>
+    <h2>성향을 읽히게 만든다</h2>
+    <p class="sec-lede">
+      봇이 그냥 랜덤이면 눈치게임이 성립하지 않는다. 각 봇에 성향 파라미터를 주고,
+      <strong>이름으로 그 성향을 드러낸다.</strong> "쟤는 어차피 반대로 갈 거야"를 읽을 수 있게 되는 순간 게임이 한 겹 깊어진다.
+    </p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>봇</th><th>성향</th><th>행동</th></tr></thead>
+        <tbody>
+          <tr><td><strong>무난이</strong></td><td class="mono">conformity 0.9</td><td>거의 항상 인기 있는 쪽</td></tr>
+          <tr><td><strong>청개구리</strong></td><td class="mono">contrarian 0.8</td><td>일부러 소수로 간다</td></tr>
+          <tr><td><strong>눈치백단</strong></td><td class="mono">conformity 0.8 / noise 0.1</td><td>흔들림 없이 다수를 읽는다</td></tr>
+          <tr><td><strong>도박러</strong></td><td class="mono">risk 0.9</td><td>부스터와 베팅을 노린다</td></tr>
+          <tr><td><strong>대충이</strong></td><td class="mono">noise 0.7</td><td>그날 기분대로</td></tr>
+        </tbody>
+      </table>
+    </div>
+<pre>p = popularBias
+p += conformity  × (popularBias - 0.5) × 0.8   <i>// 인기 쪽으로 증폭</i>
+p -= contrarian  × (popularBias - 0.5) × 1.4   <i>// 뒤집기</i>
+p += (random - 0.5) × noise
+choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
+  </section>
+
+  <section>
+    <span class="eyebrow">06 &middot; 온라인</span>
+    <h2>방 코드 6자리, 빈 자리는 봇</h2>
+    <p class="sec-lede">
+      호스트가 방을 만들면 6자리 코드가 나오고, 친구들이 코드로 들어온다(최대 8명).
+      인원이 모자라면 봇으로 채워서 <strong>둘이서도 게임이 성립하게</strong> 만든다.
+    </p>
+
+    <div class="callout">
+      <span class="eyebrow">치팅 주의</span>
+      <p>
+        선택을 클라이언트 broadcast로 보내면 <strong>남의 선택이 네트워크 탭에 그대로 보인다.</strong> 게임이 통째로 무너진다.
+        선택은 Edge Function을 통해 서버에만 저장하고, 라운드가 마감된 뒤에만 집계를 내려준다.
+        <span class="mono">choices</span> 테이블은 RLS로 마감 전 read를 막는다.
+      </p>
+    </div>
+
+<pre><b>rooms</b>    (code, host_id, status, current_round, settings)
+<b>players</b>  (room_code, player_id, nickname, position, boosters, is_bot)
+<b>choices</b>  (room_code, round, player_id, choice)   <i>// 마감 전 read 차단</i></pre>
+
+    <div class="grid-3">
+      <div class="card"><h3>무응답</h3><p>10초 안에 안 고르면 자동 랜덤 선택. 한 명 때문에 게임이 멈추면 안 된다.</p></div>
+      <div class="card"><h3>연결 끊김</h3><p>봇이 대신 플레이하고, 돌아오면 그대로 복귀.</p></div>
+      <div class="card"><h3>호스트 이탈</h3><p>다음 사람에게 호스트를 자동 위임.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">07 &middot; 구조</span>
+    <h2>웹으로 만들고 앱으로 감싼다</h2>
+    <p class="sec-lede">
+      Vite + React + TypeScript로 웹을 만들고, 나중에 <strong>Capacitor</strong>로 그대로 iOS/Android에 감싼다.
+      그래서 처음부터 <strong>세로 9:16 + 터치 우선</strong>으로 설계한다. 앱 만들 때 UI를 다시 짜지 않으려면 이게 제일 중요하다.
+    </p>
+
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>영역</th><th>선택</th><th>이유</th></tr></thead>
+        <tbody>
+          <tr><td>빌드</td><td class="val">Vite + React + TS</td><td>컴포넌트 관리와 앱 전환</td></tr>
+          <tr><td>렌더링</td><td class="val">SVG + DOM + Canvas</td><td>레이어별로 잘하는 걸 시킨다</td></tr>
+          <tr><td>애니메이션</td><td class="val">Motion</td><td>타임라인 · FLIP · 스프링 전부 지원</td></tr>
+          <tr><td>상태</td><td class="val">Zustand</td><td>가볍고 게임 루프에 맞다</td></tr>
+          <tr><td>백엔드</td><td class="val">Supabase</td><td>Realtime + DB + Edge Function 한 방에</td></tr>
+          <tr><td>앱</td><td class="val">Capacitor</td><td>웹 코드 그대로 래핑</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+<pre>src/
+  <b>game/</b>                 <i>// 순수 로직 - 렌더링과 완전 분리</i>
+    rules.ts            <i>//   이동 계산, 부스터, 특수 라운드</i>
+    bots.ts  stateMachine.ts  types.ts
+  <b>data/</b>dilemmas.json
+  <b>race/</b>                 <i>// 시각화</i>
+    Track.tsx  Racer.tsx  Camera.ts  Particles.ts  Parallax.tsx
+  <b>ui/</b>                   <i>// 공용 컴포넌트</i>
+    Stage.tsx           <i>//   9:16 프레임</i>
+    DilemmaCard.tsx  Timer.tsx  Leaderboard.tsx  TallyBar.tsx
+  <b>screens/</b>              <i>// Title / Lobby / Race / Result</i>
+  <b>net/</b>
+    NetAdapter.ts       <i>// ← 인터페이스</i>
+    LocalAdapter.ts     <i>//   싱글: 봇이 로컬에서 굴러감</i>
+    SupabaseAdapter.ts  <i>//   온라인</i></pre>
+
+    <p>
+      <strong><span class="mono">game/</span>을 렌더링에서 떼어내고 <span class="mono">net/</span>을 인터페이스로 추상화하는 게 핵심이다.</strong>
+      싱글과 온라인이 같은 게임 코드로 돌아가서 온라인 붙이는 단계가 훨씬 쉬워지고,
+      <span class="mono">game/</span>은 화면 없이 단위 테스트와 시뮬레이션이 가능해진다.
+    </p>
+  </section>
+
+  <section>
+    <span class="eyebrow">08 &middot; 순서</span>
+    <h2>만드는 순서</h2>
+    <p class="sec-lede">약 12~14일. 시각화가 앞에 오는 게 이 순서의 전부다.</p>
+
+    <div class="phases">
+      <div class="phase done">
+        <span class="phase-n">PHASE 0</span>
+        <span><b>준비 <span class="tick">✓ 완료</span></b><span>
+          Vite + React + TS 세팅, 폴더 구조, 세로 9:16 레이아웃 셸, GitHub Pages 배포 워크플로.
+          <span class="mono">.stage</span>가 9:16을 강제하고 데스크톱에서는 레터박스로 감싼다 &mdash;
+          두 벌이 아니라 <strong>같은 레이아웃 한 벌</strong>이라, Capacitor 래핑이 재작성이 아니라 감싸기로 끝난다.
+        </span></span>
+        <span class="phase-days">0.5일</span>
+      </div>
+      <div class="phase done">
+        <span class="phase-n">PHASE 1</span>
+        <span><b>레이스 시각화 프로토타입 <span class="tick">✓ 완료</span></b><span>
+          <span class="mono">src/race/</span> &mdash; SVG 곡선 트랙, 경주용 차 8대, ease-out 이동,
+          스쿼시&amp;스트레치, 잔상·먼지·스피드라인 파티클, <strong>테마 4종 패럴랙스 배경</strong>,
+          팩 프레이밍 카메라, 체커 결승선.
+          게임 로직은 일부러 하나도 없다. <strong>폰·노트북 모두 60fps.</strong>
+        </span></span>
+        <span class="phase-days">2~3일</span>
+      </div>
+      <div class="phase done">
+        <span class="phase-n">PHASE 2</span>
+        <span><b>싱글 게임 루프 <span class="tick">✓ 완료</span></b><span>
+          딜레마 40장, 라운드 상태머신, 봇 AI, 이동 규칙 + 부스터, 특수 라운드 3종, 결과 화면.
+          <span class="mono">game/</span>은 렌더링을 전혀 모르기 때문에 화면 없이 시뮬레이션할 수 있다 &mdash;
+          <span class="mono">npm run simulate</span>로 1000판.
+          <strong>결승선은 40칸에서 20칸으로 줄였다:</strong> 40칸에서는 12라운드 동안 1위가 평균 14칸까지밖에
+          못 가서 체커 깃발이 장식이었고, 배경 테마가 선두 진행도에 물려 있어서
+          <strong>4번째 테마(우주)를 실제 게임에서 아무도 못 보고 있었다.</strong>
+          20칸으로 줄이니 91.4%가 결승선에서 끝난다.
+          남은 이슈는 순응형 우승률 20.1% &mdash; 이상치 12.5%보다 높다.
+        </span></span>
+        <span class="phase-days">2일</span>
+      </div>
+      <div class="phase done">
+        <span class="phase-n">PHASE 3</span>
+        <span><b>연출 다듬기 <span class="tick">✓ 완료</span></b><span>
+          상시 주행, 엎치락뒤치락, 트랙을 따라 흐르는 바람, 부스터 불꽃, 카드 슬램 + VS,
+          도장 + 화면 흔들림, 집계 카운트업, 순위표 FLIP 재정렬, 특수 라운드 배너,
+          올인 베팅 슬라이더(10~50%), 그리고 <strong>파일 없이 전부 합성한 사운드</strong>.
+          <strong>밸런스는 다시 봤지만 규칙을 바꾸지 않았다</strong> &mdash; 특수 라운드를 더 늘리면
+          평범한 판이 6개밖에 안 남아 기본 리듬이 무너진다. 진짜 판단은 사람이 붙는 Phase 4에서 나온다.
+        </span></span>
+        <span class="phase-days">2일</span>
+      </div>
+      <div class="phase">
+        <span class="phase-n">PHASE 4</span>
+        <span><b>온라인 멀티</b><span>Supabase 스키마 + RLS, 방 생성·참가, 서버 집계, 봇으로 빈자리 채우기, 끊김 처리</span></span>
+        <span class="phase-days">3~4일</span>
+      </div>
+      <div class="phase">
+        <span class="phase-n">PHASE 4.5</span>
+        <span><b>계정과 로그인</b><span>
+          온라인이 붙으면 "누구"가 필요해진다. 지금 <span class="mono">src/net/identity.ts</span>가
+          <strong>브라우저에만 저장되는 익명 신원</strong>(닉네임 + 랜덤 id)을 돌려주고,
+          게임은 id와 표시 이름만 물어본다 &mdash; 그래서 로그인을 붙이는 건 <strong>이 파일 하나를 바꾸는 일</strong>이다.
+          Supabase Auth로 카카오·구글·매직링크. <strong>비밀번호는 직접 받지 않고</strong>,
+          <strong>로그인을 강제하지도 않는다</strong> &mdash; 익명으로도 끝까지 플레이할 수 있어야 하고
+          로그인은 전적을 남기고 싶을 때 하는 선택이어야 한다.
+        </span></span>
+        <span class="phase-days">1~2일</span>
+      </div>
+      <div class="phase">
+        <span class="phase-n">PHASE 5</span>
+        <span><b>앱 버전</b><span>Capacitor 래핑, <strong>햅틱 진동</strong>(대시할 때 진동 넣으면 체감이 확 다르다), 아이콘·스플래시, 스토어 준비</span></span>
+        <span class="phase-days">2일</span>
+      </div>
+      <div class="phase">
+        <span class="phase-n">PHASE 6</span>
+        <span><b>확장</b><span>유저 제작 딜레마 카드와 투표, 개인 통계("너는 다수파 68%"), 시즌 랭킹</span></span>
+        <span class="phase-days">&mdash;</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">09 &middot; 위험</span>
+    <h2>미리 알고 가는 것</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>위험</th><th>대응</th></tr></thead>
+        <tbody>
+          <tr><td>다수가 계속 뭉쳐서 순위가 안 갈림</td><td>박빙 보너스 + 부스터 + 특수 라운드. Phase 2 후 1000판 시뮬레이션으로 검증</td></tr>
+          <tr><td>딜레마 카드가 시시함</td><td>친구들에게 실제로 물어보고 <span class="mono">popularBias</span>를 채운다. 재미없는 카드는 가차없이 버린다</td></tr>
+          <tr><td>시각화에 욕심내다 게임이 안 나옴</td><td>Phase 1에 3일 타임박스</td></tr>
+          <tr><td>온라인 치팅 &mdash; 남의 선택 엿보기</td><td>선택은 서버에만 저장, 라운드 마감 후 공개</td></tr>
+          <tr><td>앱 전환 때 UI 다시 짜기</td><td>처음부터 세로 화면 + 터치 우선 설계</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>전체 명세는 레포의 <span class="mono">docs/PLAN.md</span>에 있습니다. 다음 단계는 Phase 0 세팅과 Phase 1 시각화 프로토타입.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function clamp(v, lo, hi){ return v < lo ? lo : v > hi ? hi : v; }
+
+  var CELLS = 20, ROUNDS = 12;
+  var TRACK_H = 240, VIEW_W = 1200;   // VIEW_W is recomputed from the stage aspect
+  // The road is far longer than the 20 cells anyone scores, because the cars
+  // physically drive down it the whole time.
+  var TRACK_CELLS = 70, LEAD_CELLS = 8, CELL_LEN = 90;
+  var TRACK_W = (TRACK_CELLS + LEAD_CELLS) * CELL_LEN + 200;
+
+  var CARDS = [
+    {cat:"학교생활", a:"숙제 안 하고 지금 놀기", b:"숙제 먼저 하고 나중에 자유시간", bias:0.38},
+    {cat:"인간관계", a:"친구 비밀 지켜주기", b:"친구를 위해 어른한테 말하기", bias:0.55},
+    {cat:"먹을거",   a:"평생 치킨만 먹기", b:"평생 피자만 먹기", bias:0.62},
+    {cat:"미래·진로", a:"좋아하는 일 하며 평범하게 살기", b:"관심 없는 일 하며 부자 되기", bias:0.66},
+    {cat:"도덕적 딜레마", a:"주운 돈 주인 찾아주기", b:"조용히 기부하기", bias:0.71},
+    {cat:"완전 헛소리", a:"손이 발이 되기", b:"발이 손이 되기", bias:0.44},
+    {cat:"학교생활", a:"시험 하루 전 벼락치기", b:"매일 30분씩 미리 하기", bias:0.41},
+    {cat:"인간관계", a:"단톡방 읽씹하기", b:"영혼 없이 답장하기", bias:0.33}
+  ];
+
+  var BOTS = [
+    {name:"무난이",   conf:0.90, contra:0.05, noise:0.20},
+    {name:"청개구리", conf:0.05, contra:0.80, noise:0.30},
+    {name:"눈치백단", conf:0.80, contra:0.05, noise:0.10},
+    {name:"도박러",   conf:0.30, contra:0.45, noise:0.45},
+    {name:"대충이",   conf:0.35, contra:0.20, noise:0.70},
+    {name:"츤츤이",   conf:0.55, contra:0.40, noise:0.35},
+    {name:"몰빵이",   conf:0.65, contra:0.15, noise:0.30}
+  ];
+
+  var GOLD = "#F0B429", A_LIT = "#F4685B", B_LIT = "#3FB0CE";
+  var BOT_COLORS = ["#9AA9B4","#7FB89A","#B79ACB","#C9A47E","#7FA3C9","#C98FA6","#A5B87F"];
+
+  var racers = [{name:"나", me:true, pos:0, boost:false, choice:null, color:GOLD}];
+  BOTS.forEach(function(b, i){
+    racers.push({name:b.name, me:false, pos:0, boost:false, choice:null, color:BOT_COLORS[i], ai:b});
+  });
+
+  var round = 1, busy = false, card = null, finished = false;
+
+  var svg = document.getElementById("track");
+  var cv = document.getElementById("fx");
+  var ctx = cv.getContext("2d");
+  var stage = document.getElementById("stage");
+  var screen = document.getElementById("screen");
+  var stamp = document.getElementById("stamp");
+  var board = document.getElementById("board");
+  var tally = document.getElementById("tally");
+  var segA = document.getElementById("segA"), segB = document.getElementById("segB");
+  var note = document.getElementById("note");
+  var btnA = document.getElementById("btnA"), btnB = document.getElementById("btnB");
+  var choicesEl = document.getElementById("choices");
+  var ringWrap = document.getElementById("ringWrap");
+  var ringArc = document.getElementById("ringArc");
+  var ringNum = document.getElementById("ringNum");
+  var pipsEl = document.getElementById("pips");
+  var locksN = document.getElementById("locksN");
+  var vignette = document.getElementById("vignette");
+
+  /* ---------- build the curved track ---------- */
+  var NS = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", "0 0 " + VIEW_W + " " + TRACK_H);
+
+  function el(tag, attrs){
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+
+  // a smooth wave across the full track width
+  var d = "M 0 120";
+  var segs = 26, step = TRACK_W / segs, y = 120;
+  for (var i = 0; i < segs; i++){
+    var ny = 120 + (i % 2 === 0 ? -1 : 1) * (18 + (i * 7) % 14);
+    var x0 = step * i, x1 = x0 + step;
+    d += " C " + (x0 + step * 0.5) + " " + y + " " + (x1 - step * 0.5) + " " + ny + " " + x1 + " " + ny;
+    y = ny;
+  }
+
+  var world = el("g", {});
+  svg.appendChild(world);
+
+  /* ---------- themed backdrops ---------- */
+  // Four themes stacked, cross-faded by the leader's progress. The background
+  // IS the progress bar - and the road palette has to travel with it, or the
+  // road sinks into the ground the moment the backdrop brightens.
+  var ORIGIN = -600, SPAN = TRACK_W + 3600, FLOOR = TRACK_H + 400;
+  var PARA = [0.2, 0.5, 1.2];
+  // Ambient cruise in cells per second. Everything on the road - cars, ticks,
+  // the finish - is drawn at (score + cruise), so the field genuinely drives
+  // forward while the gaps between them stay exactly the score. Scrolling only
+  // the backdrop looked wrong at the start line, and worse on a curve, where
+  // "sideways" is not "forward".
+  var CRUISE = 0.25;
+
+  var THEMES = [
+    {id:"school", name:"새벽 학교", style:"hills",
+     sky:["#0C1420","#213049","#4B4767"], bands:["#141D2A","#1B2536","#0C1117"],
+     road:["#4A5A65","#333F49","#5F7079"]},
+    {id:"field", name:"한낮 운동장", style:"hills",
+     sky:["#3A6F9E","#7AABCB","#BAD3DF"], bands:["#4F7B87","#3D626C","#24383F"],
+     road:["#9AA6AE","#6D7A85","#E2E7EA"]},
+    {id:"city", name:"도시 밤", style:"city",
+     sky:["#070B12","#131C31","#2B2752"], bands:["#0F1626","#161F33","#070A11"],
+     road:["#3D4852","#262E36","#7C8B96"]},
+    {id:"space", name:"우주", style:"space",
+     sky:["#020308","#0A0820","#1C1038"], bands:["#0A0A18","#100C22","#04040E"],
+     road:["#4B3F74","#2A2340","#9D8FE0"]}
+  ];
+
+  function hillsPath(baseY, amp, stepX){
+    var p = "M " + ORIGIN + " " + FLOOR + " L " + ORIGIN + " " + baseY, n = 0;
+    for (var x = ORIGIN; x < ORIGIN + SPAN; x += stepX){
+      var peak = baseY - amp * (0.6 + (n % 3) * 0.2);
+      p += " Q " + (x + stepX / 2) + " " + peak + " " + (x + stepX) + " " + baseY;
+      n++;
+    }
+    return p + " L " + (ORIGIN + SPAN) + " " + FLOOR + " Z";
+  }
+
+  // fixed five-building pattern, so the skyline repeats on an exact width and
+  // the cruise can scroll it forever by offsetting modulo one tile
+  var CITY_W = [0.9, 0.62, 1.05, 0.75, 0.88], CITY_H = [0.55, 0.88, 0.38, 0.72, 0.98];
+  var CITY_GAP = 0.22;
+
+  function cityTile(stepX){
+    return stepX * (CITY_W.reduce(function(a, b){ return a + b; }, 0) + CITY_W.length * CITY_GAP);
+  }
+
+  function cityPath(baseY, maxH, stepX){
+    var p = "M " + ORIGIN + " " + FLOOR + " L " + ORIGIN + " " + baseY;
+    var x = ORIGIN, n = 0;
+    while (x < ORIGIN + SPAN){
+      var w = stepX * CITY_W[n % CITY_W.length];
+      var h = maxH * CITY_H[n % CITY_H.length];
+      p += " L " + x + " " + (baseY - h) + " L " + (x + w) + " " + (baseY - h) + " L " + (x + w) + " " + baseY;
+      x += w + stepX * CITY_GAP; n++;
+    }
+    return p + " L " + (ORIGIN + SPAN) + " " + FLOOR + " Z";
+  }
+
+  function tileWidth(style, layer){
+    if (layer === 2) return 3 * 182;
+    if (style === "city") return layer === 0 ? cityTile(148) : cityTile(96);
+    if (style === "space") return 3 * (layer === 0 ? 620 : 400);
+    return 3 * (layer === 0 ? 540 : 335);
+  }
+
+  function bandPath(style, layer){
+    if (layer === 2) return hillsPath(TRACK_H + 5, 16, 182);
+    if (style === "city") return layer === 0 ? cityPath(107, 80, 148) : cityPath(148, 44, 96);
+    if (style === "space") return layer === 0 ? hillsPath(142, 33, 620) : hillsPath(171, 21, 400);
+    return layer === 0 ? hillsPath(107, 71, 540) : hillsPath(148, 42, 335);
+  }
+
+  var defs = el("defs");
+  world.appendChild(defs);
+
+  THEMES.forEach(function(t, ti){
+    var grad = el("linearGradient", {id:"sky-" + t.id, x1:"0", y1:"0", x2:"0", y2:"1"});
+    grad.appendChild(el("stop", {offset:"0", "stop-color":t.sky[0]}));
+    grad.appendChild(el("stop", {offset:"0.58", "stop-color":t.sky[1]}));
+    grad.appendChild(el("stop", {offset:"1", "stop-color":t.sky[2]}));
+    defs.appendChild(grad);
+
+    var g = el("g", {opacity: ti === 0 ? "1" : "0"});
+    g.appendChild(el("rect", {x:ORIGIN, y:-400, width:SPAN, height:FLOOR + 400,
+      fill:"url(#sky-" + t.id + ")"}));
+
+    t.bandEls = [];
+    for (var layer = 0; layer < 3; layer++){
+      var band = el("g", {});
+      if (t.style === "space" && layer === 0){
+        for (var st = 0; st < 120; st++){
+          band.appendChild(el("circle", {
+            cx: ORIGIN + (st * 331) % SPAN, cy: 6 + (st * 53) % 118,
+            r: 0.8 + (st * 17) % 5 * 0.3, fill:"#DFE6FF",
+            opacity: 0.3 + (st * 29) % 7 * 0.1
+          }));
+        }
+      }
+      band.appendChild(el("path", {d: bandPath(t.style, layer), fill: t.bands[layer]}));
+      g.appendChild(band);
+      t.bandEls.push(band);
+    }
+    world.appendChild(g);
+    t.group = g;
+    t.tiles = [tileWidth(t.style, 0), tileWidth(t.style, 1), tileWidth(t.style, 2)];
+  });
+
+  function mixColors(list, weights){
+    var r = 0, g = 0, b = 0, total = 0;
+    for (var i = 0; i < list.length; i++){
+      var w = weights[i];
+      if (w <= 0) continue;
+      var v = parseInt(list[i].slice(1), 16);
+      r += ((v >> 16) & 255) * w; g += ((v >> 8) & 255) * w; b += (v & 255) * w;
+      total += w;
+    }
+    if (!total) return list[0];
+    function to(n){ return ("0" + Math.round(n / total).toString(16)).slice(-2); }
+    return "#" + to(r) + to(g) + to(b);
+  }
+
+  function themeWeights(progress){
+    var f = clamp(progress, 0, 1) * (THEMES.length - 1);
+    return THEMES.map(function(_, i){ return Math.max(0, 1 - Math.abs(f - i)); });
+  }
+
+  /* ---------- road ---------- */
+  var roadEdge = el("path", {d:d, fill:"none", stroke:"#4A5A65", "stroke-width":"131", "stroke-linecap":"round"});
+  var road = el("path", {d:d, fill:"none", stroke:"#333F49", "stroke-width":"124", "stroke-linecap":"round"});
+  var lane = el("path", {d:d, fill:"none", stroke:"#5F7079", "stroke-width":"2",
+    "stroke-dasharray":"16 24", "stroke-linecap":"round"});
+  world.appendChild(roadEdge); world.appendChild(road); world.appendChild(lane);
+  var roadEls = [roadEdge, road, lane];
+
+  var measure = el("path", {d:d, fill:"none", stroke:"none"});
+  world.appendChild(measure);
+  var LEN = measure.getTotalLength();
+  var UNIT = LEN / (TRACK_CELLS + LEAD_CELLS);
+
+  // cell 0 sits LEAD_CELLS into the path, so there is road behind the grid
+  function at(cells){
+    var l = Math.max(0, Math.min(LEN - 2, (cells + LEAD_CELLS) * UNIT));
+    var p = measure.getPointAtLength(l);
+    var q = measure.getPointAtLength(Math.min(LEN, l + 1));
+    return { x:p.x, y:p.y, ang: Math.atan2(q.y - p.y, q.x - p.x) };
+  }
+
+  // Markers ride the cruise exactly like the cars: the finish is drawn at
+  // (20 + cruise) so it stays 20 cells ahead and the leader still meets it.
+  var markers = [];
+  function marker(children, cell){
+    var g = el("g", {});
+    children.forEach(function(c){ g.appendChild(c); });
+    world.appendChild(g);
+    markers.push({ g: g, cell: cell });
+  }
+
+  marker([el("rect", {x:-1, y:-62, width:2, height:124, fill:"#6D7F8B"})], 0);
+  for (var c = 5; c < CELLS; c += 5){
+    var lbl = el("text", {x:0, y:-70, "text-anchor":"middle", fill:"#71838F",
+      "font-size":"13", "font-family":"IBM Plex Mono, monospace"});
+    lbl.textContent = c;
+    marker([el("rect", {x:-1, y:-62, width:2, height:124, fill:"#4C5B66"}), lbl], c);
+  }
+  var finBars = [];
+  for (var fr = 0; fr < 8; fr++){
+    finBars.push(el("rect", {x:-6, y:-62 + fr * 15.5, width:12, height:15.5,
+      fill: fr % 2 ? "#0E141A" : "#E9EEF1"}));
+  }
+  marker(finBars, CELLS);
+
+  /* ---------- racers: top-down race cars ---------- */
+  var CAR_L = 13, CAR_W = 6.5;          // half-length, half-width
+
+  function buildCar(color){
+    var g = el("g", {});
+    g.appendChild(el("ellipse", {cy: CAR_W * 1.15, rx: CAR_L * 0.95, ry: CAR_W * 0.45,
+      fill:"rgba(0,0,0,0.4)"}));
+    // wheels proud of the chassis on both axles
+    g.appendChild(el("rect", {x:-CAR_L * 0.7, y:-CAR_W - 1.6, width:CAR_L * 0.46, height:4, rx:1.4, fill:"#12171C"}));
+    g.appendChild(el("rect", {x:-CAR_L * 0.7, y:CAR_W - 2.4, width:CAR_L * 0.46, height:4, rx:1.4, fill:"#12171C"}));
+    g.appendChild(el("rect", {x:CAR_L * 0.26, y:-CAR_W - 1.2, width:CAR_L * 0.4, height:3.6, rx:1.3, fill:"#12171C"}));
+    g.appendChild(el("rect", {x:CAR_L * 0.26, y:CAR_W - 2.4, width:CAR_L * 0.4, height:3.6, rx:1.3, fill:"#12171C"}));
+    // rear wing
+    g.appendChild(el("rect", {x:-CAR_L - 2, y:-CAR_W * 0.92, width:3.2, height:CAR_W * 1.84, rx:1.3, fill:"#1B232A"}));
+    // chassis: wide at the rear, tapering to the nose
+    var body = el("path", {
+      d: "M " + (-CAR_L) + " " + (-CAR_W * 0.78) +
+         " L " + (-CAR_L * 0.2) + " " + (-CAR_W) +
+         " L " + (CAR_L * 0.62) + " " + (-CAR_W * 0.66) +
+         " Q " + CAR_L + " " + (-CAR_W * 0.42) + " " + CAR_L + " 0" +
+         " Q " + CAR_L + " " + (CAR_W * 0.42) + " " + (CAR_L * 0.62) + " " + (CAR_W * 0.66) +
+         " L " + (-CAR_L * 0.2) + " " + CAR_W +
+         " L " + (-CAR_L) + " " + (CAR_W * 0.78) + " Z",
+      fill: color, stroke:"#0D1216", "stroke-width":"1.6", "stroke-linejoin":"round"
+    });
+    g.appendChild(body);
+    g.appendChild(el("ellipse", {cx:-CAR_L * 0.12, rx:CAR_L * 0.26, ry:CAR_W * 0.5,
+      fill:"#141B21", opacity:"0.85"}));
+    g.appendChild(el("rect", {x:CAR_L * 0.18, y:-CAR_W * 0.14, width:CAR_L * 0.6, height:CAR_W * 0.28,
+      rx:0.8, fill:"#FFFFFF", opacity:"0.22"}));
+    return {group: g, body: body};
+  }
+
+  racers.forEach(function(r, idx){
+    var g = el("g", {});
+    var spin = el("g", {});            // tilts with the track
+    var squash = el("g", {});          // stretches along the direction of travel
+    var ring = el("circle", {r:"14.5", fill:"none", stroke:"none", "stroke-width":"2", opacity:"0.8"});
+    var car = buildCar(r.color);
+    squash.appendChild(car.group);
+    spin.appendChild(ring); spin.appendChild(squash);
+    g.appendChild(spin);
+    if (r.me){                          // only the player is named on the track
+      var label = el("text", {y:"-26", "text-anchor":"middle", fill:"#E9EEF1",
+        stroke:"#0D1216", "stroke-width":"3", "paint-order":"stroke",
+        "font-size":"15", "font-family":"IBM Plex Sans KR, sans-serif", "font-weight":"700"});
+      label.textContent = r.name;
+      g.appendChild(label);
+    }
+    world.appendChild(g);
+    r.node = g; r.spin = spin; r.squash = squash; r.ring = ring; r.body = car.body;
+    r.lane = idx - (racers.length - 1) / 2;
+    r.draw = r.pos;
+    r.prevDraw = r.pos;
+  });
+
+  /* ---------- camera + render ---------- */
+  var camX = 0, camTarget = 0;
+
+  function place(r, i){
+    // A touch of jostle so the pack is never a rigid formation.
+    var jostle = reduce ? 0
+      : Math.sin(performance.now() / (620 + i * 47) + i * 2.1) * 0.16 +
+        Math.sin(performance.now() / (1130 + i * 83) + i) * 0.09;
+    var p = at(r.draw + cruise + jostle);
+    var ang = p.ang;
+    var nx = -Math.sin(ang), ny = Math.cos(ang);
+    var off = r.lane * 17;
+    r.x = p.x + nx * off; r.yPos = p.y + ny * off; r.ang = ang;
+    r.node.setAttribute("transform", "translate(" + r.x + "," + r.yPos + ")");
+    r.spin.setAttribute("transform", "rotate(" + (ang * 180 / Math.PI) + ")");
+
+    // A car stretched along its own length reads as motion blur, which is why
+    // this can go so much further than it could on a circle.
+    var speed = Math.min(1, Math.abs(r.draw - r.prevDraw) / 0.055);
+    r.prevDraw = r.draw;
+    if (!reduce){
+      // the bob rides on top of the squash so a car at rest still looks alive
+      var bob = Math.sin(performance.now() / 130 + r.lane * 1.7) * 0.7;
+      r.squash.setAttribute("transform",
+        "translate(0 " + bob + ") scale(" + (1 + speed * 0.62) + " " + (1 - speed * 0.28) + ")");
+      // a trickle of dust even at rest, so nobody ever looks parked
+      if (Math.random() < 0.07 + speed * 0.53) burst(r, "#6B7D89", 1);
+      if (speed > 0.35){
+        trail(r, r.color, CAR_W * 0.55);
+        if (speed > 0.6 && Math.random() < 0.35) speedLine(r, r.color);
+      }
+      // boosters first: they must never be starved of pool slots by the gusts
+      // firing in the same frame
+      if (r.fxUntil > performance.now()){
+        if (r.fxKind === "booster") flame(r, 12); else wind(r, 3);
+      }
+    }
+  }
+
+  function leadX(){ return at(leadCells() + cruise).x; }
+
+  function fitView(){
+    var rect = stage.getBoundingClientRect();
+    if (rect.height > 0) VIEW_W = TRACK_H * (rect.width / rect.height);
+    VIEW_W = Math.max(600, Math.min(TRACK_W, VIEW_W));
+  }
+
+  function leadCells(){
+    var m = 0;
+    racers.forEach(function(r){ if (r.draw > m) m = r.draw; });
+    return m;
+  }
+
+  var startedAt = performance.now();
+  var cruise = 0;
+
+  function paintTheme(){
+    var weights = themeWeights(leadCells() / CELLS);
+    for (var part = 0; part < 3; part++){
+      roadEls[part].setAttribute("stroke",
+        mixColors(THEMES.map(function(t){ return t.road[part]; }), weights));
+    }
+    // the centre line runs backwards under the cars
+    for (var t = 0; t < THEMES.length; t++){
+      THEMES[t].group.setAttribute("opacity", weights[t].toFixed(3));
+      if (weights[t] <= 0) continue;
+      for (var b = 0; b < 3; b++){
+        THEMES[t].bandEls[b].setAttribute("transform",
+          "translate(" + (camX * (1 - PARA[b])) + " 0)");
+      }
+    }
+  }
+
+  function frame(){
+    cruise = reduce ? 0
+      : Math.min(TRACK_CELLS - CELLS - 4, (performance.now() - startedAt) / 1000 * CRUISE);
+    camTarget = Math.max(0, Math.min(TRACK_W - VIEW_W, leadX() - VIEW_W * 0.42));
+    camX += (camTarget - camX) * (reduce ? 1 : 0.08);
+    svg.setAttribute("viewBox", camX + " 0 " + VIEW_W + " " + TRACK_H);
+    paintTheme();
+    markers.forEach(function(m){
+      var p = at(m.cell + cruise);
+      m.g.setAttribute("transform",
+        "translate(" + p.x + " " + p.y + ") rotate(" + (p.ang * 180 / Math.PI) + ")");
+    });
+    racers.forEach(place);
+    tickFx();
+    tickTimer(performance.now());
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- particles ---------- */
+  // Sized for the worst case: seven cars gusting at once will eat a small pool,
+  // and the booster flare fires in the same frame.
+  var pool = [];
+  for (var q = 0; q < 520; q++)
+    pool.push({on:false, x:0, y:0, vx:0, vy:0, life:0, max:1, r:1, c:"#fff", g:0.03, line:false});
+
+  function slot(){
+    for (var j = 0; j < pool.length; j++) if (!pool[j].on) return pool[j];
+    return null;
+  }
+
+  function sizeCanvas(){
+    var rect = stage.getBoundingClientRect();
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.max(1, Math.round(rect.width * dpr));
+    cv.height = Math.max(1, Math.round(rect.height * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fitView();
+  }
+  window.addEventListener("resize", sizeCanvas);
+
+  // svg world coords -> css pixels inside the stage (viewBox matches the stage aspect)
+  function toScreen(wx, wy){
+    var rect = stage.getBoundingClientRect();
+    return { x: (wx - camX) * (rect.width / VIEW_W), y: wy * (rect.height / TRACK_H) };
+  }
+
+  function burst(r, color, n){
+    if (reduce) return;
+    var p = toScreen(r.x, r.yPos);
+    for (var i = 0; i < n; i++){
+      var d0 = slot();
+      if (!d0) return;
+      d0.on = true; d0.g = 0.03; d0.line = false;
+      d0.x = p.x + (Math.random() - 0.5) * 10;
+      d0.y = p.y + (Math.random() - 0.5) * 10;
+      d0.vx = -(0.7 + Math.random() * 2.6);
+      d0.vy = (Math.random() - 0.55) * 1.8;
+      d0.max = d0.life = 26 + Math.random() * 22;
+      d0.r = 1.4 + Math.random() * 3.4;
+      d0.c = color;
+    }
+  }
+
+  function trail(r, color, radius){
+    var p = toScreen(r.x, r.yPos);
+    var d0 = slot();
+    if (!d0) return;
+    d0.on = true; d0.g = 0.001; d0.line = false;
+    d0.x = p.x; d0.y = p.y; d0.vx = 0; d0.vy = 0;
+    d0.max = d0.life = 13;
+    d0.r = radius;
+    d0.c = color;
+  }
+
+  function speedLine(r, color){
+    var p = toScreen(r.x, r.yPos);
+    var d0 = slot();
+    if (!d0) return;
+    d0.on = true; d0.g = 0; d0.line = true;
+    d0.x = p.x; d0.y = p.y + (Math.random() - 0.5) * 16;
+    d0.vx = -(4 + Math.random() * 4); d0.vy = 0;
+    d0.max = d0.life = 10;
+    d0.r = 1.1;
+    d0.c = color;
+  }
+
+  /** A gust behind a car that just won the round. */
+  function wind(r, n){
+    var p = toScreen(r.x, r.yPos);
+    var ang = r.ang || 0;
+    for (var i = 0; i < n; i++){
+      var d0 = slot();
+      if (!d0) return;
+      var spread = (Math.random() - 0.5) * 30;
+      d0.on = true; d0.g = 0; d0.line = true;
+      d0.x = p.x - Math.cos(ang) * (14 + Math.random() * 16) - Math.sin(ang) * spread;
+      d0.y = p.y - Math.sin(ang) * (14 + Math.random() * 16) + Math.cos(ang) * spread;
+      var sp = 6 + Math.random() * 7;
+      d0.vx = -Math.cos(ang) * sp; d0.vy = -Math.sin(ang) * sp;
+      d0.max = d0.life = 10 + Math.random() * 9;
+      d0.r = 0.9 + Math.random() * 1.3;
+      d0.c = "#DBE6EE";
+    }
+  }
+
+  /** Booster: a flare that erupts backwards and upwards, hot core first. */
+  var FLAME = ["#FFF2C4", "#FFD24A", "#FF9D2E", "#F4562A", "#C22F1A"];
+  function flame(r, n){
+    var p = toScreen(r.x, r.yPos);
+    var ang = r.ang || 0;
+    for (var i = 0; i < n; i++){
+      var d0 = slot();
+      if (!d0) return;
+      var t = i / n;
+      var spray = ang + Math.PI + (Math.random() - 0.5) * 1.1;
+      var sp = 1.6 + Math.random() * 5.5;
+      d0.on = true; d0.g = -0.05; d0.line = false;   // heat rises
+      d0.x = p.x - Math.cos(ang) * 14; d0.y = p.y - Math.sin(ang) * 14;
+      d0.vx = Math.cos(spray) * sp; d0.vy = Math.sin(spray) * sp - 1.4;
+      d0.max = d0.life = 24 + Math.random() * 30;
+      d0.r = 2.1 + (1 - t) * 5.4;
+      d0.c = FLAME[Math.min(FLAME.length - 1, Math.floor(t * FLAME.length))];
+    }
+  }
+
+  function tickFx(){
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    for (var i = 0; i < pool.length; i++){
+      var p = pool[i];
+      if (!p.on) continue;
+      p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= 0.97; p.life--;
+      if (p.life <= 0){ p.on = false; continue; }
+      ctx.globalAlpha = Math.max(0, p.life / p.max) * (p.line ? 0.85 : 0.55);
+      ctx.fillStyle = p.c;
+      if (p.line){ ctx.fillRect(p.x, p.y, 26, p.r * 1.4); }
+      else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.284); ctx.fill(); }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /* ---------- countdown ---------- */
+  var LIMIT = 10;                                   // seconds per round
+  var CIRC = 2 * Math.PI * 25;
+  ringArc.setAttribute("stroke-dasharray", CIRC);
+
+  // One pip per player, filling left to right as people commit. It shows HOW
+  // MANY have chosen, never WHAT they chose - pressure with no information leak.
+  // (These started life orbiting the ring, which just made it look like a tire.)
+  var pipEls = racers.map(function(){
+    var d = document.createElement("span");
+    d.className = "pip";
+    pipsEl.appendChild(d);
+    return d;
+  });
+  var lockCount = 0;
+
+  var timer = {on:false, endAt:0, warned:false};
+
+  function lerpHex(c1, c2, t){
+    function ch(c, i){ return parseInt(c.substr(1 + i * 2, 2), 16); }
+    var out = "#";
+    for (var i = 0; i < 3; i++){
+      var v = Math.round(ch(c1, i) + (ch(c2, i) - ch(c1, i)) * t);
+      out += ("0" + v.toString(16)).slice(-2);
+    }
+    return out;
+  }
+
+  function ringColor(frac){                          // frac = time remaining
+    if (frac > 0.5) return "#3FB0CE";                          // 여유
+    if (frac > 0.3) return lerpHex("#F0B429", "#3FB0CE", (frac - 0.3) / 0.2); // 주의
+    return lerpHex("#F4685B", "#F0B429", Math.pow(frac / 0.3, 2)); // 촉박
+  }
+
+  function paintRing(frac, color){
+    ringArc.setAttribute("stroke-dashoffset", CIRC * (1 - clamp(frac, 0, 1)));
+    ringArc.setAttribute("stroke", color);
+    ringNum.setAttribute("fill", color);
+  }
+
+  function resetTimer(){
+    timer.on = false; timer.warned = false;
+    ringWrap.classList.remove("beat", "burst");
+    vignette.classList.remove("on");
+    racers.forEach(function(r){ r.locked = false; });
+    lockCount = 0;
+    pipEls.forEach(function(d){ d.className = "pip"; });
+    locksN.textContent = "0 / " + racers.length + " 선택";
+    paintRing(1, "#3FB0CE");
+    ringNum.textContent = LIMIT;
+  }
+
+  function startTimer(){
+    if (busy || finished || timer.on) return;
+    timer.on = true;
+    timer.endAt = performance.now() + LIMIT * 1000;
+    // bots commit at their own pace - the dots are the only tell
+    racers.forEach(function(r){
+      r.lockAt = r.me ? Infinity : timer.endAt - (1 + Math.random() * 7.4) * 1000;
+    });
+  }
+
+  function lockRacer(r) {
+    if (r.locked) return;
+    r.locked = true;
+    var pip = pipEls[lockCount++];
+    if (pip) pip.className = "pip on" + (r.me ? " mine" : "");
+    locksN.textContent = lockCount + " / " + racers.length + " 선택";
+  }
+
+  function tickTimer(now){
+    if (!timer.on) return;
+    var remain = (timer.endAt - now) / 1000;
+    var frac = clamp(remain / LIMIT, 0, 1);
+    paintRing(frac, ringColor(frac));
+    ringNum.textContent = remain > 0 ? remain.toFixed(1) : "0.0";
+
+    racers.forEach(function(r){ if (now >= r.lockAt) lockRacer(r); });
+
+    if (!timer.warned && remain <= 3){
+      timer.warned = true;
+      if (!reduce){ ringWrap.classList.add("beat"); vignette.classList.add("on"); }
+    }
+    if (remain <= 0){
+      timer.on = false;
+      ringWrap.classList.remove("beat");
+      vignette.classList.remove("on");
+      if (!reduce) ringWrap.classList.add("burst");
+      play(Math.random() < 0.5 ? "a" : "b", true);   // 무응답 → 자동 랜덤
+    }
+  }
+
+  /* ---------- game ---------- */
+
+  function botChoice(bot, bias){
+    var p = bias;
+    p += bot.conf * (bias - 0.5) * 0.8;
+    p -= bot.contra * (bias - 0.5) * 1.4;
+    p += (Math.random() - 0.5) * bot.noise;
+    return Math.random() < clamp(p, 0.02, 0.98) ? "a" : "b";
+  }
+
+  function deal(){
+    card = CARDS[(round - 1) % CARDS.length];
+    document.getElementById("cat").textContent = card.cat;
+    document.getElementById("txtA").textContent = card.a;
+    document.getElementById("txtB").textContent = card.b;
+    document.getElementById("roundPill").textContent = "ROUND " + round + " / " + ROUNDS;
+    tally.classList.remove("on");
+    segA.style.width = "0%"; segB.style.width = "0%";
+    segA.textContent = ""; segB.textContent = "";
+    note.textContent = "";
+    btnA.disabled = false; btnB.disabled = false;
+    racers.forEach(function(r){ r.ring.setAttribute("stroke", "none"); });
+    if (!reduce){                       // replay the slam for the new card
+      choicesEl.classList.remove("slam");
+      void choicesEl.offsetWidth;
+      choicesEl.classList.add("slam");
+    }
+    resetTimer();
+  }
+
+  function drawBoard(){
+    var sorted = racers.slice().sort(function(x, y){ return y.pos - x.pos; });
+    board.innerHTML = "";
+    sorted.forEach(function(r, i){
+      var li = document.createElement("li");
+      li.className = "board-row" + (r.me ? " me" : "");
+      li.innerHTML =
+        '<span class="board-rank">' + (i + 1) + '</span>' +
+        '<span class="board-name"><span class="board-dot" style="background:' + r.color + '"></span>' + r.name + '</span>' +
+        '<span class="board-boost">' + (r.boost ? "⚡ 부스터" : "") + '</span>' +
+        '<span class="board-pos">' + r.pos + '/' + CELLS + '</span>';
+      board.appendChild(li);
+    });
+  }
+
+  function animatePos(r, target, dur){
+    var from = r.draw, t0 = performance.now();
+    if (reduce){ r.draw = target; return; }
+    function step(now){
+      var k = Math.min(1, (now - t0) / dur);
+      var e = 1 - Math.pow(1 - k, 3);
+      r.draw = from + (target - from) * e;
+      if (k < 1){
+        if (k < 0.7 && Math.random() < 0.55) burst(r, "#71838F", 1);
+        requestAnimationFrame(step);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function play(myChoice, timedOut){
+    if (busy || finished) return;
+    busy = true;
+    timer.on = false;
+    ringWrap.classList.remove("beat");
+    vignette.classList.remove("on");
+    btnA.disabled = true; btnB.disabled = true;
+
+    lockRacer(racers[0]);
+    racers.forEach(lockRacer);
+    if (!timedOut) paintRing(1, GOLD);
+
+    racers[0].choice = myChoice;
+    for (var i = 1; i < racers.length; i++) racers[i].choice = botChoice(racers[i].ai, card.bias);
+
+    var na = racers.filter(function(r){ return r.choice === "a"; }).length;
+    var nb = racers.length - na;
+    var tie = na === nb;
+    var majority = na > nb ? "a" : "b";
+    var share = Math.max(na, nb) / racers.length;
+
+    // 8명에서 나올 수 있는 분할은 5-3(62.5%) / 6-2(75%) / 7-1(87.5%) / 8-0뿐이라
+    // "박빙 51~60%" 구간은 애초에 발동할 수 없었고, 좁게 이긴 쪽에 더 주는 규칙은
+    // 결국 다수(=군중)를 도와서 순응형 봇의 우승률만 올렸다. 1000판 시뮬레이션 결과.
+    var gain = tie ? 1 : share >= 0.85 ? 1 : 2;
+    var minorShare = 1 - share;
+
+    racers.forEach(function(r){
+      r.ring.setAttribute("stroke", r.choice === "a" ? A_LIT : B_LIT);
+    });
+
+    tally.classList.add("on");
+    setTimeout(function(){
+      segA.style.width = (na / racers.length * 100) + "%";
+      segB.style.width = (nb / racers.length * 100) + "%";
+      segA.textContent = na; segB.textContent = nb;
+    }, 60);
+
+    setTimeout(function(){
+      stamp.innerHTML = tie ? "동점!" : (majority === myChoice ? "다수!" : "소수&hellip;");
+      stamp.classList.remove("hit"); void stamp.offsetWidth; stamp.classList.add("hit");
+      if (!reduce){ screen.classList.remove("shake"); void screen.offsetWidth; screen.classList.add("shake"); }
+    }, 700);
+
+    setTimeout(function(){
+      var boosted = [], gotBoost = [];
+      racers.forEach(function(r){
+        // A tie means nobody read the room, so nobody cashes a booster either.
+        // Folding ties into the win branch let a booster fire for +5 on a round
+        // that is meant to be +1 for everyone - and the booster holder is by
+        // definition someone who was just in a tiny minority, i.e. usually last.
+        if (tie){
+          r.pos = Math.min(CELLS, r.pos + gain);
+          animatePos(r, r.pos, 800);
+          burst(r, r.me ? GOLD : "#93A3AE", 9);
+          return;
+        }
+        if (r.choice === majority){
+          var mv = r.boost ? 6 : gain;
+          r.fxKind = r.boost ? "booster" : "advance";
+          r.fxUntil = performance.now() + (r.boost ? 950 : 700);
+          if (r.boost){ boosted.push(r.name); r.boost = false; }
+          r.pos = Math.min(CELLS, r.pos + mv);
+          animatePos(r, r.pos, 800);
+          burst(r, r.me ? GOLD : "#93A3AE", 9);
+        } else if (minorShare < 0.3 && minorShare > 0){
+          r.boost = true; gotBoost.push(r.name);
+        }
+      });
+
+      var msgs = [];
+      if (timedOut) msgs.push("<b>시간 초과 &mdash; 자동 랜덤 선택</b>");
+      msgs.push(tie ? "동점 &mdash; 아무도 못 읽었다 &rarr; 전원 +1칸"
+              : share >= 0.85 ? "압도 " + Math.round(share * 100) + "% &rarr; 다수 +1칸"
+              : "다수 " + Math.round(share * 100) + "% &rarr; +2칸");
+      if (boosted.length) msgs.push("<b>⚡ 부스터 터짐 &mdash; " + boosted.join(", ") + " +6칸</b>");
+      if (gotBoost.length) msgs.push("극소수 <b>" + gotBoost.join(", ") + "</b> 부스터 획득");
+      note.innerHTML = msgs.join(" &nbsp;·&nbsp; ");
+
+      setTimeout(drawBoard, 500);
+    }, 1000);
+
+    setTimeout(function(){
+      var winner = racers.filter(function(r){ return r.pos >= CELLS; })[0];
+      if (winner || round >= ROUNDS){
+        finished = true;
+        var best = racers.slice().sort(function(x, y){ return y.pos - x.pos; })[0];
+        note.innerHTML = "<b>🏁 " + best.name + " 우승 &mdash; " + best.pos + "칸</b> &nbsp;·&nbsp; 다시 하려면 새로고침";
+        racers.forEach(function(r){ if (r === best) burst(r, GOLD, 40); });
+        busy = false;
+        return;
+      }
+      round++;
+      deal();
+      busy = false;
+      startTimer();
+    }, 2600);
+  }
+
+  btnA.addEventListener("click", function(){ play("a"); });
+  btnB.addEventListener("click", function(){ play("b"); });
+
+  // Round 1 holds its clock until you touch the mockup - nothing should
+  // start ticking at someone who is still reading the page.
+  screen.addEventListener("pointerdown", function(){ startTimer(); });
+
+  sizeCanvas();
+  deal();
+  drawBoard();
+  racers.forEach(place);
+  camX = camTarget = 0;
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+.tally { height: 0; overflow: hidden; transition: height 0.25s var(--ease-out); }
+.tally.on { height: 26px; }
+
+.tally-bar {
+  display: flex;
+  height: 26px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tally-seg {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #11171c;
+  transition: width 0.7s var(--ease-out);
+}
+.tally-seg.a { background: var(--a); justify-content: flex-start; padding-left: 9px; }
+.tally-seg.b { background: var(--b); justify-content: flex-end; padding-right: 9px; }

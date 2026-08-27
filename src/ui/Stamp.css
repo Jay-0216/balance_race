@@ -1,0 +1,38 @@
+.stamp {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 3;
+  font-size: clamp(30px, 10vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--gold);
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  animation: stamp-hit 0.95s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.stamp.minority { color: var(--a); }
+.stamp.tie { color: var(--ink-2); }
+
+@keyframes stamp-hit {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.9) rotate(-8deg); }
+  22%  { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+  70%  { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.06) rotate(-4deg); }
+}
+
+/* The shake is on the stage, not the page: a phone game that jolts its own
+   chrome feels broken rather than punchy. */
+.shake { animation: stage-shake 0.32s ease-out; }
+
+@keyframes stage-shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-5px, 3px); }
+  45% { transform: translate(4px, -3px); }
+  70% { transform: translate(-3px, -1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation: none; opacity: 1; transform: translate(-50%, -50%); }
+  .shake { animation: none; }
+}

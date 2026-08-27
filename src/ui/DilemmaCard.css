@@ -1,0 +1,92 @@
+.choices {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 13px 14px 14px;
+  text-align: left;
+  border-radius: 12px;
+  background: var(--screen-3);
+  border: 1.5px solid var(--line);
+  transition: transform 0.16s var(--ease-out), border-color 0.16s ease,
+    background 0.16s ease;
+}
+
+.choice-tag {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.choice[data-side="a"] .choice-tag { color: var(--a); }
+.choice[data-side="b"] .choice-tag { color: var(--b); }
+
+.choice-emoji { font-size: 19px; line-height: 1; }
+.choice-text { font-size: 14px; font-weight: 500; line-height: 1.4; }
+
+.choice:hover:not(:disabled) { transform: translateY(-2px); }
+.choice[data-side="a"]:hover:not(:disabled) { border-color: var(--a); }
+.choice[data-side="b"]:hover:not(:disabled) { border-color: var(--b); }
+
+.choice.picked { border-color: var(--gold); background: rgba(240, 180, 41, 0.1); }
+.choice:disabled { opacity: 0.5; cursor: default; }
+.choice.picked:disabled { opacity: 1; }
+
+/* ---- entrance: two cards collide, VS pops out of the impact ---------------
+   The timings are shared: the cards meet at 38%, so VS starts there and
+   overshoots while they are still recoiling apart. */
+.choice {
+  animation: slam-a 0.62s cubic-bezier(0.3, 0.9, 0.3, 1) both;
+}
+.choice[data-side="b"] { animation-name: slam-b; }
+
+@keyframes slam-a {
+  0%   { transform: translateX(-260%) rotate(-7deg); opacity: 0; }
+  10%  { opacity: 1; }
+  38%  { transform: translateX(22%) rotate(1.5deg); }
+  52%  { transform: translateX(-6%) rotate(-1deg); }
+  72%  { transform: translateX(2%); }
+  100% { transform: translateX(0) rotate(0); }
+}
+
+@keyframes slam-b {
+  0%   { transform: translateX(260%) rotate(7deg); opacity: 0; }
+  10%  { opacity: 1; }
+  38%  { transform: translateX(-22%) rotate(-1.5deg); }
+  52%  { transform: translateX(6%) rotate(1deg); }
+  72%  { transform: translateX(-2%); }
+  100% { transform: translateX(0) rotate(0); }
+}
+
+.vs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  font-family: ui-monospace, monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  animation: vs-pop 0.62s cubic-bezier(0.2, 1.7, 0.4, 1) both;
+}
+
+@keyframes vs-pop {
+  0%, 36%  { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  46%      { transform: translate(-50%, -50%) scale(1.75) rotate(-8deg); opacity: 1; }
+  60%      { transform: translate(-50%, -50%) scale(0.86) rotate(3deg); }
+  76%      { transform: translate(-50%, -50%) scale(1.08) rotate(-1deg); }
+  100%     { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .choice, .vs { animation: none; }
+  .vs { opacity: 1; transform: translate(-50%, -50%); }
+}
