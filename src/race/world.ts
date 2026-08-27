@@ -7,7 +7,13 @@
  */
 export const WORLD = { w: 5760, h: 250 } as const;
 
-export const CELLS = 40;
+/**
+ * The finish line is the rules' finish line. These were two separate numbers
+ * for a while - 40 here, 24 there - so the chequered flag was painted 16 cells
+ * past where the game actually ended, and the last backdrop theme (which keys
+ * off lead/CELLS) could never fully arrive.
+ */
+export { CELLS } from "../game/rules";
 export const LANE_GAP = 13;
 export const RACER_R = 7;
 /**

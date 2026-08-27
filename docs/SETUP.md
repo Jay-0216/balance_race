@@ -14,11 +14,15 @@ NODE_VERSION = "22"
 
 1. [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project**
 2. **GitHub** 선택 → `Jay-0216/woow` 저장소 선택
-3. Branch를 배포할 브랜치로 지정 (보통 `main`)
+3. **Branch to deploy → `main`**
 4. 빌드 설정은 `netlify.toml`이 채우므로 그대로 두고 **Deploy**
 
-이후 그 브랜치에 푸시할 때마다 자동 배포된다.
+이후 `main`에 푸시할 때마다 자동 배포된다.
 PR을 올리면 **Deploy Preview**가 따로 생겨서 합치기 전에 눌러볼 수 있다.
+
+> **`main`이 배포 브랜치다.** 작업은 `claude/...` 브랜치에서 하고 끝나면 `main`에 합친다.
+> 합친 순간이 배포되는 순간이므로, **`main`은 항상 켜지는 상태여야 한다** —
+> 합치기 전에 `npm run build`가 통과하는지 확인한다.
 
 ### 커스텀 도메인
 

@@ -52,7 +52,11 @@ export default function RaceView({
   const camRef = useRef(new Camera());
   const fxRef = useRef(new Particles());
   const drawRef = useRef<number[]>(racers.map((r) => r.pos));
+  /** last frame's drawn cell, jostle and cruise included - the real position */
   const prevRef = useRef<number[]>(racers.map((r) => r.pos));
+  /** accumulated engine-bob phase, advanced faster the harder a car is pulling */
+  const bobRef = useRef<number[]>(racers.map(() => 0));
+  const lastTRef = useRef(0);
   const tweenRef = useRef<(Tween | null)[]>(racers.map(() => null));
   const racersRef = useRef(racers);
 
@@ -174,6 +178,10 @@ export default function RaceView({
 
     const frame = (now: number) => {
       const list = racersRef.current;
+      // Velocity has to be per second, not per frame: a 144Hz laptop would
+      // otherwise read every car as moving a third as fast as a 60Hz phone.
+      const dt = Math.min(0.05, (now - (lastTRef.current || now)) / 1000);
+      lastTRef.current = now;
 
       // Everything on the road - cars, ticks, the finish - is drawn at
       // (score + cruise), so the field genuinely drives forward while the gaps
@@ -257,12 +265,17 @@ export default function RaceView({
 
         const d = drawRef.current[i] ?? 0;
         const lane = i - (list.length - 1) / 2;
-        // A touch of jostle so the pack is never a rigid formation - they
-        // trade half a cell back and forth the whole way down the road.
+        // The pack is never a rigid formation: every car runs its own little
+        // engine and they trade a third of a car length back and forth the
+        // whole way down the road. The phase of the fast wave is warped by a
+        // sine of itself, so the lunge forward is short and the drift back is
+        // long - it is the *derivative* the eye reads as speed, and a plain
+        // sine hums along at a near-constant one.
+        const th = now / (620 + i * 47) + i * 2.1;
         const jostle = reduce
           ? 0
-          : Math.sin(now / (620 + i * 47) + i * 2.1) * 0.16 +
-            Math.sin(now / (1130 + i * 83) + i) * 0.09;
+          : Math.sin(th + 0.55 * Math.sin(th)) * 0.2 +
+            Math.sin(now / (1130 + i * 83) + i) * 0.1;
         const p = at(d + cruise + jostle);
         const nx = -Math.sin(p.ang), ny = Math.cos(p.ang);
         const stagger = (i % 2 === 0 ? 1 : -1) * LANE_STAGGER;
@@ -276,19 +289,40 @@ export default function RaceView({
         node.root.setAttribute("transform", `translate(${wx} ${wy})`);
         node.spin?.setAttribute("transform", `rotate(${(p.ang * 180) / Math.PI})`);
 
-        // squash & stretch along the direction of travel - a few lines of
-        // transform that buy most of the perceived weight
-        const speed = Math.min(1, Math.abs(d - (prevRef.current[i] ?? d)) / 0.055);
-        prevRef.current[i] = d;
+        // Speed is measured off the position actually drawn - jostle and
+        // cruise included - not off the score, so a car surging past its
+        // neighbour looks like it is surging. Reading the score alone left
+        // every car in the jostle at a dead-constant speed.
+        const cellNow = d + cruise + jostle;
+        const prevCell = prevRef.current[i] ?? cellNow;
+        prevRef.current[i] = cellNow;
+        // Relative to the cruise everyone shares: 0 is holding station with
+        // the pack, positive is pulling ahead, negative is dropping back.
+        const vRel = dt > 0 ? (cellNow - prevCell) / dt - CRUISE : 0;
+
+        // Signed and curved: a dash is ~3 cells/s and a jostle surge ~0.4, so
+        // a linear map would leave the jostle invisible next to it. The 0.55
+        // power lifts the small end without letting it reach the dash.
+        const k = Math.max(-1, Math.min(1, vRel / 3));
+        const lean = Math.sign(k) * Math.pow(Math.abs(k), 0.6);
+        // Unsigned and linear - the particle thresholds below want the old
+        // scale, where only a real round-advance blooms into a trail.
+        const speed = Math.max(0, k);
+
         // A car stretching along its own length reads as motion blur, so this
-        // can be pushed much further than it could on a circle.
+        // can be pushed much further than it could on a circle. Falling back
+        // compresses it, which reads as lifting off.
         // The bob rides on top of the squash so a car at rest still looks
-        // like it is running.
+        // like it is running, and it revs: the harder a car is pulling, the
+        // faster it shakes. Phase is accumulated rather than read off the
+        // clock, so changing the rate never snaps the car sideways.
         if (!reduce && node.squash) {
-          const bob = Math.sin(now / 130 + i * 1.7) * 0.4;
+          bobRef.current[i] =
+            (bobRef.current[i] ?? 0) + dt * Math.max(2.5, 7.4 + lean * 9);
+          const bob = Math.sin(bobRef.current[i] + i * 1.7) * (0.4 + Math.abs(lean) * 0.5);
           node.squash.setAttribute(
             "transform",
-            `translate(0 ${bob}) scale(${1 + speed * 0.62} ${1 - speed * 0.28})`
+            `translate(0 ${bob}) scale(${1 + lean * 0.62} ${1 - lean * 0.28})`
           );
         }
 
