@@ -19,6 +19,16 @@
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
+.game-mute {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.75;
+}
+.game-mute:hover { background: var(--screen-2); opacity: 1; }
+
 .game-fps {
   font-family: ui-monospace, monospace;
   font-size: 11px;
@@ -33,6 +43,7 @@
 /* Special rounds are announced, never sprung - that is what makes them
    psychological rather than random. */
 .game-kind {
+  animation: kind-in 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) both;
   position: absolute;
   left: 10px;
   top: 10px;
@@ -95,4 +106,16 @@
 
 @media (max-height: 720px) {
   .game-panel .choice { min-height: 84px; }
+}
+
+/* the special round announces itself before it is played - that is what makes
+   it psychological rather than random */
+@keyframes kind-in {
+  0%   { opacity: 0; transform: translateX(-24px) scale(0.9); }
+  60%  { opacity: 1; transform: translateX(3px) scale(1.04); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-kind { animation: none; }
 }

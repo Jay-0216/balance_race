@@ -48,7 +48,15 @@ export function baseGain(majorityShare: number): number {
 export const BOOSTER_GAIN = 6;
 
 export const MINORITY_BOOSTER_THRESHOLD = 0.3;
+/** default share of your cells put up in the all-in round */
 export const ALLIN_STAKE = 0.2;
+export const ALLIN_MIN = 0.1;
+export const ALLIN_MAX = 0.5;
+
+/** cells at risk for a given player, from a 0..1 share */
+export function stakeFor(pos: number, share: number) {
+  return Math.max(1, Math.round(pos * share));
+}
 
 /**
  * Resolves one round. Pure: takes players and their choices, returns the moves.
@@ -57,7 +65,9 @@ export const ALLIN_STAKE = 0.2;
 export function resolveRound(
   players: Player[],
   choices: Record<number, Choice>,
-  kind: RoundKind = "normal"
+  kind: RoundKind = "normal",
+  /** per-player all-in share, 0..1; anyone missing bets ALLIN_STAKE */
+  stakes: Record<number, number> = {}
 ): RoundOutcome {
   const countA = players.filter((p) => choices[p.id] === "a").length;
   const countB = players.length - countA;
@@ -89,7 +99,7 @@ export function resolveRound(
     const advanced = choices[p.id] === advancingSide;
 
     if (kind === "allin") {
-      const stake = Math.max(1, Math.round(from * ALLIN_STAKE));
+      const stake = stakeFor(from, stakes[p.id] ?? ALLIN_STAKE);
       const to = advanced
         ? Math.min(CELLS, from + stake)
         : Math.max(0, from - stake);

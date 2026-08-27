@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGame } from "../game/useGame";
 import { CELLS, KIND_LABEL, ROUNDS, TIME_LIMIT } from "../game/rules";
 import RaceView from "../race/RaceView";
@@ -8,6 +8,9 @@ import DilemmaCard from "../ui/DilemmaCard";
 import Leaderboard from "../ui/Leaderboard";
 import LockPips from "../ui/LockPips";
 import TallyBar from "../ui/TallyBar";
+import { isMuted, setMuted } from "../ui/sound";
+import Stamp, { type StampKind } from "../ui/Stamp";
+import StakePicker from "../ui/StakePicker";
 import Timer from "../ui/Timer";
 import ResultScreen from "./ResultScreen";
 import "./GameScreen.css";
@@ -15,7 +18,27 @@ import "./GameScreen.css";
 export default function GameScreen({ onBack }: { onBack: () => void }) {
   const g = useGame();
   const [fps, setFps] = useState(0);
+  const [muted, setMutedState] = useState(isMuted);
   const onFps = useCallback((v: number) => setFps(v), []);
+
+  // the stage jolts on the stamp, not the page - jolting the chrome of a phone
+  // game reads as a bug rather than a hit
+  const stageRef = useRef<HTMLDivElement>(null);
+  const stamp: StampKind = !g.outcome
+    ? null
+    : g.outcome.tie
+      ? "tie"
+      : g.myChoice === g.outcome.advancingSide
+        ? "majority"
+        : "minority";
+
+  useEffect(() => {
+    if (g.phase !== "reveal" || !stageRef.current) return;
+    const el = stageRef.current;
+    el.classList.remove("shake");
+    void el.offsetWidth;
+    el.classList.add("shake");
+  }, [g.phase, g.round]);
 
   // Winners get a gust, booster holders get a flare. Keyed on the round so the
   // race view replays them exactly once.
@@ -49,11 +72,24 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         <span className="game-round">
           ROUND {Math.min(g.round, ROUNDS)} / {ROUNDS}
         </span>
+        <button
+          className="game-mute"
+          onClick={() => { const next = !muted; setMuted(next); setMutedState(next); }}
+          aria-label={muted ? "소리 켜기" : "소리 끄기"}
+          title={muted ? "소리 켜기" : "소리 끄기"}
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
         <span className="game-fps">{fps} fps</span>
       </header>
 
-      <div className="game-stage">
-        <RaceView racers={racers} effects={effects} onFps={onFps} />
+      <div className="game-stage" ref={stageRef}>
+        <RaceView
+          racers={racers}
+          effects={effects}
+          paused={g.phase === "done"}
+          onFps={onFps}
+        />
         <div className="game-hud">
           <Timer
             endAt={g.deadline}
@@ -62,7 +98,10 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
             locked={g.myChoice !== null}
           />
         </div>
-        {kindLabel && <div className={"game-kind " + g.kind}>{kindLabel}</div>}
+        {kindLabel && (
+          <div key={g.round} className={"game-kind " + g.kind}>{kindLabel}</div>
+        )}
+        <Stamp kind={g.phase === "reveal" ? stamp : null} at={g.round} />
       </div>
 
       <div className="game-panel">
@@ -82,6 +121,15 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
           picked={g.myChoice}
           onPick={g.pick}
         />
+
+        {g.kind === "allin" && (
+          <StakePicker
+            pos={g.players[0].pos}
+            share={g.stake}
+            disabled={g.phase !== "choosing"}
+            onChange={g.setStake}
+          />
+        )}
 
         <TallyBar
           countA={g.outcome?.countA ?? 0}

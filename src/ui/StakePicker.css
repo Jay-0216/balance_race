@@ -1,0 +1,29 @@
+.stake {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: rgba(63, 176, 206, 0.1);
+  border: 1.5px solid var(--b);
+}
+
+.stake-head { display: flex; align-items: baseline; justify-content: space-between; }
+
+.stake-label {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--b);
+}
+
+.stake-value { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stake-pct { color: var(--ink-3); font-weight: 400; font-size: 12px; }
+
+.stake input {
+  width: 100%;
+  accent-color: var(--b);
+  margin: 0;
+}
+
+.stake-hint { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }

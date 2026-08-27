@@ -26,11 +26,18 @@ type Node = {
 export default function RaceView({
   racers,
   effects,
+  paused,
   onFps,
 }: {
   racers: RacerView[];
   /** one-shot flourishes: a gust for the winners, a flare for a booster */
   effects?: RaceEffect[];
+  /**
+   * Stops the loop entirely. The result overlay sits on a backdrop-filter, and
+   * blurring a canvas that is still repainting at 60fps costs more than the
+   * race itself - it took the whole screen down to 25fps.
+   */
+  paused?: boolean;
   onFps?: (fps: number) => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -105,12 +112,37 @@ export default function RaceView({
     const len = measure.getTotalLength();
     const cellLen = len / (TRACK_CELLS + LEAD_CELLS);
 
+    /*
+     * The path is sampled once into a table and looked up by interpolation.
+     * getPointAtLength is a real cost at this volume - a hundred wind streaks
+     * asking for two points each, every frame, was the last thing holding the
+     * dash below 60fps. At four samples per cell the error on a road this
+     * gentle is far under a pixel.
+     */
+    const PER_CELL = 4;
+    const total = (TRACK_CELLS + LEAD_CELLS) * PER_CELL + 2;
+    const sx0 = new Float32Array(total);
+    const sy0 = new Float32Array(total);
+    const sang = new Float32Array(total);
+    for (let i = 0; i < total; i++) {
+      const l = Math.min(len - 0.5, (i / PER_CELL) * cellLen);
+      const a = measure.getPointAtLength(l);
+      const b = measure.getPointAtLength(Math.min(len, l + 1));
+      sx0[i] = a.x;
+      sy0[i] = a.y;
+      sang[i] = Math.atan2(b.y - a.y, b.x - a.x);
+    }
+
     // cell 0 sits LEAD_CELLS into the path, so there is road behind the grid
     const at = (cells: number) => {
-      const l = Math.max(0, Math.min(len - 2, (cells + LEAD_CELLS) * cellLen));
-      const p = measure.getPointAtLength(l);
-      const q = measure.getPointAtLength(Math.min(len, l + 1));
-      return { x: p.x, y: p.y, ang: Math.atan2(q.y - p.y, q.x - p.x) };
+      const f = Math.max(0, Math.min(total - 2, (cells + LEAD_CELLS) * PER_CELL));
+      const i = f | 0;
+      const t = f - i;
+      return {
+        x: sx0[i] + (sx0[i + 1] - sx0[i]) * t,
+        y: sy0[i] + (sy0[i + 1] - sy0[i]) * t,
+        ang: sang[i],
+      };
     };
 
     let px = 0, py = 0, dpr = 1;
@@ -214,7 +246,10 @@ export default function RaceView({
         );
       }
 
-      const seats = new Map<number, { x: number; y: number; ang: number }>();
+      const seats = new Map<
+        number,
+        { x: number; y: number; ang: number; cell: number; lateral: number }
+      >();
 
       for (let i = 0; i < list.length; i++) {
         const node = nodesRef.current[i];
@@ -234,7 +269,10 @@ export default function RaceView({
         const wx = p.x + nx * lane * LANE_GAP + Math.cos(p.ang) * stagger;
         const wy = p.y + ny * lane * LANE_GAP + Math.sin(p.ang) * stagger;
 
-        seats.set(list[i].id, { x: sx(wx), y: sy(wy), ang: p.ang });
+        seats.set(list[i].id, {
+          x: sx(wx), y: sy(wy), ang: p.ang,
+          cell: d + cruise + jostle, lateral: lane * LANE_GAP,
+        });
         node.root.setAttribute("transform", `translate(${wx} ${wy})`);
         node.spin?.setAttribute("transform", `rotate(${(p.ang * 180) / Math.PI})`);
 
@@ -290,15 +328,21 @@ export default function RaceView({
           if (e.kind !== "advance") continue;
           const seat = seats.get(e.playerId);
           if (!seat) continue;
-          fx.wind(
-            seat.x - Math.cos(seat.ang) * 13,
-            seat.y - Math.sin(seat.ang) * 13,
-            seat.ang, 3
-          );
+          fx.wind(seat.cell - 0.42, seat.lateral, 3);
         }
       }
 
-      if (!reduce) fx.draw(ctx, px, py);
+      if (!reduce) {
+        fx.draw(ctx, px, py, (cell, lateral) => {
+          const q = at(cell);
+          const nx = -Math.sin(q.ang), ny = Math.cos(q.ang);
+          return {
+            x: sx(q.x + nx * lateral),
+            y: sy(q.y + ny * lateral),
+            angle: q.ang,
+          };
+        });
+      }
 
       frames++;
       if (now - fpsAt >= 500) {
@@ -307,15 +351,17 @@ export default function RaceView({
         fpsAt = now;
       }
 
-      raf = requestAnimationFrame(frame);
+      if (!paused) raf = requestAnimationFrame(frame);
     };
 
-    raf = requestAnimationFrame(frame);
+    if (!paused) raf = requestAnimationFrame(frame);
+    else frame(performance.now());        // one last paint, then stop
+
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [reduce, onFps]);
+  }, [reduce, onFps, paused]);
 
   const setNode = (i: number, k: keyof Node) => (el: SVGGElement | null) => {
     nodesRef.current[i] = nodesRef.current[i] ?? { root: null, spin: null, squash: null };

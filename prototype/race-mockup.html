@@ -562,6 +562,9 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
           <strong>±0.25칸 안쪽에서 미세하게 엎치락뒤치락</strong>하게 했다.
           다수 쪽이 전진할 땐 차 뒤에서 <strong>흰 바람 줄기</strong>가, 부스터가 터질 땐
           <strong>불꽃이 화르륵</strong> 뿜어져 나온다.
+          바람은 <strong>화면이 아니라 트랙 좌표</strong>에 뿌린다 &mdash; 각 입자가
+          <span class="mono">(칸, 좌우 오프셋)</span>을 들고 뒤로 밀려나며 매 프레임 도로 위로 투영된다.
+          화면 좌표에서 직선으로 날리면 <strong>곡선 구간에서 바깥으로 튀어 나간다.</strong>
           단 <strong>불꽃이 바람에게 파티클 풀을 뺏긴다</strong> &mdash; 7대가 동시에 바람을 뿜으면
           풀이 바닥나서 하필 같은 프레임의 부스터가 자리를 못 잡는다.
           풀을 키우고 <strong>불꽃을 먼저 처리</strong>해야 하고, 이펙트는 연출 공개가 아니라
@@ -602,10 +605,14 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         </p>
       </div>
       <div class="card">
-        <h3>성능</h3>
+        <h3>60fps를 깎아먹은 것 셋</h3>
         <p>
-          <span class="mono">transform</span> / <span class="mono">opacity</span>만 애니메이트하고
-          파티클은 객체 풀링으로 재사용한다. 목표 60fps, 저사양에선 파티클 수 자동 감소.
+          <strong>파티클마다 <span class="mono">save/rotate/restore</span></strong> &mdash; 대시 중 60→41fps.
+          알파를 4단계로 버킷팅해 버킷당 <span class="mono">stroke()</span> 한 번으로 바꿨다.
+          <strong>파티클마다 <span class="mono">getPointAtLength</span> 2회</strong> &mdash; 바람 100개면 200회/프레임.
+          트랙을 칸당 4점으로 한 번만 샘플링해 보간한다.
+          <strong>결과 화면의 <span class="mono">backdrop-filter</span></strong> &mdash; <strong>25fps</strong>.
+          블러 뒤에서 캔버스가 계속 다시 그려지고 있었다. 게임이 끝나면 레이스 루프를 아예 멈춘다.
         </p>
       </div>
     </div>
@@ -882,13 +889,14 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         </span></span>
         <span class="phase-days">2일</span>
       </div>
-      <div class="phase key">
+      <div class="phase done">
         <span class="phase-n">PHASE 3</span>
-        <span><b>연출 다듬기 <span class="tick">진행 중</span></b><span>
-          <strong>완료</strong> &mdash; 상시 주행(트레드밀 폐기, 실제 전진), 엎치락뒤치락 jostle,
-          다수 전진 시 바람, 부스터 불꽃, 딜레마 카드 슬램 + VS.<br>
-          <strong>남음</strong> &mdash; 결과 공개 타임라인 전체, 사운드, 특수 라운드 연출,
-          올인 베팅 UI(현재는 자기 칸의 20% 자동), Phase 2에서 남긴 밸런스 이슈 재검토.
+        <span><b>연출 다듬기 <span class="tick">✓ 완료</span></b><span>
+          상시 주행, 엎치락뒤치락, 트랙을 따라 흐르는 바람, 부스터 불꽃, 카드 슬램 + VS,
+          도장 + 화면 흔들림, 집계 카운트업, 순위표 FLIP 재정렬, 특수 라운드 배너,
+          올인 베팅 슬라이더(10~50%), 그리고 <strong>파일 없이 전부 합성한 사운드</strong>.
+          <strong>밸런스는 다시 봤지만 규칙을 바꾸지 않았다</strong> &mdash; 특수 라운드를 더 늘리면
+          평범한 판이 6개밖에 안 남아 기본 리듬이 무너진다. 진짜 판단은 사람이 붙는 Phase 4에서 나온다.
         </span></span>
         <span class="phase-days">2일</span>
       </div>

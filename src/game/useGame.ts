@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { collectBotChoices } from "./bots";
 import {
-  applyOutcome, CELLS, ranked, resolveRound, roundKind, ROUNDS, TIME_LIMIT,
+  ALLIN_STAKE, applyOutcome, CELLS, ranked, resolveRound, roundKind, ROUNDS,
+  TIME_LIMIT,
 } from "./rules";
+import { play } from "../ui/sound";
 import { dealDeck, makePlayers } from "./setup";
 import type { Choice, Dilemma, Player, RoundOutcome } from "./types";
 
@@ -42,6 +44,7 @@ export function useGame() {
   const [myLockIndex, setMyLockIndex] = useState(-1);
   const [deadline, setDeadline] = useState(() => performance.now() + TIME_LIMIT * 1000);
   const [timedOut, setTimedOut] = useState(false);
+  const [stake, setStake] = useState(ALLIN_STAKE);
 
   const timers = useRef<number[]>([]);
   const botLockAt = useRef<number[]>([]);
@@ -87,17 +90,23 @@ export function useGame() {
 
       const botChoices = collectBotChoices(players, dilemma, kind);
       const choices: Record<number, Choice> = { ...botChoices, 0: choice };
-      const result = resolveRound(players, choices, kind);
+      // bots bet the default share; only the player picks one
+      const result = resolveRound(players, choices, kind, { 0: stake });
 
       setMyChoice(choice);
       setTimedOut(viaTimeout);
       setLockedCount(players.length);
       setOutcome(result);
       setPhase("reveal");
+      play("stamp");
 
       later(() => {
         setPhase("moving");
         setPlayers((prev) => applyOutcome(prev, result));
+        const mine = result.moves.find((m) => m.playerId === 0);
+        if (result.moves.some((m) => m.boosterFired)) play("flame");
+        else if (mine && mine.to > mine.from) play("dash");
+        else play("slump");
       }, REVEAL_MS);
 
       later(() => {
@@ -105,6 +114,7 @@ export function useGame() {
           const finished = prev.some((p) => p.pos >= CELLS);
           if (finished || round >= ROUNDS) {
             setPhase("done");
+            play("finish");
           } else {
             setRound((r) => r + 1);
           }
@@ -119,8 +129,15 @@ export function useGame() {
   useEffect(() => {
     if (phase !== "choosing") return;
     let raf = 0;
+    let lastTick = -1;
     const tick = () => {
       const now = performance.now();
+      const remain = (deadline - now) / 1000;
+      const whole = Math.ceil(remain);
+      if (whole <= 3 && whole >= 1 && whole !== lastTick) {
+        lastTick = whole;
+        play("tick");
+      }
       const lit = botLockAt.current.filter((t) => now >= t).length;
       setLockedCount((c) => (lit > c ? lit : c));
       if (now >= deadline) {
@@ -136,6 +153,7 @@ export function useGame() {
   const pick = useCallback(
     (choice: Choice) => {
       if (phase !== "choosing" || settled.current) return;
+      play("click");
       setMyLockIndex(lockedCount);
       settle(choice, false);
     },
@@ -147,6 +165,7 @@ export function useGame() {
     setDeck(dealDeck(ROUNDS));
     setPlayers(makePlayers());
     setRound(1);
+    setStake(ALLIN_STAKE);
     startRound(7);
   }, [startRound]);
 
@@ -154,6 +173,7 @@ export function useGame() {
     players, round, kind, dilemma, phase, outcome, myChoice,
     lockedCount, myLockIndex, deadline, timedOut,
     winner: phase === "done" ? ranked(players)[0] : null,
+    stake, setStake,
     pick, restart,
   };
 }
