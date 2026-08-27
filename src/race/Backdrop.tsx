@@ -22,6 +22,18 @@ export type Theme = {
   style: ThemeStyle;
 };
 
+/**
+ * Every band is built as an exact repetition of a tile, so the engine can
+ * scroll it forever by offsetting modulo the tile width. Without that the
+ * ambient cruise would eventually run off the end of the geometry.
+ */
+export function tileWidth(style: ThemeStyle, layer: 0 | 1 | 2) {
+  if (layer === 2) return 3 * 64;
+  if (style === "city") return layer === 0 ? cityTile(52) : cityTile(34);
+  if (style === "space") return 3 * (layer === 0 ? 220 : 140);
+  return 3 * (layer === 0 ? 190 : 118);
+}
+
 export const THEMES: Theme[] = [
   {
     id: "school", name: "새벽 학교",
@@ -53,17 +65,28 @@ export const THEMES: Theme[] = [
   },
 ];
 
-const SPAN = WORLD.w + 900;
-const ORIGIN = -450;
+const SPAN = WORLD.w + 1800;
+const ORIGIN = -600;
 const FLOOR = WORLD.h + 400;
 
 function hills(baseY: number, amp: number, stepX: number) {
   let d = `M ${ORIGIN} ${FLOOR} L ${ORIGIN} ${baseY}`;
+  let n = 0;
   for (let x = ORIGIN; x < ORIGIN + SPAN; x += stepX) {
-    const peak = baseY - amp * (0.6 + (((x - ORIGIN) / stepX) % 3) * 0.2);
+    const peak = baseY - amp * (0.6 + (n % 3) * 0.2);   // period: 3 steps
     d += ` Q ${x + stepX / 2} ${peak} ${x + stepX} ${baseY}`;
+    n++;
   }
   return d + ` L ${ORIGIN + SPAN} ${FLOOR} Z`;
+}
+
+// fixed five-building pattern, so the skyline repeats on an exact width
+const CITY_W = [0.9, 0.62, 1.05, 0.75, 0.88];
+const CITY_H = [0.55, 0.88, 0.38, 0.72, 0.98];
+const CITY_GAP = 0.22;
+
+function cityTile(stepX: number) {
+  return stepX * (CITY_W.reduce((a, b) => a + b, 0) + CITY_W.length * CITY_GAP);
 }
 
 function city(baseY: number, maxH: number, stepX: number) {
@@ -71,10 +94,10 @@ function city(baseY: number, maxH: number, stepX: number) {
   let x = ORIGIN;
   let i = 0;
   while (x < ORIGIN + SPAN) {
-    const w = stepX * (0.55 + ((i * 3) % 5) * 0.16);
-    const h = maxH * (0.32 + ((i * 7) % 9) * 0.085);
+    const w = stepX * CITY_W[i % CITY_W.length];
+    const h = maxH * CITY_H[i % CITY_H.length];
     d += ` L ${x} ${baseY - h} L ${x + w} ${baseY - h} L ${x + w} ${baseY}`;
-    x += w + stepX * 0.22;
+    x += w + stepX * CITY_GAP;
     i++;
   }
   return d + ` L ${ORIGIN + SPAN} ${FLOOR} Z`;
@@ -92,7 +115,7 @@ function band(style: ThemeStyle, layer: 0 | 1 | 2) {
 }
 
 /** deterministic star field, so it does not shimmer between renders */
-const STARS = Array.from({ length: 90 }, (_, i) => ({
+const STARS = Array.from({ length: 130 }, (_, i) => ({
   x: ORIGIN + ((i * 137) % SPAN),
   y: 6 + ((i * 53) % 130),
   r: 0.5 + ((i * 17) % 5) * 0.22,

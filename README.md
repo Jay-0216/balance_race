@@ -13,6 +13,7 @@ npm install
 npm run dev        # http://localhost:5173
 npm run build      # dist/ 생성
 npm run typecheck
+npm run simulate    # 1000판 밸런스 시뮬레이션
 ```
 
 `main`에 푸시하면 GitHub Actions가 GitHub Pages로 배포한다
@@ -20,5 +21,6 @@ npm run typecheck
 
 ## 현재 상태
 
-**Phase 1 완료** — 레이스 시각화 프로토타입이 돌아간다. `혼자 하기`에서 확인.
-다음은 Phase 2 — 딜레마 카드 40장, 라운드 상태머신, 봇 AI, 이동 규칙.
+**Phase 2 완료** — 봇 7명과 12라운드 실제 게임이 돌아간다. `혼자 하기`에서 확인.
+밸런스는 `npm run simulate`로 1000판 자동 대국을 돌려 검증한다.
+다음은 Phase 3 — 결과 공개 타임라인, 사운드, 특수 라운드 연출.

@@ -433,12 +433,27 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         <thead><tr><th>상황</th><th>이동</th><th>노림수</th></tr></thead>
         <tbody>
           <tr><td>기본</td><td class="val">+2칸</td><td>무난한 판</td></tr>
-          <tr><td>박빙 &mdash; 다수 51~60%</td><td class="val up">+3칸</td><td>아슬아슬하게 이기면 더 크게</td></tr>
-          <tr><td>압도 &mdash; 다수 80%↑</td><td class="val">+1칸</td><td>뻔한 선택은 이득이 적다</td></tr>
-          <tr><td>극소수 &mdash; 소수 25%↓</td><td class="val up">부스터</td><td>다음 라운드 다수면 +5칸</td></tr>
+          <tr><td>압도 &mdash; 다수 85%↑ (7-1, 8-0)</td><td class="val">+1칸</td><td>뻔한 선택은 이득이 적다</td></tr>
+          <tr><td>극소수 &mdash; 소수 30% 미만 (1~2명)</td><td class="val up">부스터</td><td>다음 라운드 다수면 +6칸</td></tr>
           <tr><td>동점</td><td class="val">전원 +1칸</td><td>아무도 못 읽은 판. 레이스는 멈추지 않는다</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">🔬 "박빙 +3칸"은 폐기했다 &mdash; 1000판 시뮬레이션</span>
+      <p>
+        <strong>8명에서 나올 수 있는 분할은 5-3(62.5%) / 6-2(75%) / 7-1(87.5%) / 8-0뿐이다.</strong>
+        "51~60%" 구간은 애초에 존재할 수 없어서 +3은 한 번도 발동하지 않는 죽은 코드였다.
+        임계값은 실제로 나올 수 있는 비율 사이에 놓아야 한다.
+      </p>
+      <p>
+        임계를 65%로 고쳐 5-3에 +3을 주자 <strong>오히려 순응형이 유리해졌다.</strong>
+        5-3의 5쪽은 결국 군중이고 순응형 봇이 거기 앉아 있기 때문이다 &mdash;
+        무난이 우승률 18.7% → 19.5%, 선두 교체 3.10회 → 2.46회.
+        좁게 이긴 쪽에 더 주는 건 <strong>읽은 사람이 아니라 따라간 사람에게 주는 보상</strong>이었다.
+        그래서 일반 승리는 일괄 +2, 눈치를 보상하는 무게는 전부 부스터로 옮겼다.
+      </p>
     </div>
 
     <div class="callout">
@@ -490,6 +505,16 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
           직선은 지루하다. SVG <span class="mono">&lt;path&gt;</span>로 구불구불하게 그리고
           <span class="mono">getPointAtLength(진행도 × 전체길이)</span>로 좌표를 뽑는다.
           같은 함수로 접선 각도까지 구해 캐릭터를 트랙 방향으로 기울인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>차는 항상 달린다 <span class="tick">✓ 구현</span></h3>
+        <p>
+          라운드 결과와 무관하게 주행감은 한순간도 끊기면 안 된다. 칸 위치는 점수라 못 건드리므로
+          <strong>움직이는 건 장식뿐이다</strong> &mdash; 배경 3겹을 각자의 배속으로 흘리고,
+          중앙선 <span class="mono">stroke-dashoffset</span>을 계속 밀고, 차는 미세하게 바운스하고,
+          정지 상태에서도 먼지를 뿜는다. 단, 배경 밴드는 <strong>타일이 정확히 반복</strong>되게 만들어야
+          <span class="mono">offset % 타일폭</span>으로 무한히 흘릴 수 있다.
         </p>
       </div>
       <div class="card">
@@ -783,12 +808,17 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         </span></span>
         <span class="phase-days">2~3일</span>
       </div>
-      <div class="phase">
+      <div class="phase done">
         <span class="phase-n">PHASE 2</span>
-        <span><b>싱글 게임 루프</b><span>
-          카드 40장, 라운드 상태머신, 봇 AI, 이동 규칙 + 부스터, 결과 화면.
-          끝나면 <strong>1000판 자동 시뮬레이션</strong>으로 우승자 분포를 확인한다 &mdash;
-          특정 성향이 항상 이기거나 순위가 초반에 굳으면 규칙을 고친다.
+        <span><b>싱글 게임 루프 <span class="tick">✓ 완료</span></b><span>
+          딜레마 40장, 라운드 상태머신, 봇 AI, 이동 규칙 + 부스터, 특수 라운드 3종, 결과 화면.
+          <span class="mono">game/</span>은 렌더링을 전혀 모르기 때문에 화면 없이 시뮬레이션할 수 있다 &mdash;
+          <span class="mono">npm run simulate</span>로 1000판.
+          <strong>결승선은 40칸에서 20칸으로 줄였다:</strong> 40칸에서는 12라운드 동안 1위가 평균 14칸까지밖에
+          못 가서 체커 깃발이 장식이었고, 배경 테마가 선두 진행도에 물려 있어서
+          <strong>4번째 테마(우주)를 실제 게임에서 아무도 못 보고 있었다.</strong>
+          20칸으로 줄이니 91.4%가 결승선에서 끝난다.
+          남은 이슈는 순응형 우승률 20.1% &mdash; 이상치 12.5%보다 높다.
         </span></span>
         <span class="phase-days">2일</span>
       </div>
@@ -844,7 +874,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function clamp(v, lo, hi){ return v < lo ? lo : v > hi ? hi : v; }
 
-  var CELLS = 40, ROUNDS = 12;
+  var CELLS = 20, ROUNDS = 12;
   var TRACK_W = 3400, TRACK_H = 240, VIEW_W = 1200;   // VIEW_W is recomputed from the stage aspect
 
   var CARDS = [
@@ -923,8 +953,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   // Four themes stacked, cross-faded by the leader's progress. The background
   // IS the progress bar - and the road palette has to travel with it, or the
   // road sinks into the ground the moment the backdrop brightens.
-  var ORIGIN = -600, SPAN = TRACK_W + 1200, FLOOR = TRACK_H + 400;
+  var ORIGIN = -600, SPAN = TRACK_W + 3600, FLOOR = TRACK_H + 400;
   var PARA = [0.2, 0.5, 1.2];
+  // Ambient cruise, world units per second. Cell positions are the score and
+  // never move for it - this scrolls the backdrop, the centre line and the
+  // dust, so the cars are always driving whatever the round decided.
+  var CRUISE = 120;
 
   var THEMES = [
     {id:"school", name:"새벽 학교", style:"hills",
@@ -951,16 +985,32 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     return p + " L " + (ORIGIN + SPAN) + " " + FLOOR + " Z";
   }
 
+  // fixed five-building pattern, so the skyline repeats on an exact width and
+  // the cruise can scroll it forever by offsetting modulo one tile
+  var CITY_W = [0.9, 0.62, 1.05, 0.75, 0.88], CITY_H = [0.55, 0.88, 0.38, 0.72, 0.98];
+  var CITY_GAP = 0.22;
+
+  function cityTile(stepX){
+    return stepX * (CITY_W.reduce(function(a, b){ return a + b; }, 0) + CITY_W.length * CITY_GAP);
+  }
+
   function cityPath(baseY, maxH, stepX){
     var p = "M " + ORIGIN + " " + FLOOR + " L " + ORIGIN + " " + baseY;
     var x = ORIGIN, n = 0;
     while (x < ORIGIN + SPAN){
-      var w = stepX * (0.55 + ((n * 3) % 5) * 0.16);
-      var h = maxH * (0.32 + ((n * 7) % 9) * 0.085);
+      var w = stepX * CITY_W[n % CITY_W.length];
+      var h = maxH * CITY_H[n % CITY_H.length];
       p += " L " + x + " " + (baseY - h) + " L " + (x + w) + " " + (baseY - h) + " L " + (x + w) + " " + baseY;
-      x += w + stepX * 0.22; n++;
+      x += w + stepX * CITY_GAP; n++;
     }
     return p + " L " + (ORIGIN + SPAN) + " " + FLOOR + " Z";
+  }
+
+  function tileWidth(style, layer){
+    if (layer === 2) return 3 * 182;
+    if (style === "city") return layer === 0 ? cityTile(148) : cityTile(96);
+    if (style === "space") return 3 * (layer === 0 ? 620 : 400);
+    return 3 * (layer === 0 ? 540 : 335);
   }
 
   function bandPath(style, layer){
@@ -1002,6 +1052,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     }
     world.appendChild(g);
     t.group = g;
+    t.tiles = [tileWidth(t.style, 0), tileWidth(t.style, 1), tileWidth(t.style, 2)];
   });
 
   function mixColors(list, weights){
@@ -1127,8 +1178,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     var speed = Math.min(1, Math.abs(r.draw - r.prevDraw) / 0.055);
     r.prevDraw = r.draw;
     if (!reduce){
+      // the bob rides on top of the squash so a car at rest still looks alive
+      var bob = Math.sin(performance.now() / 130 + r.lane * 1.7) * 0.7;
       r.squash.setAttribute("transform",
-        "scale(" + (1 + speed * 0.62) + " " + (1 - speed * 0.28) + ")");
+        "translate(0 " + bob + ") scale(" + (1 + speed * 0.62) + " " + (1 - speed * 0.28) + ")");
+      // a trickle of dust even at rest, so nobody ever looks parked
+      if (Math.random() < 0.07 + speed * 0.53) burst(r, "#6B7D89", 1);
       if (speed > 0.35){
         trail(r, r.color, CAR_W * 0.55);
         if (speed > 0.6 && Math.random() < 0.35) speedLine(r, r.color);
@@ -1155,23 +1210,30 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     return m;
   }
 
+  var startedAt = performance.now();
+  var cruise = 0;
+
   function paintTheme(){
     var weights = themeWeights(leadCells() / CELLS);
     for (var part = 0; part < 3; part++){
       roadEls[part].setAttribute("stroke",
         mixColors(THEMES.map(function(t){ return t.road[part]; }), weights));
     }
+    // the centre line runs backwards under the cars
+    lane.setAttribute("stroke-dashoffset", cruise % 40);
     for (var t = 0; t < THEMES.length; t++){
       THEMES[t].group.setAttribute("opacity", weights[t].toFixed(3));
       if (weights[t] <= 0) continue;
       for (var b = 0; b < 3; b++){
+        var drift = (cruise * PARA[b]) % THEMES[t].tiles[b];
         THEMES[t].bandEls[b].setAttribute("transform",
-          "translate(" + (camX * (1 - PARA[b])) + " 0)");
+          "translate(" + (camX * (1 - PARA[b]) - drift) + " 0)");
       }
     }
   }
 
   function frame(){
+    cruise = reduce ? 0 : (performance.now() - startedAt) / 1000 * CRUISE;
     camTarget = Math.max(0, Math.min(TRACK_W - VIEW_W, leadX() - VIEW_W * 0.42));
     camX += (camTarget - camX) * (reduce ? 1 : 0.08);
     svg.setAttribute("viewBox", camX + " 0 " + VIEW_W + " " + TRACK_H);
@@ -1427,7 +1489,10 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     var majority = na > nb ? "a" : "b";
     var share = Math.max(na, nb) / racers.length;
 
-    var gain = tie ? 1 : share >= 0.8 ? 1 : share <= 0.6 ? 3 : 2;
+    // 8명에서 나올 수 있는 분할은 5-3(62.5%) / 6-2(75%) / 7-1(87.5%) / 8-0뿐이라
+    // "박빙 51~60%" 구간은 애초에 발동할 수 없었고, 좁게 이긴 쪽에 더 주는 규칙은
+    // 결국 다수(=군중)를 도와서 순응형 봇의 우승률만 올렸다. 1000판 시뮬레이션 결과.
+    var gain = tie ? 1 : share >= 0.85 ? 1 : 2;
     var minorShare = 1 - share;
 
     racers.forEach(function(r){
@@ -1461,12 +1526,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
           return;
         }
         if (r.choice === majority){
-          var mv = r.boost ? 5 : gain;
+          var mv = r.boost ? 6 : gain;
           if (r.boost){ boosted.push(r.name); r.boost = false; }
           r.pos = Math.min(CELLS, r.pos + mv);
           animatePos(r, r.pos, 800);
           burst(r, r.me ? GOLD : "#93A3AE", 9);
-        } else if (minorShare < 0.25 && minorShare > 0){
+        } else if (minorShare < 0.3 && minorShare > 0){
           r.boost = true; gotBoost.push(r.name);
         }
       });
@@ -1474,10 +1539,9 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
       var msgs = [];
       if (timedOut) msgs.push("<b>시간 초과 &mdash; 자동 랜덤 선택</b>");
       msgs.push(tie ? "동점 &mdash; 아무도 못 읽었다 &rarr; 전원 +1칸"
-              : share >= 0.8 ? "압도 " + Math.round(share * 100) + "% &rarr; 다수 +1칸"
-              : share <= 0.6 ? "박빙 " + Math.round(share * 100) + "% &rarr; 다수 <b>+3칸</b>"
+              : share >= 0.85 ? "압도 " + Math.round(share * 100) + "% &rarr; 다수 +1칸"
               : "다수 " + Math.round(share * 100) + "% &rarr; +2칸");
-      if (boosted.length) msgs.push("<b>⚡ 부스터 터짐 &mdash; " + boosted.join(", ") + " +5칸</b>");
+      if (boosted.length) msgs.push("<b>⚡ 부스터 터짐 &mdash; " + boosted.join(", ") + " +6칸</b>");
       if (gotBoost.length) msgs.push("극소수 <b>" + gotBoost.join(", ") + "</b> 부스터 획득");
       note.innerHTML = msgs.join(" &nbsp;·&nbsp; ");
 

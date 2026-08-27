@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "simulate": "esbuild scripts/simulate.ts --bundle --platform=node --format=esm --loader:.json=json --outfile=node_modules/.tmp/sim.mjs --log-level=warning && node node_modules/.tmp/sim.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

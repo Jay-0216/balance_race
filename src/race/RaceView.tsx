@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Camera } from "./Camera";
 import { Particles } from "./Particles";
-import Backdrop, { PARALLAX_FACTORS, THEMES, mixColors, themeWeights } from "./Backdrop";
+import Backdrop, {
+  PARALLAX_FACTORS, THEMES, mixColors, themeWeights, tileWidth,
+} from "./Backdrop";
 import Car from "./Racer";
 import Track from "./Track";
-import { CAR, CELLS, LANE_GAP, LANE_STAGGER, WORLD, type RacerView } from "./world";
+import { CAR, CELLS, CRUISE, LANE_GAP, LANE_STAGGER, WORLD, type RacerView } from "./world";
 import "./RaceView.css";
 
 const MOVE_MS = 800;
@@ -115,9 +117,13 @@ export default function RaceView({
     const sx = (x: number) => ((x - vbX) / vbW) * px;
     const sy = (y: number) => ((y - vbY) / vbH) * py;
 
+    const factors = [PARALLAX_FACTORS.far, PARALLAX_FACTORS.mid, PARALLAX_FACTORS.near];
+    const tiles = THEMES.map((t) => [0, 1, 2].map((l) => tileWidth(t.style, l as 0 | 1 | 2)));
+
     let raf = 0;
     let frames = 0;
     let fpsAt = performance.now();
+    const t0 = performance.now();
 
     const frame = (now: number) => {
       const list = racersRef.current;
@@ -145,11 +151,9 @@ export default function RaceView({
       svg.setAttribute("viewBox", cam.viewBox());
 
       const camX = cam.x;
-      const shift = [
-        `translate(${camX * (1 - PARALLAX_FACTORS.far)} 0)`,
-        `translate(${camX * (1 - PARALLAX_FACTORS.mid)} 0)`,
-        `translate(${camX * (1 - PARALLAX_FACTORS.near)} 0)`,
-      ];
+      // The cars are always driving, whatever the round decided: the world
+      // treadmills past them. Cell positions - the score - never move for it.
+      const cruise = reduce ? 0 : ((now - t0) / 1000) * CRUISE;
       // theme follows the leader: the backdrop IS the progress bar
       const weights = themeWeights(lead / CELLS);
       for (let part = 0; part < 3; part++) {
@@ -158,12 +162,19 @@ export default function RaceView({
           mixColors(THEMES.map((t) => t.road[part]), weights)
         );
       }
+      // the centre line runs backwards under the cars - the cheapest and
+      // strongest "we are moving" cue there is
+      roadRefs.current[2]?.setAttribute("stroke-dashoffset", String(cruise % 25));
       for (let t = 0; t < THEMES.length; t++) {
         const g = themeRefs.current[t];
         if (g) g.setAttribute("opacity", weights[t].toFixed(3));
         if (weights[t] <= 0) continue;
         for (let b = 0; b < 3; b++) {
-          bandRefs.current[t][b]?.setAttribute("transform", shift[b]);
+          const drift = (cruise * factors[b]) % tiles[t][b];
+          bandRefs.current[t][b]?.setAttribute(
+            "transform",
+            `translate(${camX * (1 - factors[b]) - drift} 0)`
+          );
         }
       }
 
@@ -188,18 +199,22 @@ export default function RaceView({
         prevRef.current[i] = d;
         // A car stretching along its own length reads as motion blur, so this
         // can be pushed much further than it could on a circle.
+        // The bob rides on top of the squash so a car at rest still looks
+        // like it is running.
         if (!reduce && node.squash) {
+          const bob = Math.sin(now / 130 + i * 1.7) * 0.4;
           node.squash.setAttribute(
             "transform",
-            `scale(${1 + speed * 0.62} ${1 - speed * 0.28})`
+            `translate(0 ${bob}) scale(${1 + speed * 0.62} ${1 - speed * 0.28})`
           );
         }
 
-        if (!reduce && speed > 0.2) {
+        if (!reduce) {
           // spawn behind the racer, not on top of it
           const bx = wx - Math.cos(p.ang) * (CAR.len * 0.6);
           const by = wy - Math.sin(p.ang) * (CAR.len * 0.6);
-          if (Math.random() < 0.7) fx.dust(sx(bx), sy(by), 1, "#6b7d89");
+          // a trickle of dust even at rest, so nobody ever looks parked
+          if (Math.random() < 0.07 + speed * 0.63) fx.dust(sx(bx), sy(by), 1, "#6b7d89");
           if (speed > 0.35) {
             const scale = px / vbW;
             fx.trail(sx(bx), sy(by), CAR.w * scale * 0.42, list[i].color);

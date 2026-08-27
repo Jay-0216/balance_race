@@ -1,0 +1,37 @@
+.board {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+  row-gap: 2px;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: 14px 8px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  transition: background 0.3s ease;
+}
+.board-row.me { background: rgba(240, 180, 41, 0.12); }
+
+.board-rank {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.board-dot { width: 8px; height: 8px; border-radius: 99px; }
+.board-name { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-boost { font-size: 10px; }
+.board-pos {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}

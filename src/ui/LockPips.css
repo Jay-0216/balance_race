@@ -1,0 +1,21 @@
+.locks { display: flex; align-items: center; gap: 9px; }
+.pips { display: flex; gap: 3px; }
+
+.pip {
+  width: 5px;
+  height: 11px;
+  border-radius: 2px;
+  background: #2c373f;
+  transition: background 0.2s ease, transform 0.2s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.pip.on { background: var(--ink-3); transform: scaleY(1.18); }
+.pip.mine { background: var(--gold); }
+
+.locks-n {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

@@ -1,0 +1,47 @@
+[
+  { "id": "school_01", "category": "학교생활", "a": { "text": "숙제 안 하고 지금 놀기", "emoji": "🎮" }, "b": { "text": "숙제 먼저 하고 나중에 자유시간", "emoji": "📚" }, "popularBias": 0.38 },
+  { "id": "school_02", "category": "학교생활", "a": { "text": "시험 하루 전 벼락치기", "emoji": "🔥" }, "b": { "text": "매일 30분씩 미리 하기", "emoji": "📅" }, "popularBias": 0.41 },
+  { "id": "school_03", "category": "학교생활", "a": { "text": "발표 첫 번째로 하기", "emoji": "🙋" }, "b": { "text": "발표 마지막으로 하기", "emoji": "🫥" }, "popularBias": 0.44 },
+  { "id": "school_04", "category": "학교생활", "a": { "text": "체육 대신 자습", "emoji": "✏️" }, "b": { "text": "자습 대신 체육", "emoji": "⚽" }, "popularBias": 0.31 },
+  { "id": "school_05", "category": "학교생활", "a": { "text": "모둠과제 혼자 다 하기", "emoji": "😤" }, "b": { "text": "무임승차 참고 같이 하기", "emoji": "😑" }, "popularBias": 0.52 },
+  { "id": "school_06", "category": "학교생활", "a": { "text": "아침 7시 등교 5시 하교", "emoji": "🌅" }, "b": { "text": "10시 등교 8시 하교", "emoji": "🌙" }, "popularBias": 0.46 },
+  { "id": "school_07", "category": "학교생활", "a": { "text": "수행평가만 있는 학교", "emoji": "📝" }, "b": { "text": "지필시험만 있는 학교", "emoji": "🖊️" }, "popularBias": 0.58 },
+  { "id": "school_08", "category": "학교생활", "a": { "text": "급식 맛있고 시간 10분", "emoji": "🍚" }, "b": { "text": "급식 별로고 시간 40분", "emoji": "🥣" }, "popularBias": 0.49 },
+
+  { "id": "friend_01", "category": "인간관계", "a": { "text": "친구 비밀 지켜주기", "emoji": "🤐" }, "b": { "text": "친구 위해 어른한테 말하기", "emoji": "🗣️" }, "popularBias": 0.55 },
+  { "id": "friend_02", "category": "인간관계", "a": { "text": "단톡방 읽씹하기", "emoji": "👀" }, "b": { "text": "영혼 없이 답장하기", "emoji": "🙂" }, "popularBias": 0.33 },
+  { "id": "friend_03", "category": "인간관계", "a": { "text": "친구 100명 얕게 알기", "emoji": "🌐" }, "b": { "text": "친구 2명 깊게 알기", "emoji": "🤝" }, "popularBias": 0.27 },
+  { "id": "friend_04", "category": "인간관계", "a": { "text": "솔직하게 말해서 상처 주기", "emoji": "💬" }, "b": { "text": "돌려 말해서 오해 남기기", "emoji": "🌀" }, "popularBias": 0.61 },
+  { "id": "friend_05", "category": "인간관계", "a": { "text": "먼저 사과하기", "emoji": "🙇" }, "b": { "text": "사과 올 때까지 기다리기", "emoji": "⏳" }, "popularBias": 0.64 },
+  { "id": "friend_06", "category": "인간관계", "a": { "text": "생일 다 같이 시끄럽게", "emoji": "🎉" }, "b": { "text": "생일 아무도 모르게", "emoji": "🤫" }, "popularBias": 0.53 },
+  { "id": "friend_07", "category": "인간관계", "a": { "text": "내 험담 내용 알기", "emoji": "😰" }, "b": { "text": "평생 모르고 살기", "emoji": "🫣" }, "popularBias": 0.57 },
+  { "id": "friend_08", "category": "인간관계", "a": { "text": "친구 돈 빌려주고 못 받기", "emoji": "💸" }, "b": { "text": "안 빌려주고 사이 어색해지기", "emoji": "🧊" }, "popularBias": 0.48 },
+
+  { "id": "food_01", "category": "먹을거", "a": { "text": "평생 치킨만", "emoji": "🍗" }, "b": { "text": "평생 피자만", "emoji": "🍕" }, "popularBias": 0.62 },
+  { "id": "food_02", "category": "먹을거", "a": { "text": "매운 거 못 먹는 몸", "emoji": "🌶️" }, "b": { "text": "단 거 못 먹는 몸", "emoji": "🍰" }, "popularBias": 0.42 },
+  { "id": "food_03", "category": "먹을거", "a": { "text": "탕수육 부먹", "emoji": "🥢" }, "b": { "text": "탕수육 찍먹", "emoji": "🍶" }, "popularBias": 0.35 },
+  { "id": "food_04", "category": "먹을거", "a": { "text": "민트초코 매일 한 개", "emoji": "🍫" }, "b": { "text": "민트초코 평생 금지", "emoji": "🚫" }, "popularBias": 0.37 },
+  { "id": "food_05", "category": "먹을거", "a": { "text": "라면에 밥 말기", "emoji": "🍜" }, "b": { "text": "라면은 라면만", "emoji": "🥡" }, "popularBias": 0.66 },
+  { "id": "food_06", "category": "먹을거", "a": { "text": "맛없는데 양 많이", "emoji": "🍽️" }, "b": { "text": "맛있는데 양 적게", "emoji": "🥄" }, "popularBias": 0.34 },
+
+  { "id": "moral_01", "category": "도덕적 딜레마", "a": { "text": "주운 돈 주인 찾아주기", "emoji": "🔍" }, "b": { "text": "조용히 기부하기", "emoji": "🎁" }, "popularBias": 0.71 },
+  { "id": "moral_02", "category": "도덕적 딜레마", "a": { "text": "커닝 본 걸 신고하기", "emoji": "✋" }, "b": { "text": "못 본 척하기", "emoji": "🙈" }, "popularBias": 0.39 },
+  { "id": "moral_03", "category": "도덕적 딜레마", "a": { "text": "거짓말로 친구 지키기", "emoji": "🛡️" }, "b": { "text": "사실대로 말하기", "emoji": "⚖️" }, "popularBias": 0.56 },
+  { "id": "moral_04", "category": "도덕적 딜레마", "a": { "text": "줄 서서 1시간 기다리기", "emoji": "🧍" }, "b": { "text": "아는 사람 껴서 새치기", "emoji": "🏃" }, "popularBias": 0.74 },
+  { "id": "moral_05", "category": "도덕적 딜레마", "a": { "text": "모두가 조금씩 손해", "emoji": "😐" }, "b": { "text": "한 명만 크게 손해", "emoji": "😢" }, "popularBias": 0.77 },
+  { "id": "moral_06", "category": "도덕적 딜레마", "a": { "text": "칭찬받는 착한 일", "emoji": "🏅" }, "b": { "text": "아무도 모르는 착한 일", "emoji": "🌱" }, "popularBias": 0.43 },
+
+  { "id": "future_01", "category": "미래·진로", "a": { "text": "좋아하는 일 하며 평범하게", "emoji": "🎨" }, "b": { "text": "관심 없는 일 하며 부자로", "emoji": "💰" }, "popularBias": 0.66 },
+  { "id": "future_02", "category": "미래·진로", "a": { "text": "10년 뒤 내 모습 보기", "emoji": "🔮" }, "b": { "text": "모르고 살기", "emoji": "🚪" }, "popularBias": 0.51 },
+  { "id": "future_03", "category": "미래·진로", "a": { "text": "천재인데 노력 못 하는 사람", "emoji": "🧠" }, "b": { "text": "평범한데 끝까지 하는 사람", "emoji": "🐢" }, "popularBias": 0.29 },
+  { "id": "future_04", "category": "미래·진로", "a": { "text": "한 분야 최고 전문가", "emoji": "🎯" }, "b": { "text": "여러 분야 두루 잘함", "emoji": "🧩" }, "popularBias": 0.47 },
+  { "id": "future_05", "category": "미래·진로", "a": { "text": "유명하지만 사생활 없음", "emoji": "📸" }, "b": { "text": "무명이지만 자유로움", "emoji": "🕊️" }, "popularBias": 0.24 },
+  { "id": "future_06", "category": "미래·진로", "a": { "text": "20살로 10년 더 살기", "emoji": "⏪" }, "b": { "text": "지금부터 쭉 나이 들기", "emoji": "⏩" }, "popularBias": 0.59 },
+
+  { "id": "silly_01", "category": "완전 헛소리", "a": { "text": "손이 발이 되기", "emoji": "🖐️" }, "b": { "text": "발이 손이 되기", "emoji": "🦶" }, "popularBias": 0.44 },
+  { "id": "silly_02", "category": "완전 헛소리", "a": { "text": "말할 때마다 노래로", "emoji": "🎤" }, "b": { "text": "말할 때마다 랩으로", "emoji": "🎧" }, "popularBias": 0.46 },
+  { "id": "silly_03", "category": "완전 헛소리", "a": { "text": "평생 존댓말만", "emoji": "🙏" }, "b": { "text": "평생 반말만", "emoji": "😎" }, "popularBias": 0.54 },
+  { "id": "silly_04", "category": "완전 헛소리", "a": { "text": "머리가 3배 커지기", "emoji": "🗿" }, "b": { "text": "손이 3배 커지기", "emoji": "🧤" }, "popularBias": 0.32 },
+  { "id": "silly_05", "category": "완전 헛소리", "a": { "text": "1시간 일찍 미래로", "emoji": "⏱️" }, "b": { "text": "1시간 늦게 과거로", "emoji": "🕰️" }, "popularBias": 0.5 },
+  { "id": "silly_06", "category": "완전 헛소리", "a": { "text": "투명인간 되기", "emoji": "👻" }, "b": { "text": "하늘 날기", "emoji": "🪽" }, "popularBias": 0.36 }
+]

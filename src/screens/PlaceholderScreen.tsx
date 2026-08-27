@@ -5,7 +5,7 @@ import "./PlaceholderScreen.css";
  * Phase 0 ships the frame, not the game. Each route says which phase
  * fills it in so the shell is never mistaken for a broken build.
  */
-type Pending = Exclude<Screen, "title" | "solo">;
+type Pending = Exclude<Screen, "title" | "solo" | "proto">;
 
 const PENDING: Record<Pending, { title: string; phase: string }> = {
   host: { title: "방 만들기", phase: "Phase 4 — 온라인 멀티" },

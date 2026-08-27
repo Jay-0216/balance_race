@@ -5,11 +5,19 @@
  * view is ~260 units wide. At 20.5 units per cell that shows ~13 cells - the
  * pack plus enough road ahead to see who is pulling away.
  */
-export const WORLD = { w: 1200, h: 250 } as const;
+export const WORLD = { w: 660, h: 250 } as const;
 
 export const CELLS = 40;
 export const LANE_GAP = 13;
 export const RACER_R = 7;
+/**
+ * Ambient cruise, world units per second. Cell positions are the score and
+ * must never drift, so nothing about the race geometry moves with this - it
+ * scrolls the backdrop, the centre line and the dust instead. The cars are
+ * always driving; the round only decides who pulls ahead.
+ */
+export const CRUISE = 40;
+
 /** chassis size in world units - 15px on a phone at the default zoom */
 export const CAR = { len: 17, w: 9 } as const;
 export const ROAD_W = 112;
@@ -17,12 +25,12 @@ export const ROAD_W = 112;
  *  0.125 of a cell - visible separation, no misread of who is ahead. */
 export const LANE_STAGGER = 3.5;
 
-export const TRACK_START = 50;
-export const TRACK_END = 1160;
+export const TRACK_START = 40;
+export const TRACK_END = 620;
 
 /** A deterministic wave, so the track is the same every run. */
 export function buildTrackPath(): string {
-  const segs = 7;
+  const segs = 4;
   const step = (TRACK_END - TRACK_START) / segs;
   let y = WORLD.h / 2;
   let d = `M ${TRACK_START} ${y}`;
