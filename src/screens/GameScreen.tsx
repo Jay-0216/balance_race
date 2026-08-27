@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useGame } from "../game/useGame";
 import { CELLS, KIND_LABEL, ROUNDS, TIME_LIMIT } from "../game/rules";
 import RaceView from "../race/RaceView";
+import type { RaceEffect } from "../race/effects";
 import type { RacerView } from "../race/world";
 import DilemmaCard from "../ui/DilemmaCard";
 import Leaderboard from "../ui/Leaderboard";
@@ -15,6 +16,21 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
   const g = useGame();
   const [fps, setFps] = useState(0);
   const onFps = useCallback((v: number) => setFps(v), []);
+
+  // Winners get a gust, booster holders get a flare. Keyed on the round so the
+  // race view replays them exactly once.
+  const effects: RaceEffect[] = useMemo(() => {
+    // only once the cars actually dash - fired at reveal they were over
+    // before anyone had moved
+    if (!g.outcome || g.phase !== "moving") return [];
+    return g.outcome.moves
+      .filter((m) => m.to > m.from)
+      .map((m) => ({
+        key: g.round * 100 + m.playerId,
+        playerId: m.playerId,
+        kind: m.boosterFired ? ("booster" as const) : ("advance" as const),
+      }));
+  }, [g.outcome, g.phase, g.round]);
 
   const racers: RacerView[] = useMemo(
     () => g.players.map((p) => ({
@@ -37,7 +53,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       </header>
 
       <div className="game-stage">
-        <RaceView racers={racers} onFps={onFps} />
+        <RaceView racers={racers} effects={effects} onFps={onFps} />
         <div className="game-hud">
           <Timer
             endAt={g.deadline}
@@ -60,6 +76,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         </div>
 
         <DilemmaCard
+          key={g.dilemma.id + g.round}
           dilemma={g.dilemma}
           disabled={g.phase !== "choosing"}
           picked={g.myChoice}

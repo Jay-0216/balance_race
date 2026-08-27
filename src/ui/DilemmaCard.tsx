@@ -1,6 +1,11 @@
 import type { Choice, Dilemma } from "../game/types";
 import "./DilemmaCard.css";
 
+/**
+ * The two options are flung in from opposite edges, collide in the middle,
+ * and shove each other back into place; VS pops out of the impact and settles
+ * where they met. Remount the component (key on the round) to replay it.
+ */
 export default function DilemmaCard({
   dilemma,
   disabled,
@@ -30,6 +35,7 @@ export default function DilemmaCard({
           </button>
         );
       })}
+      <span className="vs" aria-hidden="true">VS</span>
     </div>
   );
 }

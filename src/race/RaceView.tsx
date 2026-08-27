@@ -1,12 +1,15 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { Camera } from "./Camera";
 import { Particles } from "./Particles";
-import Backdrop, {
-  PARALLAX_FACTORS, THEMES, mixColors, themeWeights, tileWidth,
-} from "./Backdrop";
+import Backdrop, { PARALLAX_FACTORS, THEMES, mixColors, themeWeights } from "./Backdrop";
+import Markers, { TICKS } from "./Markers";
+import type { RaceEffect } from "./effects";
 import Car from "./Racer";
 import Track from "./Track";
-import { CAR, CELLS, CRUISE, LANE_GAP, LANE_STAGGER, WORLD, type RacerView } from "./world";
+import {
+  CAR, CELLS, CRUISE, LANE_GAP, LANE_STAGGER, LEAD_CELLS, TRACK_CELLS, WORLD,
+  type RacerView,
+} from "./world";
 import "./RaceView.css";
 
 const MOVE_MS = 800;
@@ -22,9 +25,12 @@ type Node = {
 
 export default function RaceView({
   racers,
+  effects,
   onFps,
 }: {
   racers: RacerView[];
+  /** one-shot flourishes: a gust for the winners, a flare for a booster */
+  effects?: RaceEffect[];
   onFps?: (fps: number) => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -43,9 +49,11 @@ export default function RaceView({
   const tweenRef = useRef<(Tween | null)[]>(racers.map(() => null));
   const racersRef = useRef(racers);
 
-  const [ticks, setTicks] = useState<
-    { x: number; y: number; cell: number; finish: boolean }[]
-  >([]);
+  const tickRefs = useRef<(SVGGElement | null)[]>([]);
+  const startRef = useRef<SVGGElement | null>(null);
+  const finishRef = useRef<SVGGElement | null>(null);
+  const activeFx = useRef<{ playerId: number; kind: RaceEffect["kind"]; until: number }[]>([]);
+  const seenFx = useRef(new Set<number>());
 
   const reduce =
     typeof window !== "undefined" &&
@@ -68,6 +76,21 @@ export default function RaceView({
   }, [racers]);
 
   useEffect(() => {
+    if (!effects?.length) return;
+    const now = performance.now();
+    for (const e of effects) {
+      if (seenFx.current.has(e.key)) continue;
+      seenFx.current.add(e.key);
+      activeFx.current.push({
+        playerId: e.playerId,
+        kind: e.kind,
+        until: now + (e.kind === "booster" ? 950 : 700),
+      });
+    }
+    if (seenFx.current.size > 400) seenFx.current.clear();
+  }, [effects]);
+
+  useEffect(() => {
     const box = boxRef.current;
     const svg = svgRef.current;
     const canvas = canvasRef.current;
@@ -80,22 +103,15 @@ export default function RaceView({
     const cam = camRef.current;
     const fx = fxRef.current;
     const len = measure.getTotalLength();
-    const usable = len - 6;
+    const cellLen = len / (TRACK_CELLS + LEAD_CELLS);
 
+    // cell 0 sits LEAD_CELLS into the path, so there is road behind the grid
     const at = (cells: number) => {
-      const l = Math.max(0, Math.min(1, cells / CELLS)) * usable;
+      const l = Math.max(0, Math.min(len - 2, (cells + LEAD_CELLS) * cellLen));
       const p = measure.getPointAtLength(l);
       const q = measure.getPointAtLength(Math.min(len, l + 1));
       return { x: p.x, y: p.y, ang: Math.atan2(q.y - p.y, q.x - p.x) };
     };
-
-    setTicks(
-      Array.from({ length: Math.floor(CELLS / 5) }, (_, i) => {
-        const cell = (i + 1) * 5;
-        const p = at(cell);
-        return { x: p.x, y: p.y, cell, finish: cell === CELLS };
-      })
-    );
 
     let px = 0, py = 0, dpr = 1;
     const resize = () => {
@@ -118,7 +134,6 @@ export default function RaceView({
     const sy = (y: number) => ((y - vbY) / vbH) * py;
 
     const factors = [PARALLAX_FACTORS.far, PARALLAX_FACTORS.mid, PARALLAX_FACTORS.near];
-    const tiles = THEMES.map((t) => [0, 1, 2].map((l) => tileWidth(t.style, l as 0 | 1 | 2)));
 
     let raf = 0;
     let frames = 0;
@@ -127,6 +142,13 @@ export default function RaceView({
 
     const frame = (now: number) => {
       const list = racersRef.current;
+
+      // Everything on the road - cars, ticks, the finish - is drawn at
+      // (score + cruise), so the field genuinely drives forward while the gaps
+      // between them stay exactly the score.
+      const cruise = reduce
+        ? 0
+        : Math.min(TRACK_CELLS - CELLS - 4, ((now - t0) / 1000) * CRUISE);
 
       for (let i = 0; i < list.length; i++) {
         const tw = tweenRef.current[i];
@@ -142,8 +164,8 @@ export default function RaceView({
         if (d > lead) lead = d;
         if (d < last) last = d;
       }
-      const leadPt = at(lead);
-      const lastPt = at(last);
+      const leadPt = at(lead + cruise);
+      const lastPt = at(last + cruise);
       cam.update(leadPt.x, lastPt.x, !reduce);
 
       const vb = cam.viewBox().split(" ").map(Number);
@@ -151,9 +173,6 @@ export default function RaceView({
       svg.setAttribute("viewBox", cam.viewBox());
 
       const camX = cam.x;
-      // The cars are always driving, whatever the round decided: the world
-      // treadmills past them. Cell positions - the score - never move for it.
-      const cruise = reduce ? 0 : ((now - t0) / 1000) * CRUISE;
       // theme follows the leader: the backdrop IS the progress bar
       const weights = themeWeights(lead / CELLS);
       for (let part = 0; part < 3; part++) {
@@ -162,21 +181,40 @@ export default function RaceView({
           mixColors(THEMES.map((t) => t.road[part]), weights)
         );
       }
-      // the centre line runs backwards under the cars - the cheapest and
-      // strongest "we are moving" cue there is
-      roadRefs.current[2]?.setAttribute("stroke-dashoffset", String(cruise % 25));
       for (let t = 0; t < THEMES.length; t++) {
         const g = themeRefs.current[t];
         if (g) g.setAttribute("opacity", weights[t].toFixed(3));
         if (weights[t] <= 0) continue;
         for (let b = 0; b < 3; b++) {
-          const drift = (cruise * factors[b]) % tiles[t][b];
           bandRefs.current[t][b]?.setAttribute(
             "transform",
-            `translate(${camX * (1 - factors[b]) - drift} 0)`
+            `translate(${camX * (1 - factors[b])} 0)`
           );
         }
       }
+
+      for (let i = 0; i < TICKS.length; i++) {
+        const g = tickRefs.current[i];
+        if (!g) continue;
+        const mp = at(TICKS[i] + cruise);
+        g.setAttribute("transform", `translate(${mp.x} ${mp.y}) rotate(${(mp.ang * 180) / Math.PI})`);
+      }
+      if (startRef.current) {
+        const sp = at(cruise);
+        startRef.current.setAttribute(
+          "transform",
+          `translate(${sp.x} ${sp.y}) rotate(${(sp.ang * 180) / Math.PI})`
+        );
+      }
+      if (finishRef.current) {
+        const fp = at(CELLS + cruise);
+        finishRef.current.setAttribute(
+          "transform",
+          `translate(${fp.x} ${fp.y}) rotate(${(fp.ang * 180) / Math.PI})`
+        );
+      }
+
+      const seats = new Map<number, { x: number; y: number; ang: number }>();
 
       for (let i = 0; i < list.length; i++) {
         const node = nodesRef.current[i];
@@ -184,12 +222,19 @@ export default function RaceView({
 
         const d = drawRef.current[i] ?? 0;
         const lane = i - (list.length - 1) / 2;
-        const p = at(d);
+        // A touch of jostle so the pack is never a rigid formation - they
+        // trade half a cell back and forth the whole way down the road.
+        const jostle = reduce
+          ? 0
+          : Math.sin(now / (620 + i * 47) + i * 2.1) * 0.16 +
+            Math.sin(now / (1130 + i * 83) + i) * 0.09;
+        const p = at(d + cruise + jostle);
         const nx = -Math.sin(p.ang), ny = Math.cos(p.ang);
         const stagger = (i % 2 === 0 ? 1 : -1) * LANE_STAGGER;
         const wx = p.x + nx * lane * LANE_GAP + Math.cos(p.ang) * stagger;
         const wy = p.y + ny * lane * LANE_GAP + Math.sin(p.ang) * stagger;
 
+        seats.set(list[i].id, { x: sx(wx), y: sy(wy), ang: p.ang });
         node.root.setAttribute("transform", `translate(${wx} ${wy})`);
         node.spin?.setAttribute("transform", `rotate(${(p.ang * 180) / Math.PI})`);
 
@@ -222,6 +267,34 @@ export default function RaceView({
           if (speed > 0.6 && Math.random() < 0.35) {
             fx.speedLine(sx(wx), sy(wy), list[i].color);
           }
+        }
+      }
+
+      // one-shot flourishes: a gust behind whoever won the round, a flare for
+      // a booster. They ride on top of the ordinary dust, never replace it.
+      if (!reduce && activeFx.current.length) {
+        activeFx.current = activeFx.current.filter((e) => e.until > now);
+        // boosters first: they must never be starved of pool slots by the
+        // gusts firing in the same frame
+        for (const e of activeFx.current) {
+          if (e.kind !== "booster") continue;
+          const seat = seats.get(e.playerId);
+          if (!seat) continue;
+          fx.flame(
+            seat.x - Math.cos(seat.ang) * 13,
+            seat.y - Math.sin(seat.ang) * 13,
+            seat.ang, 12
+          );
+        }
+        for (const e of activeFx.current) {
+          if (e.kind !== "advance") continue;
+          const seat = seats.get(e.playerId);
+          if (!seat) continue;
+          fx.wind(
+            seat.x - Math.cos(seat.ang) * 13,
+            seat.y - Math.sin(seat.ang) * 13,
+            seat.ang, 3
+          );
         }
       }
 
@@ -271,10 +344,11 @@ export default function RaceView({
         aria-hidden="true"
       >
         <Backdrop themeRef={setTheme} bandRef={setBand} />
-        <Track
-          measureRef={(el) => (measureRef.current = el)}
-          roadRef={setRoad}
-          tickPoints={ticks}
+        <Track measureRef={(el) => (measureRef.current = el)} roadRef={setRoad} />
+        <Markers
+          tickRef={(i) => (el) => (tickRefs.current[i] = el)}
+          startRef={(el) => (startRef.current = el)}
+          finishRef={(el) => (finishRef.current = el)}
         />
 
         {racers.map((r, i) => (

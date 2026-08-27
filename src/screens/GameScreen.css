@@ -89,7 +89,7 @@
 /* The panel is taller than its content on a big phone. Rather than leaving a
    pool of dead space under everything, the choices take the slack and the
    board sits on the bottom edge where a scoreboard belongs. */
-.game-panel .choices { flex: 1 1 auto; max-height: 210px; }
+.game-panel .choices { flex: 1 1 auto; max-height: 260px; }
 .game-panel .choice { min-height: 132px; justify-content: center; }
 .game-panel .board { margin-top: auto; padding-top: 4px; }
 

@@ -12,7 +12,12 @@ export class Particles {
   private pool: Particle[] = [];
   private cursor = 0;
 
-  constructor(size = 260) {
+  /**
+   * Sized for the worst case: seven cars gusting at once will happily eat a
+   * small pool, and the booster flare - which fires in the same frame and is
+   * the most important thing on screen - was losing the race for slots.
+   */
+  constructor(size = 560) {
     for (let i = 0; i < size; i++) {
       this.pool.push({
         on: false, x: 0, y: 0, vx: 0, vy: 0,
@@ -76,6 +81,48 @@ export class Particles {
     p.gravity = 0.001;
   }
 
+  /**
+   * A gust behind a car that just won the round: long, fast, fading streaks
+   * that read as the air being shoved out of the way.
+   */
+  wind(x: number, y: number, angle: number, n: number) {
+    for (let i = 0; i < n; i++) {
+      const p = this.take();
+      if (!p) return;
+      const spread = (Math.random() - 0.5) * 26;
+      p.on = true;
+      p.x = x - Math.cos(angle) * Math.random() * 16 - Math.sin(angle) * spread;
+      p.y = y - Math.sin(angle) * Math.random() * 16 + Math.cos(angle) * spread;
+      const sp = 6 + Math.random() * 7;
+      p.vx = -Math.cos(angle) * sp;
+      p.vy = -Math.sin(angle) * sp;
+      p.max = p.life = 10 + Math.random() * 9;
+      p.r = 0.9 + Math.random() * 1.3;
+      p.color = "#dbe6ee";
+      p.gravity = 0;
+    }
+  }
+
+  /** Booster: a flare that erupts backwards and upwards, hot core first. */
+  flame(x: number, y: number, angle: number, n: number) {
+    const hues = ["#fff2c4", "#ffd24a", "#ff9d2e", "#f4562a", "#c22f1a"];
+    for (let i = 0; i < n; i++) {
+      const p = this.take();
+      if (!p) return;
+      const t = i / n;
+      const spray = angle + Math.PI + (Math.random() - 0.5) * 1.1;
+      const sp = 1.6 + Math.random() * 5.5;
+      p.on = true;
+      p.x = x; p.y = y;
+      p.vx = Math.cos(spray) * sp;
+      p.vy = Math.sin(spray) * sp - 1.4;
+      p.max = p.life = 24 + Math.random() * 30;
+      p.r = 2.1 + (1 - t) * 5.4;
+      p.color = hues[Math.min(hues.length - 1, Math.floor(t * hues.length))];
+      p.gravity = -0.05;              // heat rises
+    }
+  }
+
   burst(x: number, y: number, n: number, color: string) {
     for (let i = 0; i < n; i++) {
       const p = this.take();
@@ -104,10 +151,10 @@ export class Particles {
       p.life--;
       if (p.life <= 0) { p.on = false; continue; }
 
-      ctx.globalAlpha = Math.max(0, p.life / p.max) * 0.55;
+      ctx.globalAlpha = Math.max(0, p.life / p.max) * (p.gravity === 0 ? 0.85 : 0.55);
       ctx.fillStyle = p.color;
       if (p.gravity === 0) {
-        ctx.fillRect(p.x, p.y, 14, p.r);       // speed line
+        ctx.fillRect(p.x, p.y, 26, p.r * 1.4); // wind streak / speed line
       } else {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);

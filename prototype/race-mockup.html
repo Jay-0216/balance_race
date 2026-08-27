@@ -158,7 +158,42 @@ a{color:var(--b)}
   font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.06em;
   color:var(--screen-ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;
 }
-.choices{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.choices{position:relative; display:grid; grid-template-columns:1fr 1fr; gap:22px}
+
+/* entrance: the two cards collide and VS pops out of the impact.
+   They meet at 38%, so VS starts there and overshoots while they recoil. */
+.choices.slam .choice{animation:slam-a .62s cubic-bezier(.3,.9,.3,1) both}
+.choices.slam .choice[data-side="b"]{animation-name:slam-b}
+@keyframes slam-a{
+  0%{transform:translateX(-260%) rotate(-7deg); opacity:0}
+  10%{opacity:1}
+  38%{transform:translateX(22%) rotate(1.5deg)}
+  52%{transform:translateX(-6%) rotate(-1deg)}
+  72%{transform:translateX(2%)}
+  100%{transform:translateX(0) rotate(0)}
+}
+@keyframes slam-b{
+  0%{transform:translateX(260%) rotate(7deg); opacity:0}
+  10%{opacity:1}
+  38%{transform:translateX(-22%) rotate(-1.5deg)}
+  52%{transform:translateX(6%) rotate(1deg)}
+  72%{transform:translateX(-2%)}
+  100%{transform:translateX(0) rotate(0)}
+}
+.vs{
+  position:absolute; left:50%; top:50%; z-index:2;
+  font-family:"IBM Plex Mono",monospace; font-size:15px; font-weight:600;
+  color:var(--gold-lit); text-shadow:0 2px 10px rgba(0,0,0,.7); pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+.choices.slam .vs{animation:vs-pop .62s cubic-bezier(.2,1.7,.4,1) both}
+@keyframes vs-pop{
+  0%,36%{transform:translate(-50%,-50%) scale(.2); opacity:0}
+  46%{transform:translate(-50%,-50%) scale(1.75) rotate(-8deg); opacity:1}
+  60%{transform:translate(-50%,-50%) scale(.86) rotate(3deg)}
+  76%{transform:translate(-50%,-50%) scale(1.08) rotate(-1deg)}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0); opacity:1}
+}
 .choice{
   font-family:inherit; font-size:14px; font-weight:500; line-height:1.45; text-align:left;
   color:var(--screen-ink); background:rgba(255,255,255,.04);
@@ -389,9 +424,10 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
           <span class="locks-n" id="locksN">0 / 8 선택</span>
         </span>
       </div>
-      <div class="choices">
+      <div class="choices" id="choices">
         <button class="choice" data-side="a" id="btnA"><span class="tag">A</span><span id="txtA"></span></button>
         <button class="choice" data-side="b" id="btnB"><span class="tag">B</span><span id="txtB"></span></button>
+        <span class="vs" aria-hidden="true">VS</span>
       </div>
       <div class="tally" id="tally">
         <div class="tally-bar">
@@ -508,13 +544,28 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         </p>
       </div>
       <div class="card">
-        <h3>차는 항상 달린다 <span class="tick">✓ 구현</span></h3>
+        <h3>차는 실제로 간다 <span class="tick">✓ 구현</span></h3>
         <p>
-          라운드 결과와 무관하게 주행감은 한순간도 끊기면 안 된다. 칸 위치는 점수라 못 건드리므로
-          <strong>움직이는 건 장식뿐이다</strong> &mdash; 배경 3겹을 각자의 배속으로 흘리고,
-          중앙선 <span class="mono">stroke-dashoffset</span>을 계속 밀고, 차는 미세하게 바운스하고,
-          정지 상태에서도 먼지를 뿜는다. 단, 배경 밴드는 <strong>타일이 정확히 반복</strong>되게 만들어야
-          <span class="mono">offset % 타일폭</span>으로 무한히 흘릴 수 있다.
+          처음엔 배경만 흘리는 <strong>트레드밀</strong>로 만들었는데 두 군데서 틀어졌다.
+          <strong>출발 위치에서 차가 제자리 미끄러지는 것처럼 보이고</strong>, 도로가 곡선이라
+          가로로만 미는 배경은 도로 방향과 어긋난다. 그래서 진짜로 전진시킨다 &mdash;
+          도로 위의 모든 것(차·눈금·출발선·결승선)을 <span class="mono">점수 + cruise</span>에 그린다.
+          전부 같은 오프셋이라 서로 간의 거리는 정확히 점수 그대로고, 결승선도 20칸 앞에 그대로 있어서
+          1위가 20칸에 닿는 순간 실제로 만난다. 카메라가 따라가면 패럴랙스는 저절로 흐른다.
+          출발선 <strong>뒤로도 도로를 깔아야</strong> 둥근 끝단이 안 보인다.
+        </p>
+      </div>
+      <div class="card">
+        <h3>바람과 불꽃 <span class="tick">✓ 구현</span></h3>
+        <p>
+          전원이 같은 속도로 붙어 가면 대형이 뻣뻣해서, 주기가 다른 사인파 두 개로
+          <strong>±0.25칸 안쪽에서 미세하게 엎치락뒤치락</strong>하게 했다.
+          다수 쪽이 전진할 땐 차 뒤에서 <strong>흰 바람 줄기</strong>가, 부스터가 터질 땐
+          <strong>불꽃이 화르륵</strong> 뿜어져 나온다.
+          단 <strong>불꽃이 바람에게 파티클 풀을 뺏긴다</strong> &mdash; 7대가 동시에 바람을 뿜으면
+          풀이 바닥나서 하필 같은 프레임의 부스터가 자리를 못 잡는다.
+          풀을 키우고 <strong>불꽃을 먼저 처리</strong>해야 하고, 이펙트는 연출 공개가 아니라
+          <strong>실제 이동 시점</strong>에 걸어야 한다 &mdash; reveal에 걸었더니 차가 움직이기도 전에 끝나 있었다.
         </p>
       </div>
       <div class="card">
@@ -558,6 +609,15 @@ footer{padding:36px 0 0; border-top:1px solid var(--line); color:var(--ink-3); f
         </p>
       </div>
     </div>
+
+    <h3 style="margin-top:32px">딜레마 카드 등장</h3>
+    <p>
+      A와 B가 <strong>양쪽 화면 밖에서 쾅 날아 들어와 가운데서 부딪힌다.</strong>
+      부딪히는 순간 그 자리에서 <strong>VS가 또잉 하고 튀어나오고</strong>, 카드는 반동으로 좌우로 밀려나
+      제자리에 앉고 VS는 둘 사이 가운데에 남는다. 총 0.62초 &mdash; 위 목업에서 라운드마다 돌아간다.
+      타이밍은 셋이 공유한다: 카드가 만나는 지점이 38%라서 VS도 거기서 시작해,
+      카드가 아직 튕겨 나가는 동안 1.75배까지 오버슈트했다가 가라앉는다.
+    </p>
 
     <h3 style="margin-top:32px">결과 공개 타임라인</h3>
     <p>집계가 열리는 2.6초. 여기에 게임의 감정이 전부 몰려 있다.</p>
@@ -822,16 +882,32 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         </span></span>
         <span class="phase-days">2일</span>
       </div>
-      <div class="phase">
+      <div class="phase key">
         <span class="phase-n">PHASE 3</span>
-        <span><b>연출 다듬기</b><span>결과 공개 타임라인 전체, 사운드(클릭·대시·도장·컨페티), 특수 라운드 연출.
-          배경 테마 전환과 reduced-motion은 Phase 1에서 끝났다.</span></span>
+        <span><b>연출 다듬기 <span class="tick">진행 중</span></b><span>
+          <strong>완료</strong> &mdash; 상시 주행(트레드밀 폐기, 실제 전진), 엎치락뒤치락 jostle,
+          다수 전진 시 바람, 부스터 불꽃, 딜레마 카드 슬램 + VS.<br>
+          <strong>남음</strong> &mdash; 결과 공개 타임라인 전체, 사운드, 특수 라운드 연출,
+          올인 베팅 UI(현재는 자기 칸의 20% 자동), Phase 2에서 남긴 밸런스 이슈 재검토.
+        </span></span>
         <span class="phase-days">2일</span>
       </div>
       <div class="phase">
         <span class="phase-n">PHASE 4</span>
         <span><b>온라인 멀티</b><span>Supabase 스키마 + RLS, 방 생성·참가, 서버 집계, 봇으로 빈자리 채우기, 끊김 처리</span></span>
         <span class="phase-days">3~4일</span>
+      </div>
+      <div class="phase">
+        <span class="phase-n">PHASE 4.5</span>
+        <span><b>계정과 로그인</b><span>
+          온라인이 붙으면 "누구"가 필요해진다. 지금 <span class="mono">src/net/identity.ts</span>가
+          <strong>브라우저에만 저장되는 익명 신원</strong>(닉네임 + 랜덤 id)을 돌려주고,
+          게임은 id와 표시 이름만 물어본다 &mdash; 그래서 로그인을 붙이는 건 <strong>이 파일 하나를 바꾸는 일</strong>이다.
+          Supabase Auth로 카카오·구글·매직링크. <strong>비밀번호는 직접 받지 않고</strong>,
+          <strong>로그인을 강제하지도 않는다</strong> &mdash; 익명으로도 끝까지 플레이할 수 있어야 하고
+          로그인은 전적을 남기고 싶을 때 하는 선택이어야 한다.
+        </span></span>
+        <span class="phase-days">1~2일</span>
       </div>
       <div class="phase">
         <span class="phase-n">PHASE 5</span>
@@ -875,7 +951,11 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   function clamp(v, lo, hi){ return v < lo ? lo : v > hi ? hi : v; }
 
   var CELLS = 20, ROUNDS = 12;
-  var TRACK_W = 3400, TRACK_H = 240, VIEW_W = 1200;   // VIEW_W is recomputed from the stage aspect
+  var TRACK_H = 240, VIEW_W = 1200;   // VIEW_W is recomputed from the stage aspect
+  // The road is far longer than the 20 cells anyone scores, because the cars
+  // physically drive down it the whole time.
+  var TRACK_CELLS = 70, LEAD_CELLS = 8, CELL_LEN = 90;
+  var TRACK_W = (TRACK_CELLS + LEAD_CELLS) * CELL_LEN + 200;
 
   var CARDS = [
     {cat:"학교생활", a:"숙제 안 하고 지금 놀기", b:"숙제 먼저 하고 나중에 자유시간", bias:0.38},
@@ -919,6 +999,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var segA = document.getElementById("segA"), segB = document.getElementById("segB");
   var note = document.getElementById("note");
   var btnA = document.getElementById("btnA"), btnB = document.getElementById("btnB");
+  var choicesEl = document.getElementById("choices");
   var ringWrap = document.getElementById("ringWrap");
   var ringArc = document.getElementById("ringArc");
   var ringNum = document.getElementById("ringNum");
@@ -937,11 +1018,11 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   }
 
   // a smooth wave across the full track width
-  var d = "M 60 120";
-  var segs = 7, step = (TRACK_W - 120) / segs, y = 120;
+  var d = "M 0 120";
+  var segs = 26, step = TRACK_W / segs, y = 120;
   for (var i = 0; i < segs; i++){
-    var ny = 120 + (i % 2 === 0 ? -1 : 1) * (20 + (i * 7) % 18);
-    var x0 = 60 + step * i, x1 = x0 + step;
+    var ny = 120 + (i % 2 === 0 ? -1 : 1) * (18 + (i * 7) % 14);
+    var x0 = step * i, x1 = x0 + step;
     d += " C " + (x0 + step * 0.5) + " " + y + " " + (x1 - step * 0.5) + " " + ny + " " + x1 + " " + ny;
     y = ny;
   }
@@ -955,10 +1036,12 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   // road sinks into the ground the moment the backdrop brightens.
   var ORIGIN = -600, SPAN = TRACK_W + 3600, FLOOR = TRACK_H + 400;
   var PARA = [0.2, 0.5, 1.2];
-  // Ambient cruise, world units per second. Cell positions are the score and
-  // never move for it - this scrolls the backdrop, the centre line and the
-  // dust, so the cars are always driving whatever the round decided.
-  var CRUISE = 120;
+  // Ambient cruise in cells per second. Everything on the road - cars, ticks,
+  // the finish - is drawn at (score + cruise), so the field genuinely drives
+  // forward while the gaps between them stay exactly the score. Scrolling only
+  // the backdrop looked wrong at the start line, and worse on a curve, where
+  // "sideways" is not "forward".
+  var CRUISE = 0.25;
 
   var THEMES = [
     {id:"school", name:"새벽 학교", style:"hills",
@@ -1085,23 +1168,39 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   var measure = el("path", {d:d, fill:"none", stroke:"none"});
   world.appendChild(measure);
   var LEN = measure.getTotalLength();
+  var UNIT = LEN / (TRACK_CELLS + LEAD_CELLS);
 
-  // distance ticks every 5 cells - the board counts in cells, so the track should too
-  for (var c = 5; c < CELLS; c += 5){
-    var tp = measure.getPointAtLength(c / CELLS * (LEN - 10));
-    world.appendChild(el("rect", {x:tp.x - 1, y:tp.y - 62, width:2, height:124, fill:"#4C5B66"}));
-    var t = el("text", {x:tp.x, y:tp.y - 70, "text-anchor":"middle", fill:"#71838F",
-      "font-size":"13", "font-family":"IBM Plex Mono, monospace"});
-    t.textContent = c;
-    world.appendChild(t);
+  // cell 0 sits LEAD_CELLS into the path, so there is road behind the grid
+  function at(cells){
+    var l = Math.max(0, Math.min(LEN - 2, (cells + LEAD_CELLS) * UNIT));
+    var p = measure.getPointAtLength(l);
+    var q = measure.getPointAtLength(Math.min(LEN, l + 1));
+    return { x:p.x, y:p.y, ang: Math.atan2(q.y - p.y, q.x - p.x) };
   }
 
-  // chequered finish line
-  var fin = measure.getPointAtLength(LEN - 6);
+  // Markers ride the cruise exactly like the cars: the finish is drawn at
+  // (20 + cruise) so it stays 20 cells ahead and the leader still meets it.
+  var markers = [];
+  function marker(children, cell){
+    var g = el("g", {});
+    children.forEach(function(c){ g.appendChild(c); });
+    world.appendChild(g);
+    markers.push({ g: g, cell: cell });
+  }
+
+  marker([el("rect", {x:-1, y:-62, width:2, height:124, fill:"#6D7F8B"})], 0);
+  for (var c = 5; c < CELLS; c += 5){
+    var lbl = el("text", {x:0, y:-70, "text-anchor":"middle", fill:"#71838F",
+      "font-size":"13", "font-family":"IBM Plex Mono, monospace"});
+    lbl.textContent = c;
+    marker([el("rect", {x:-1, y:-62, width:2, height:124, fill:"#4C5B66"}), lbl], c);
+  }
+  var finBars = [];
   for (var fr = 0; fr < 8; fr++){
-    world.appendChild(el("rect", {x:fin.x - 6, y:fin.y - 62 + fr * 15.5, width:12, height:15.5,
+    finBars.push(el("rect", {x:-6, y:-62 + fr * 15.5, width:12, height:15.5,
       fill: fr % 2 ? "#0E141A" : "#E9EEF1"}));
   }
+  marker(finBars, CELLS);
 
   /* ---------- racers: top-down race cars ---------- */
   var CAR_L = 13, CAR_W = 6.5;          // half-length, half-width
@@ -1140,7 +1239,7 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     var g = el("g", {});
     var spin = el("g", {});            // tilts with the track
     var squash = el("g", {});          // stretches along the direction of travel
-    var ring = el("circle", {r:"17", fill:"none", stroke:"none", "stroke-width":"3"});
+    var ring = el("circle", {r:"14.5", fill:"none", stroke:"none", "stroke-width":"2", opacity:"0.8"});
     var car = buildCar(r.color);
     squash.appendChild(car.group);
     spin.appendChild(ring); spin.appendChild(squash);
@@ -1162,14 +1261,16 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   /* ---------- camera + render ---------- */
   var camX = 0, camTarget = 0;
 
-  function place(r){
-    var l = Math.max(0, Math.min(1, r.draw / CELLS)) * (LEN - 10);
-    var p = measure.getPointAtLength(l);
-    var p2 = measure.getPointAtLength(Math.min(LEN, l + 1));
-    var ang = Math.atan2(p2.y - p.y, p2.x - p.x);
+  function place(r, i){
+    // A touch of jostle so the pack is never a rigid formation.
+    var jostle = reduce ? 0
+      : Math.sin(performance.now() / (620 + i * 47) + i * 2.1) * 0.16 +
+        Math.sin(performance.now() / (1130 + i * 83) + i) * 0.09;
+    var p = at(r.draw + cruise + jostle);
+    var ang = p.ang;
     var nx = -Math.sin(ang), ny = Math.cos(ang);
     var off = r.lane * 17;
-    r.x = p.x + nx * off; r.yPos = p.y + ny * off;
+    r.x = p.x + nx * off; r.yPos = p.y + ny * off; r.ang = ang;
     r.node.setAttribute("transform", "translate(" + r.x + "," + r.yPos + ")");
     r.spin.setAttribute("transform", "rotate(" + (ang * 180 / Math.PI) + ")");
 
@@ -1188,15 +1289,15 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         trail(r, r.color, CAR_W * 0.55);
         if (speed > 0.6 && Math.random() < 0.35) speedLine(r, r.color);
       }
+      // boosters first: they must never be starved of pool slots by the gusts
+      // firing in the same frame
+      if (r.fxUntil > performance.now()){
+        if (r.fxKind === "booster") flame(r, 12); else wind(r, 3);
+      }
     }
   }
 
-  function leadX(){
-    var m = 0;
-    racers.forEach(function(r){ if (r.draw > m) m = r.draw; });
-    var p = measure.getPointAtLength(Math.min(1, m / CELLS) * (LEN - 10));
-    return p.x;
-  }
+  function leadX(){ return at(leadCells() + cruise).x; }
 
   function fitView(){
     var rect = stage.getBoundingClientRect();
@@ -1220,24 +1321,28 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         mixColors(THEMES.map(function(t){ return t.road[part]; }), weights));
     }
     // the centre line runs backwards under the cars
-    lane.setAttribute("stroke-dashoffset", cruise % 40);
     for (var t = 0; t < THEMES.length; t++){
       THEMES[t].group.setAttribute("opacity", weights[t].toFixed(3));
       if (weights[t] <= 0) continue;
       for (var b = 0; b < 3; b++){
-        var drift = (cruise * PARA[b]) % THEMES[t].tiles[b];
         THEMES[t].bandEls[b].setAttribute("transform",
-          "translate(" + (camX * (1 - PARA[b]) - drift) + " 0)");
+          "translate(" + (camX * (1 - PARA[b])) + " 0)");
       }
     }
   }
 
   function frame(){
-    cruise = reduce ? 0 : (performance.now() - startedAt) / 1000 * CRUISE;
+    cruise = reduce ? 0
+      : Math.min(TRACK_CELLS - CELLS - 4, (performance.now() - startedAt) / 1000 * CRUISE);
     camTarget = Math.max(0, Math.min(TRACK_W - VIEW_W, leadX() - VIEW_W * 0.42));
     camX += (camTarget - camX) * (reduce ? 1 : 0.08);
     svg.setAttribute("viewBox", camX + " 0 " + VIEW_W + " " + TRACK_H);
     paintTheme();
+    markers.forEach(function(m){
+      var p = at(m.cell + cruise);
+      m.g.setAttribute("transform",
+        "translate(" + p.x + " " + p.y + ") rotate(" + (p.ang * 180 / Math.PI) + ")");
+    });
     racers.forEach(place);
     tickFx();
     tickTimer(performance.now());
@@ -1245,8 +1350,16 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
   }
 
   /* ---------- particles ---------- */
-  var pool = [], live = 0;
-  for (var q = 0; q < 220; q++) pool.push({on:false, x:0, y:0, vx:0, vy:0, life:0, max:1, r:1, c:"#fff"});
+  // Sized for the worst case: seven cars gusting at once will eat a small pool,
+  // and the booster flare fires in the same frame.
+  var pool = [];
+  for (var q = 0; q < 520; q++)
+    pool.push({on:false, x:0, y:0, vx:0, vy:0, life:0, max:1, r:1, c:"#fff", g:0.03, line:false});
+
+  function slot(){
+    for (var j = 0; j < pool.length; j++) if (!pool[j].on) return pool[j];
+    return null;
+  }
 
   function sizeCanvas(){
     var rect = stage.getBoundingClientRect();
@@ -1268,10 +1381,9 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     if (reduce) return;
     var p = toScreen(r.x, r.yPos);
     for (var i = 0; i < n; i++){
-      var d0 = null;
-      for (var j = 0; j < pool.length; j++){ if (!pool[j].on){ d0 = pool[j]; break; } }
+      var d0 = slot();
       if (!d0) return;
-      d0.on = true;
+      d0.on = true; d0.g = 0.03; d0.line = false;
       d0.x = p.x + (Math.random() - 0.5) * 10;
       d0.y = p.y + (Math.random() - 0.5) * 10;
       d0.vx = -(0.7 + Math.random() * 2.6);
@@ -1284,10 +1396,9 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
 
   function trail(r, color, radius){
     var p = toScreen(r.x, r.yPos);
-    var d0 = null;
-    for (var j = 0; j < pool.length; j++){ if (!pool[j].on){ d0 = pool[j]; break; } }
+    var d0 = slot();
     if (!d0) return;
-    d0.on = true;
+    d0.on = true; d0.g = 0.001; d0.line = false;
     d0.x = p.x; d0.y = p.y; d0.vx = 0; d0.vy = 0;
     d0.max = d0.life = 13;
     d0.r = radius;
@@ -1296,10 +1407,9 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
 
   function speedLine(r, color){
     var p = toScreen(r.x, r.yPos);
-    var d0 = null;
-    for (var j = 0; j < pool.length; j++){ if (!pool[j].on){ d0 = pool[j]; break; } }
+    var d0 = slot();
     if (!d0) return;
-    d0.on = true;
+    d0.on = true; d0.g = 0; d0.line = true;
     d0.x = p.x; d0.y = p.y + (Math.random() - 0.5) * 16;
     d0.vx = -(4 + Math.random() * 4); d0.vy = 0;
     d0.max = d0.life = 10;
@@ -1307,16 +1417,56 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     d0.c = color;
   }
 
+  /** A gust behind a car that just won the round. */
+  function wind(r, n){
+    var p = toScreen(r.x, r.yPos);
+    var ang = r.ang || 0;
+    for (var i = 0; i < n; i++){
+      var d0 = slot();
+      if (!d0) return;
+      var spread = (Math.random() - 0.5) * 30;
+      d0.on = true; d0.g = 0; d0.line = true;
+      d0.x = p.x - Math.cos(ang) * (14 + Math.random() * 16) - Math.sin(ang) * spread;
+      d0.y = p.y - Math.sin(ang) * (14 + Math.random() * 16) + Math.cos(ang) * spread;
+      var sp = 6 + Math.random() * 7;
+      d0.vx = -Math.cos(ang) * sp; d0.vy = -Math.sin(ang) * sp;
+      d0.max = d0.life = 10 + Math.random() * 9;
+      d0.r = 0.9 + Math.random() * 1.3;
+      d0.c = "#DBE6EE";
+    }
+  }
+
+  /** Booster: a flare that erupts backwards and upwards, hot core first. */
+  var FLAME = ["#FFF2C4", "#FFD24A", "#FF9D2E", "#F4562A", "#C22F1A"];
+  function flame(r, n){
+    var p = toScreen(r.x, r.yPos);
+    var ang = r.ang || 0;
+    for (var i = 0; i < n; i++){
+      var d0 = slot();
+      if (!d0) return;
+      var t = i / n;
+      var spray = ang + Math.PI + (Math.random() - 0.5) * 1.1;
+      var sp = 1.6 + Math.random() * 5.5;
+      d0.on = true; d0.g = -0.05; d0.line = false;   // heat rises
+      d0.x = p.x - Math.cos(ang) * 14; d0.y = p.y - Math.sin(ang) * 14;
+      d0.vx = Math.cos(spray) * sp; d0.vy = Math.sin(spray) * sp - 1.4;
+      d0.max = d0.life = 24 + Math.random() * 30;
+      d0.r = 2.1 + (1 - t) * 5.4;
+      d0.c = FLAME[Math.min(FLAME.length - 1, Math.floor(t * FLAME.length))];
+    }
+  }
+
   function tickFx(){
     ctx.clearRect(0, 0, cv.width, cv.height);
     for (var i = 0; i < pool.length; i++){
       var p = pool[i];
       if (!p.on) continue;
-      p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.vx *= 0.97; p.life--;
+      p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= 0.97; p.life--;
       if (p.life <= 0){ p.on = false; continue; }
-      ctx.globalAlpha = Math.max(0, p.life / p.max) * 0.55;
+      ctx.globalAlpha = Math.max(0, p.life / p.max) * (p.line ? 0.85 : 0.55);
       ctx.fillStyle = p.c;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.284); ctx.fill();
+      if (p.line){ ctx.fillRect(p.x, p.y, 26, p.r * 1.4); }
+      else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.284); ctx.fill(); }
     }
     ctx.globalAlpha = 1;
   }
@@ -1435,6 +1585,11 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
     note.textContent = "";
     btnA.disabled = false; btnB.disabled = false;
     racers.forEach(function(r){ r.ring.setAttribute("stroke", "none"); });
+    if (!reduce){                       // replay the slam for the new card
+      choicesEl.classList.remove("slam");
+      void choicesEl.offsetWidth;
+      choicesEl.classList.add("slam");
+    }
     resetTimer();
   }
 
@@ -1527,6 +1682,8 @@ choice = random &lt; clamp(p, 0.02, 0.98) ? A : B</pre>
         }
         if (r.choice === majority){
           var mv = r.boost ? 6 : gain;
+          r.fxKind = r.boost ? "booster" : "advance";
+          r.fxUntil = performance.now() + (r.boost ? 950 : 700);
           if (r.boost){ boosted.push(r.name); r.boost = false; }
           r.pos = Math.min(CELLS, r.pos + mv);
           animatePos(r, r.pos, 800);

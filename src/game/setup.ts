@@ -1,4 +1,5 @@
 import dilemmaData from "../data/dilemmas.json";
+import { getIdentity } from "../net/identity";
 import { BOT_ROSTER } from "./bots";
 import type { Dilemma, Player } from "./types";
 
@@ -9,9 +10,19 @@ export const PLAYER_COLORS = [
   "#c9a47e", "#7fa3c9", "#c98fa6", "#a5b87f",
 ];
 
+/**
+ * Seat 0 is always the human. The display name comes from the identity module
+ * rather than a literal, so a real login later changes who "나" is without
+ * touching the game.
+ */
 export function makePlayers(botCount = 7): Player[] {
   const me: Player = {
-    id: 0, name: "나", color: PLAYER_COLORS[0], isBot: false, pos: 0, booster: false,
+    id: 0,
+    name: getIdentity().nickname,
+    color: PLAYER_COLORS[0],
+    isBot: false,
+    pos: 0,
+    booster: false,
   };
   const bots = BOT_ROSTER.slice(0, botCount).map((b, i) => ({
     id: i + 1,
