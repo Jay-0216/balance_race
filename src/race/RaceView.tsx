@@ -460,16 +460,31 @@ export default function RaceView({
                 <Car color={r.color} />
               </g>
             </g>
-            {r.me && (
-              <text
-                y={-15} textAnchor="middle" fill="#e9eef1"
-                fontSize={11} fontWeight={700}
-                stroke="#0d1216" strokeWidth={2} paintOrder="stroke"
-                fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
-              >
-                {r.name}
-              </text>
-            )}
+            {/* Everyone is named, not just me. Knowing that the car half a
+                length ahead is 청개구리 is the whole reason to watch the pack -
+                without it the race is eight anonymous dots and the standings
+                below are the only thing worth reading.
+
+                A rival's plate is tinted with its own car colour and set
+                small; mine is white, bigger and heavier, so my car is still
+                the one the eye finds first. The heavy dark stroke is what
+                keeps a plate legible where it overlaps the next lane's
+                wheels - at this lane gap it always will. */}
+            <text
+              y={r.me ? -14 : -11}
+              textAnchor="middle"
+              fill={r.me ? "#f2f6f8" : r.color}
+              fontSize={r.me ? 10.5 : 7.6}
+              fontWeight={r.me ? 700 : 600}
+              opacity={r.me ? 1 : 0.92}
+              stroke="#0b1015"
+              strokeWidth={r.me ? 2.2 : 1.9}
+              paintOrder="stroke"
+              strokeLinejoin="round"
+              fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
+            >
+              {r.name}
+            </text>
           </g>
         ))}
       </svg>

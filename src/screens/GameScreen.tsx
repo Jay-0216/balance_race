@@ -8,6 +8,8 @@ import BoosterGauge from "../ui/BoosterGauge";
 import DilemmaCard from "../ui/DilemmaCard";
 import Leaderboard from "../ui/Leaderboard";
 import LockPips from "../ui/LockPips";
+import RoundAlert from "../ui/RoundAlert";
+import Score from "../ui/Score";
 import TallyBar from "../ui/TallyBar";
 import { isMuted, setMuted } from "../ui/sound";
 import Stamp, { type StampKind } from "../ui/Stamp";
@@ -40,6 +42,21 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     void el.offsetWidth;
     el.classList.add("shake");
   }, [g.phase, g.round]);
+
+  // A special round is announced with a hit, and a hit that only moves the
+  // text is not a hit - the stage takes it too.
+  useEffect(() => {
+    if (g.kind === "normal" || !stageRef.current) return;
+    const el = stageRef.current;
+    el.classList.remove("kapow");
+    void el.offsetWidth;
+    el.classList.add("kapow");
+    // Taken off again once it has played: two classes on one element both
+    // declaring `animation` means the loser never runs, and the reveal shake
+    // would silently stop working on exactly the rounds that matter most.
+    const id = window.setTimeout(() => el.classList.remove("kapow"), 500);
+    return () => clearTimeout(id);
+  }, [g.kind, g.round]);
 
   // Winners get a gust, booster holders get a flare, keyed so the race view
   // plays each exactly once.
@@ -108,7 +125,9 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         {kindLabel && (
           <div key={g.round} className={"game-kind " + g.kind}>{kindLabel}</div>
         )}
+        <Score pos={g.players[0].pos} cells={CELLS} />
         <Stamp kind={g.phase === "reveal" ? stamp : null} at={g.round} />
+        <RoundAlert kind={g.kind} round={g.round} />
       </div>
 
       <div className="game-panel">

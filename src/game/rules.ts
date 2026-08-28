@@ -7,7 +7,13 @@ import type { Choice, Move, Player, RoundKind, RoundOutcome } from "./types";
  */
 export const CELLS = 24;
 export const ROUNDS = 12;
-export const TIME_LIMIT = 10;
+/**
+ * Seconds on the clock. Ten was tight enough that reading a long dilemma and
+ * then reading the room did not both fit - people were still parsing option B
+ * when the timer started flashing, which turns a game about nerve into a game
+ * about reading speed.
+ */
+export const TIME_LIMIT = 16;
 
 /**
  * Announced in advance - knowing a reverse round is coming is the whole game.
@@ -23,11 +29,30 @@ export function roundKind(round: number): RoundKind {
   return "normal";
 }
 
+/**
+ * Split in two because the announcement and the reminder are different things:
+ * the slam wants a name big enough to fill the screen and a rule underneath
+ * it, the corner chip that stays up all round wants one line.
+ */
+export const KIND_TITLE: Record<RoundKind, string> = {
+  normal: "",
+  double: "더블 라운드",
+  reverse: "역전 라운드",
+  allin: "올인 라운드",
+};
+
+export const KIND_SUB: Record<RoundKind, string> = {
+  normal: "",
+  double: "이동 2배",
+  reverse: "소수가 전진한다",
+  allin: "가진 칸을 건다",
+};
+
 export const KIND_LABEL: Record<RoundKind, string> = {
   normal: "",
-  double: "더블 라운드 — 이동 2배",
-  reverse: "역전 라운드 — 소수가 전진",
-  allin: "올인 라운드 — 칸을 건다",
+  double: `${KIND_TITLE.double} — ${KIND_SUB.double}`,
+  reverse: `${KIND_TITLE.reverse} — ${KIND_SUB.reverse}`,
+  allin: `${KIND_TITLE.allin} — ${KIND_SUB.allin}`,
 };
 
 /**

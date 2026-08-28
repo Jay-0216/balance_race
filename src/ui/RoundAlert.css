@@ -1,0 +1,115 @@
+.alert {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+  overflow: hidden;
+  /* the whole overlay leaves together, so the words never outlive the flash */
+  animation: alert-out 0.32s ease-in 1.18s both;
+}
+
+.alert.double  { --alert: var(--gold); }
+.alert.reverse { --alert: var(--a); }
+.alert.allin   { --alert: var(--b); }
+
+/* the impact lights the stage, not just the text */
+.alert-flash {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 50% 50%,
+    color-mix(in srgb, var(--alert) 55%, transparent) 0%,
+    color-mix(in srgb, var(--alert) 12%, transparent) 32%,
+    transparent 64%);
+  animation: alert-flash 0.5s ease-out both;
+}
+
+/* two rings, offset, so the shockwave has a leading edge and a wake */
+.alert-ring {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 99px;
+  border: 3px solid var(--alert);
+  animation: alert-ring 0.62s cubic-bezier(0.15, 0.7, 0.3, 1) both;
+}
+.alert-ring.two { animation-delay: 0.1s; border-width: 2px; }
+
+.alert-title {
+  position: relative;
+  font-size: clamp(30px, 12vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--alert);
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.55), 0 0 30px color-mix(in srgb, var(--alert) 60%, transparent);
+  animation: alert-slam 0.46s cubic-bezier(0.2, 1.5, 0.35, 1) both;
+}
+
+.alert-sub {
+  position: relative;
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0d1216;
+  background: var(--alert);
+  animation: alert-sub 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) 0.16s both;
+}
+
+/* The slam comes in oversized and overshoots past its resting size, which is
+   what sells an impact - a plain fade-in at final size reads as a caption. */
+@keyframes alert-slam {
+  0%   { transform: scale(3.1) rotate(-9deg); opacity: 0; filter: blur(6px); }
+  40%  { transform: scale(0.9) rotate(2deg); opacity: 1; filter: blur(0); }
+  60%  { transform: scale(1.08) rotate(-1.5deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes alert-sub {
+  0%   { transform: translateY(-14px) scaleX(0.4); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+
+@keyframes alert-ring {
+  0%   { transform: scale(0.3); opacity: 0.95; }
+  100% { transform: scale(15); opacity: 0; }
+}
+
+@keyframes alert-flash {
+  0%   { opacity: 0; }
+  12%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes alert-out {
+  to { opacity: 0; transform: scale(1.06); }
+}
+
+/* The slam is a hit, so the stage takes it too. */
+.kapow { animation: kapow 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+@keyframes kapow {
+  0%   { transform: none; }
+  12%  { transform: translate3d(0, 5px, 0) scale(1.015); }
+  26%  { transform: translate3d(-6px, -3px, 0); }
+  40%  { transform: translate3d(5px, 3px, 0); }
+  56%  { transform: translate3d(-4px, -2px, 0); }
+  72%  { transform: translate3d(3px, 1px, 0); }
+  100% { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alert,
+  .alert-title,
+  .alert-sub,
+  .alert-ring,
+  .alert-flash,
+  .kapow { animation: none; }
+  .alert-ring { display: none; }
+  .alert { animation: alert-out 0.3s ease-in 1.2s both; }
+}
