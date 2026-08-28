@@ -27,58 +27,44 @@ GitHub Pages의 프로젝트 사이트는 **하위 폴더**(`/balance_race/`)에
 
 **스위치가 하나뿐**이라 둘이 어긋날 일이 없다.
 
-### 커스텀 도메인 — 순서대로
+### 커스텀 도메인 — `balance-race.kro.kr`
 
-**도메인은 먼저 사야 한다.** GitHub는 도메인을 팔지 않고, 남의 도메인을 가리키게만 해준다.
-가비아·후이즈·Cloudflare·Namecheap 아무 데나 상관없다. `.com`은 보통 연 1.5만원쯤이고,
-`.dev`나 `.xyz` 같은 건 더 싸다.
+**적용됨.** `public/CNAME`에 `balance-race.kro.kr` 한 줄이 들어 있고,
+그래서 방금 빌드에서 base가 자동으로 `/`로 바뀐 걸 확인했다 (`vite.config.ts`가 이 파일을 본다).
+남은 두 군데만 손으로 해주면 된다.
 
-#### 1) 저장소에 도메인을 적는다
+#### 1) kro.kr 관리 페이지에서 DNS를 넣는다
 
-`public/CNAME` 파일을 만들고 **도메인만 한 줄** 적는다. `https://`도, 슬래시도 붙이지 않는다.
-
-```
-race.example.com
-```
-
-빌드하면 `dist/CNAME`으로 복사되고, **동시에 base가 `/`로 바뀐다** (`vite.config.ts`가 이 파일을 본다).
-커밋해서 `main`에 올리면 배포가 돈다.
-
-#### 2) 도메인 등록업체에서 DNS 레코드를 넣는다
-
-등록업체 관리 페이지의 **DNS 설정 / 네임서버 관리 / DNS 레코드**를 찾는다.
-
-**서브도메인으로 쓸 때** (`race.example.com` — 이쪽을 권한다, 훨씬 간단하다):
+`kro.kr`는 무료 서브도메인 서비스라, 도메인 등록업체가 아니라 **kro.kr 자체 관리 콘솔**에
+레코드를 넣는다 (im.kro.kr, 로그인 후 내 도메인 관리 → `balance-race.kro.kr` → 레코드 추가):
 
 | 타입 | 호스트 | 값 |
 |---|---|---|
-| CNAME | `race` | `jay-0216.github.io` |
+| CNAME | `balance-race` (또는 빈 칸 — 콘솔이 요구하는 형식대로) | `jay-0216.github.io` |
 
-**루트 도메인으로 쓸 때** (`example.com`):
+kro.kr가 CNAME을 안 받아주는 서브도메인 형태라면(루트처럼 취급되는 경우) A 레코드 4개로 대신한다:
 
 | 타입 | 호스트 | 값 |
 |---|---|---|
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
+| A | `balance-race` | `185.199.108.153` |
+| A | `balance-race` | `185.199.109.153` |
+| A | `balance-race` | `185.199.110.153` |
+| A | `balance-race` | `185.199.111.153` |
 
-네 개를 **다 넣어야 한다.** 하나만 넣으면 그 서버가 죽는 날 사이트도 같이 죽는다.
+#### 2) GitHub에 같은 도메인을 등록한다
 
-#### 3) GitHub에 같은 도메인을 등록한다
-
-저장소 → **Settings → Pages → Custom domain**에 도메인을 넣고 **Save**.
-GitHub이 DNS를 확인하는 데 몇 분 ~ 몇 시간 걸린다. 확인되면
-**Enforce HTTPS** 체크박스가 눌리게 되는데, **반드시 켠다.**
+저장소 → **Settings → Pages → Custom domain**에 `balance-race.kro.kr`을 넣고 **Save**.
+GitHub이 DNS를 확인하는 데 몇 분~몇 시간 걸린다. 확인되면 **Enforce HTTPS**가
+눌리게 되는데 **반드시 켠다.**
 
 #### 잘 안 될 때
 
 | 증상 | 원인 |
 |---|---|
 | "Domain does not resolve to the GitHub Pages server" | DNS가 아직 안 퍼졌다. 보통 10분~1시간, 길면 하루 |
-| 사이트는 열리는데 **흰 화면** | `public/CNAME`을 안 만들었다 → base가 아직 `/balance_race/`다 |
+| 사이트는 열리는데 **흰 화면** | 옛날 빌드가 캐시된 것. 강력 새로고침(Ctrl/Cmd+Shift+R) |
 | HTTPS 체크박스가 회색 | 인증서 발급 전. 도메인 확인이 끝나야 켜진다 |
-| 도메인이 자꾸 지워짐 | `public/CNAME`이 없으면 배포할 때마다 설정이 날아간다. 파일로 넣어야 하는 이유 |
+| 도메인이 저장소에서 자꾸 지워짐 | `public/CNAME`이 삭제됐다는 뜻. 배포 때마다 이 파일이 `dist/CNAME`으로 복사되며 지켜준다 |
 
 > **`main`이 배포 브랜치다.** 작업은 `claude/...` 브랜치에서 하고 끝나면 `main`에 합친다.
 > 합친 순간이 배포되는 순간이므로 **`main`은 항상 켜지는 상태여야 한다** —
@@ -222,11 +208,12 @@ Supabase 대시보드 → **Authentication → URL Configuration**
 
 | 칸 | 넣을 값 |
 |---|---|
-| Site URL | `https://jay-0216.github.io/balance_race/` |
-| Redirect URLs | 위 주소 + `http://localhost:5173/balance_race/` (개발용) |
+| Site URL | `https://balance-race.kro.kr` |
+| Redirect URLs | 위 주소 + `https://jay-0216.github.io/balance_race/` + `http://localhost:5173/balance_race/` (개발용) |
 
-커스텀 도메인을 붙이면 그 주소도 여기에 추가한다.
 **이 목록에 없는 주소로는 링크가 안 돌아온다** — 그게 이 설정의 존재 이유다.
+커스텀 도메인이 아직 안 붙었을 때를 대비해 GitHub Pages 기본 주소도 같이 넣어둔다 — 둘 다 있어야
+도메인 붙이기 전후로 로그인이 끊기지 않는다.
 
 > 내장 메일러는 **시간당 몇 통**으로 제한된다. 친구들끼리 쓰기엔 충분하지만
 > 갑자기 30명이 동시에 가입하면 막힌다. 그땐 Authentication → Emails에서
