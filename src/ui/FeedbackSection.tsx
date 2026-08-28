@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { sendFeedback, type FeedbackKind } from "../net/submissions";
 import { isOnlineAvailable } from "../net/supabase";
-import "../ui/Form.css";
+import Offline from "./Offline";
+import "./Form.css";
+import "./FeedbackSection.css";
 
 /**
  * Bug reports and ideas, filed straight into the database. There is no select
  * policy on that table, so a report can be written by anyone and read by
  * nobody but the owner in the dashboard - which is the right shape for a form
  * that strangers can reach.
+ *
+ * A section, not a screen. It sits inside the account page because that is
+ * where you already are when something has gone wrong and you want to tell
+ * somebody - and because a top-level "버그 제보" row read like a mode you
+ * could play.
  */
-export default function FeedbackScreen({ onBack }: { onBack: () => void }) {
+export default function FeedbackSection() {
   const [kind, setKind] = useState<FeedbackKind>("bug");
   const [body, setBody] = useState("");
   const [contact, setContact] = useState("");
@@ -36,25 +43,15 @@ export default function FeedbackScreen({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="form-screen">
-      <header className="form-head">
-        <button className="form-back" onClick={onBack} aria-label="뒤로">←</button>
-        <div className="form-title">
-          <span className="form-eyebrow">버그 제보</span>
-          <h2>이상한 게 있었어?</h2>
-          <p>어떤 화면에서, 뭘 눌렀을 때, 뭐가 일어났는지 적어주면 제일 빨리 고쳐진다.</p>
-        </div>
-      </header>
+    <section className="fb">
+      <h3 className="fb-head">이상한 게 있었어?</h3>
+      <p className="fb-sub">어떤 화면에서, 뭘 눌렀을 때, 뭐가 일어났는지 적어주면 제일 빨리 고쳐진다.</p>
 
       {!online ? (
-        <p className="form-offline">
-          아직 서버가 연결되지 않아서 제보를 보낼 수 없다.
-          <br />
-          <code>.env.local</code>에 Supabase 키를 넣으면 켜진다 — <code>docs/SETUP.md</code>
-        </p>
+        <Offline what="제보를 보낼 수" />
       ) : (
         <>
-          <div className="form-body">
+          <div className="fb-body">
             <div className="field">
               <label>무엇에 대한 이야기야?</label>
               <div className="seg">
@@ -105,6 +102,6 @@ export default function FeedbackScreen({ onBack }: { onBack: () => void }) {
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

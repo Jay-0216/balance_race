@@ -5,7 +5,6 @@ import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
 import GameScreen from "./screens/GameScreen";
 import CardSubmitScreen from "./screens/CardSubmitScreen";
-import FeedbackScreen from "./screens/FeedbackScreen";
 import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
 import LobbyScreen from "./screens/LobbyScreen";
@@ -13,7 +12,7 @@ import RaceScreen from "./screens/RaceScreen";
 
 export type Screen =
   | "title" | "solo" | "proto" | "host" | "join"
-  | "how" | "cards" | "login" | "feedback";
+  | "how" | "cards" | "login";
 
 const SEEN = "ddr.seen-rules";
 
@@ -64,8 +63,6 @@ export default function App() {
         <CardSubmitScreen onBack={() => setScreen("title")} />
       ) : screen === "login" ? (
         <LoginScreen onBack={() => setScreen("title")} />
-      ) : screen === "feedback" ? (
-        <FeedbackScreen onBack={() => setScreen("title")} />
       ) : screen === "proto" ? (
         <RaceScreen onBack={() => setScreen("title")} />
       ) : (

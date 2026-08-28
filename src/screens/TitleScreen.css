@@ -1,4 +1,5 @@
 .title {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
@@ -9,6 +10,44 @@
 
 .title-mark { flex: none; }
 
+/* ---- the account, in the corner ---------------------------------------- */
+.title-account {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  padding: 3px;
+  border-radius: 99px;
+  line-height: 0;
+  transition: transform 0.16s var(--ease-out), box-shadow 0.16s ease;
+}
+.title-account:hover { transform: translateY(-1px) scale(1.06); }
+.title-account:active { transform: scale(0.96); }
+
+/* ---- the help mark, attached to the name -------------------------------- */
+.title h1 { display: flex; align-items: flex-start; gap: 10px; }
+.title-name { display: block; }
+
+.title-help {
+  flex: none;
+  width: 27px;
+  height: 27px;
+  margin-top: 4px;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-3);
+  border: 1.5px solid var(--line);
+  background: var(--screen-2);
+  transition: color 0.16s ease, border-color 0.16s ease, transform 0.16s var(--ease-out);
+}
+.title-help:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  transform: scale(1.1);
+}
+
 /* Laptops are short: at 768px tall the frame is ~140px shorter than a
    phone's, and the title block is what has to give. */
 @media (max-height: 800px) {
@@ -16,6 +55,7 @@
   .title h1 { font-size: clamp(32px, 8vw, 42px); }
   .title-eyebrow { margin-bottom: 10px; }
   .title-btn { padding: 14px 18px; }
+  .title-account { top: 12px; right: 14px; }
 }
 
 .title-eyebrow {

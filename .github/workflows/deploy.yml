@@ -30,14 +30,34 @@ jobs:
 
       - run: npm ci
 
+      # A missing secret used to be invisible here and only showed up as
+      # "online is not available" on the live site. Say it out loud instead.
+      - name: Check Supabase secrets
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
+            echo "::warning title=Supabase secrets missing::VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set. Rooms, accounts, bug reports and card submissions will be off in this deploy. Add them in Settings -> Secrets and variables -> Actions."
+          else
+            echo "Supabase secrets present."
+          fi
+
       # Vite bakes VITE_* into the bundle at build time, so they belong here
       # rather than in any runtime config. Both are safe to ship: the anon key
       # can only do what RLS permits. They are secrets only so they are not
-      # committed. Missing them just means online play stays unavailable.
+      # committed.
       - run: npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      # Proof in the log that the key actually made it into the bundle,
+      # without printing the key.
+      - name: Verify the bundle
+        run: |
+          if grep -rqs "supabase.co" dist/assets; then
+            echo "Supabase URL is baked into the bundle - online features are on."
+          else
+            echo "::warning title=Online features off::No Supabase URL in the built bundle. The deployed game will be single-player only."
+          fi
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

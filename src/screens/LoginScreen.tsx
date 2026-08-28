@@ -4,8 +4,11 @@ import {
   currentSession, loadAccount, onAuthChange, saveNickname, sendMagicLink, signOut,
   type Account,
 } from "../net/auth";
+import FeedbackSection from "../ui/FeedbackSection";
 import { getIdentity, setNickname } from "../net/identity";
 import { isOnlineAvailable } from "../net/supabase";
+import Avatar from "../ui/Avatar";
+import Offline from "../ui/Offline";
 import "../ui/Form.css";
 
 /**
@@ -81,6 +84,16 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
       </header>
 
       <div className="form-body">
+        {/* The face reacts to the name as you type it, so it is obvious that
+            the two are the same thing. */}
+        <div className="lg-me">
+          <Avatar id={getIdentity().id} nickname={nick || "나"} size={56} />
+          <div>
+            <b>{nick.trim() || "나"}</b>
+            <span>{account ? (account.email ?? "로그인됨") : "게스트"}</span>
+          </div>
+        </div>
+
         <div className="field">
           <label htmlFor="lg-nick">이름</label>
           <input
@@ -95,9 +108,7 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
         </div>
 
         {!online ? (
-          <p className="form-offline">
-            서버가 연결되지 않아서 로그인은 아직 못 한다. 이름은 이 브라우저에 저장된다.
-          </p>
+          <Offline what="로그인은 할 수" />
         ) : account ? (
           <>
             <p className="form-offline">
@@ -127,6 +138,8 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
             </div>
           </>
         )}
+
+        <FeedbackSection />
       </div>
 
       {msg && <p className={"form-msg " + (msg.ok ? "ok" : "bad")}>{msg.text}</p>}

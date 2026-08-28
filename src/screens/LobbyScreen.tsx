@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MAX_SEATS, createRoom, joinRoom, leaveRoom, listPlayers, type PlayerRow } from "../net/rooms";
 import { getIdentity, setNickname } from "../net/identity";
 import { isOnlineAvailable, supabase } from "../net/supabase";
+import Offline from "../ui/Offline";
 import "./LobbyScreen.css";
 
 export type LobbyMode = "host" | "join";
@@ -101,11 +102,7 @@ export default function LobbyScreen({
   if (!configured) {
     return (
       <Frame title={mode === "host" ? "방 만들기" : "참가하기"} onBack={onBack}>
-        <p className="lobby-note">
-          온라인은 아직 연결되지 않았습니다. <code>.env.local</code>에 Supabase
-          주소와 anon 키를 넣으면 켜집니다 — <code>.env.example</code> 참고.
-        </p>
-        <p className="lobby-note dim">그동안 <b>혼자 하기</b>는 그대로 됩니다.</p>
+        <Offline what="친구랑 같이 할 수" />
       </Frame>
     );
   }

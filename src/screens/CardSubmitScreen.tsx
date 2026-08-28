@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getIdentity } from "../net/identity";
 import { submitCard } from "../net/submissions";
 import { isOnlineAvailable } from "../net/supabase";
+import Offline from "../ui/Offline";
 import "../ui/Form.css";
 import "./CardSubmitScreen.css";
 
@@ -60,11 +61,7 @@ export default function CardSubmitScreen({ onBack }: { onBack: () => void }) {
       </header>
 
       {!online ? (
-        <p className="form-offline">
-          아직 서버가 연결되지 않아서 카드를 낼 수 없다.
-          <br />
-          <code>.env.local</code>에 Supabase 키를 넣으면 켜진다 — <code>docs/SETUP.md</code>
-        </p>
+        <Offline what="카드를 낼 수" />
       ) : (
         <>
           <div className="form-body">

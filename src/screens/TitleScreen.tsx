@@ -1,27 +1,50 @@
+import { useEffect, useState } from "react";
 import type { Screen } from "../App";
+import Avatar from "../ui/Avatar";
 import TrackPreview from "../ui/TrackPreview";
+import { getIdentity, type Identity } from "../net/identity";
 import "./TitleScreen.css";
 
 const MENU: { key: Screen; label: string; hint: string }[] = [
   { key: "solo", label: "혼자 하기", hint: "봇 7명과 12라운드" },
   { key: "host", label: "방 만들기", hint: "친구를 코드로 초대" },
   { key: "join", label: "참가하기", hint: "6자리 코드 입력" },
-  { key: "how", label: "게임 방법", hint: "규칙을 처음부터" },
   { key: "cards", label: "카드 만들기", hint: "밸런스 게임을 직접 낸다" },
-  { key: "login", label: "계정", hint: "이름 바꾸기 · 로그인" },
-  { key: "feedback", label: "버그 제보", hint: "이상한 걸 봤다면" },
   { key: "proto", label: "레이스 프로토타입", hint: "시각화만 따로 보기" },
 ];
 
 export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void }) {
+  // Re-read on mount rather than at module load: coming back from the account
+  // screen with a new nickname has to change the face in the corner.
+  const [me, setMe] = useState<Identity>(getIdentity);
+  useEffect(() => setMe(getIdentity()), []);
+
   return (
     <div className="title">
+      {/* The account lives in the corner, as a face, the way every app puts it.
+          A row in the menu made it look like a mode you could play. */}
+      <button className="title-account" onClick={() => onPick("login")} aria-label="계정">
+        <Avatar id={me.id} nickname={me.nickname} size={38} />
+      </button>
+
       <div className="title-mark">
         <span className="title-eyebrow">눈치게임 레이스</span>
         <h1>
-          결정 장애
-          <br />
-          레이스
+          <span className="title-name">
+            밸런스
+            <br />
+            레이스
+          </span>
+          {/* Attached to the name, because "what is this game" is a question
+              you ask about the name - not an eighth thing to play. */}
+          <button
+            className="title-help"
+            onClick={() => onPick("how")}
+            aria-label="게임 방법"
+            title="게임 방법"
+          >
+            ?
+          </button>
         </h1>
         <p>다수와 같은 선택을 하면 전진한다.</p>
       </div>
