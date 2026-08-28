@@ -5,6 +5,19 @@ import type { Dilemma, Player } from "./types";
 
 export const DILEMMAS = dilemmaData as Dilemma[];
 
+/**
+ * Approved player-written cards, once they have arrived. Kept module-level
+ * rather than in React state because dealDeck runs inside a useState
+ * initialiser - a deck that is one render behind would deal the built-in
+ * cards on the first game of every session.
+ */
+let extra: Dilemma[] = [];
+
+export function addApprovedCards(cards: Dilemma[]) {
+  const seen = new Set(DILEMMAS.map((d) => d.id));
+  extra = cards.filter((c) => !seen.has(c.id));
+}
+
 export const PLAYER_COLORS = [
   "#f0b429", "#9aa9b4", "#7fb89a", "#b79acb",
   "#c9a47e", "#7fa3c9", "#c98fa6", "#a5b87f",
@@ -38,7 +51,7 @@ export function makePlayers(botCount = 7): Player[] {
 
 /** A shuffled deck, so three games in a row never repeat a card. */
 export function dealDeck(count: number, rng: () => number = Math.random): Dilemma[] {
-  const pool = [...DILEMMAS];
+  const pool = [...DILEMMAS, ...extra];
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];

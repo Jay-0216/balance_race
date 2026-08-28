@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
+import { addApprovedCards } from "./game/setup";
+import { fetchApprovedCards } from "./net/submissions";
 import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
 import GameScreen from "./screens/GameScreen";
+import CardSubmitScreen from "./screens/CardSubmitScreen";
+import FeedbackScreen from "./screens/FeedbackScreen";
 import HowToScreen from "./screens/HowToScreen";
+import LoginScreen from "./screens/LoginScreen";
 import LobbyScreen from "./screens/LobbyScreen";
 import RaceScreen from "./screens/RaceScreen";
 
-export type Screen = "title" | "solo" | "proto" | "host" | "join" | "how";
+export type Screen =
+  | "title" | "solo" | "proto" | "host" | "join"
+  | "how" | "cards" | "login" | "feedback";
 
 const SEEN = "ddr.seen-rules";
 
@@ -20,6 +27,12 @@ function seenRules() {
 }
 
 export default function App() {
+  // Player-written cards are fetched once, in the background. Nothing waits on
+  // it: a deck without them is the deck the game has always had.
+  useEffect(() => {
+    void fetchApprovedCards().then(addApprovedCards);
+  }, []);
+
   const [screen, setScreen] = useState<Screen>("title");
   // First visit opens on the rules. A 눈치게임 where you do not know what the
   // majority does is just guessing, so this is not an optional detour.
@@ -47,6 +60,12 @@ export default function App() {
         <TitleScreen onPick={setScreen} />
       ) : screen === "solo" ? (
         <GameScreen onBack={() => setScreen("title")} />
+      ) : screen === "cards" ? (
+        <CardSubmitScreen onBack={() => setScreen("title")} />
+      ) : screen === "login" ? (
+        <LoginScreen onBack={() => setScreen("title")} />
+      ) : screen === "feedback" ? (
+        <FeedbackScreen onBack={() => setScreen("title")} />
       ) : screen === "proto" ? (
         <RaceScreen onBack={() => setScreen("title")} />
       ) : (

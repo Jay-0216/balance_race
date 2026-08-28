@@ -1,0 +1,32 @@
+/* The two sides are laid out the way they appear in the game, so what you are
+   writing looks like the thing it becomes. */
+.card-side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px 12px 12px;
+  border-radius: 12px;
+  background: var(--screen-3);
+  border: 1.5px solid var(--line);
+}
+.card-side.a { border-color: rgba(244, 104, 91, 0.45); }
+.card-side.b { border-color: rgba(63, 176, 206, 0.45); }
+
+.card-tag {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.card-side.a .card-tag { color: var(--a); }
+.card-side.b .card-tag { color: var(--b); }
+
+.card-row { display: flex; gap: 8px; }
+.card-row .emoji { width: 62px; flex: none; text-align: center; font-size: 18px; padding: 10px 4px; }
+
+.card-vs {
+  align-self: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}

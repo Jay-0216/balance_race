@@ -1,15 +1,12 @@
 .timer { width: 74px; height: 74px; pointer-events: none; }
 .timer svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
+/* The pulse is written from the rAF loop as a CSS transform, so it needs a
+   CSS transform-origin - an SVG transform attribute would ignore it and the
+   ring would scale away from the corner. */
 .timer-ring { transform-origin: 42px 42px; }
-.timer-ring.beat { animation: timer-beat 0.95s ease-out infinite; }
 
-@keyframes timer-beat {
-  0% { transform: scale(1); }
-  12% { transform: scale(1.11); }
-  34% { transform: scale(1); }
-  100% { transform: scale(1); }
-}
+.timer-glow { filter: blur(2.5px); }
 
 @media (max-width: 520px) {
   .timer { width: 64px; height: 64px; }

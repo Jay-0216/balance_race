@@ -1,4 +1,4 @@
--- 결정 장애 레이스 — online rooms
+-- 밸런스 레이스 — online rooms
 --
 -- The one rule this schema exists to enforce: nobody can see what anyone else
 -- picked until the round is closed. Everything else is bookkeeping.
@@ -122,7 +122,20 @@ grant execute on function public.locked_count(text, int) to anon, authenticated;
 
 -- ------------------------------------------------------------------- realtime
 
-alter publication supabase_realtime add table public.rooms;
-alter publication supabase_realtime add table public.players;
 -- choices is deliberately NOT published: a realtime subscription would stream
 -- exactly the thing the whole design is trying to hide.
+-- Guarded, because `add table` errors if the table is already published and
+-- that would abort a re-run of this file halfway through.
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables
+                 where pubname = 'supabase_realtime'
+                   and schemaname = 'public' and tablename = 'rooms') then
+    alter publication supabase_realtime add table public.rooms;
+  end if;
+  if not exists (select 1 from pg_publication_tables
+                 where pubname = 'supabase_realtime'
+                   and schemaname = 'public' and tablename = 'players') then
+    alter publication supabase_realtime add table public.players;
+  end if;
+end $$;

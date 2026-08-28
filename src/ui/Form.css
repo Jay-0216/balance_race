@@ -1,0 +1,132 @@
+/* Shared chrome for the three screens that ask the player for something:
+   sign in, report a bug, write a card. One set of controls, so a text field
+   looks the same wherever it turns up. */
+
+.form-screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px 16px;
+  gap: 12px;
+}
+
+.form-head { flex: none; display: flex; align-items: flex-start; gap: 10px; }
+.form-back {
+  width: 32px; height: 32px; flex: none;
+  border-radius: 8px;
+  font-size: 17px;
+  color: var(--ink-2);
+}
+.form-back:hover { background: var(--screen-2); }
+
+.form-title { min-width: 0; }
+.form-eyebrow {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+.form-title h2 { margin: 4px 0 3px; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.form-title p { margin: 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+
+.form-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field > label { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.field .hint { font-size: 11.5px; color: var(--ink-3); }
+
+/* Scoped to the screen, not to .field: the card editor lays its inputs out
+   in its own rows, and anything that fell outside .field came back as a
+   default white browser input in the middle of a dark screen. */
+.form-screen input,
+.form-screen textarea,
+.form-screen select {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--screen-3);
+  border: 1.5px solid var(--line);
+  outline: none;
+}
+.form-screen textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+.form-screen input:focus,
+.form-screen textarea:focus,
+.form-screen select:focus { border-color: var(--gold); }
+.form-screen input::placeholder,
+.form-screen textarea::placeholder { color: var(--ink-3); }
+
+.seg { display: flex; gap: 8px; }
+.seg button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--screen-3);
+  border: 1.5px solid var(--line);
+}
+.seg button[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(240, 180, 41, 0.12);
+}
+
+.form-actions { flex: none; display: flex; gap: 8px; }
+.btn-go {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #16202a;
+  background: var(--gold);
+}
+.btn-go:hover:not(:disabled) { filter: brightness(1.07); }
+.btn-go:disabled { opacity: 0.45; cursor: default; }
+
+.btn-quiet {
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+  border: 1.5px solid var(--line);
+}
+.btn-quiet:hover { background: var(--screen-3); }
+
+.form-msg {
+  flex: none;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--screen-3);
+  border: 1.5px solid var(--line);
+  color: var(--ink-2);
+}
+.form-msg.ok { border-color: rgba(127, 184, 154, 0.6); color: #a8d6c0; }
+.form-msg.bad { border-color: rgba(244, 104, 91, 0.6); color: #f4a79e; }
+
+.form-offline {
+  margin: 0;
+  padding: 12px 13px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-3);
+  background: var(--screen-2);
+  border: 1.5px dashed var(--line);
+}

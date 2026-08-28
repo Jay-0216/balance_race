@@ -20,7 +20,10 @@ export function supabase(): SupabaseClient {
   }
   if (!client) {
     client = createClient(url!, anonKey!, {
-      auth: { persistSession: false },
+      // Sessions must survive a reload: a magic link lands the user back on a
+      // fresh page load, and dropping the session there means the link only
+      // ever appears to work for the instant before the redirect finishes.
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
       realtime: { params: { eventsPerSecond: 8 } },
     });
   }
