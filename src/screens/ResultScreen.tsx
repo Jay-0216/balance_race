@@ -19,6 +19,14 @@ export default function ResultScreen({
 
   return (
     <div className="result" role="dialog" aria-label="결과">
+      {/* Your own placing lands like the round stamp does, because it is the
+          one number on this screen you actually came for. It stays put
+          instead of fading: the round stamp is a beat, this is the verdict. */}
+      <div className={"result-stamp" + (myRank === 1 ? " win" : "")} aria-hidden="true">
+        <b>{myRank}</b>
+        <span>등</span>
+      </div>
+
       <div className="result-card">
         <span className="result-eyebrow">결승</span>
         <h2 className="result-winner">

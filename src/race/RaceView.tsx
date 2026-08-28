@@ -13,6 +13,8 @@ import {
 import "./RaceView.css";
 
 const MOVE_MS = 800;
+/** the opening camera move, from behind the grid up to the overhead framing */
+const INTRO_MS = 2100;
 const EASE = (k: number) => 1 - Math.pow(1 - k, 3);
 
 type Tween = { from: number; to: number; t0: number };
@@ -211,7 +213,8 @@ export default function RaceView({
       }
       const leadPt = at(lead + cruise);
       const lastPt = at(last + cruise);
-      cam.update(leadPt.x, lastPt.x, !reduce);
+      const intro = reduce ? 1 : Math.min(1, (now - t0) / INTRO_MS);
+      cam.update(leadPt.x, lastPt.x, !reduce, intro);
 
       const vb = cam.viewBox().split(" ").map(Number);
       vbX = vb[0]; vbY = vb[1]; vbW = vb[2]; vbH = vb[3];

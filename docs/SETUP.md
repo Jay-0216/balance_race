@@ -1,53 +1,75 @@
 # 배포와 백엔드 설정
 
-## 1. Netlify 배포 (커스텀 도메인)
+## 1. GitHub Pages 배포
 
-저장소에 `netlify.toml`이 있으므로 빌드 설정은 **입력할 게 없다.** Netlify가 읽어간다.
+Netlify를 안 쓰기로 했으므로 `netlify.toml`은 지웠다.
+저장소에 `.github/workflows/deploy.yml`이 있어서 **`main`에 푸시하면 자동으로 배포된다.**
 
-```toml
-command = "npm run build"
-publish = "dist"
-NODE_VERSION = "22"
-```
+### 처음 한 번만 — 저장소 설정
 
-### 처음 연결
+1. GitHub 저장소 → **Settings → Pages**
+2. **Build and deployment → Source**를 **`GitHub Actions`**로 바꾼다
+   (기본값인 "Deploy from a branch"로 두면 워크플로가 돌아도 아무것도 안 올라간다)
+3. `main`에 푸시하면 **Actions** 탭에 `Deploy to GitHub Pages`가 돈다
+4. 끝나면 주소가 나온다: `https://jay-0216.github.io/woow/`
 
-1. [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project**
-2. **GitHub** 선택 → `Jay-0216/woow` 저장소 선택
-3. **Branch to deploy → `main`**
-4. 빌드 설정은 `netlify.toml`이 채우므로 그대로 두고 **Deploy**
+### base 경로 — 여기만 안 틀리면 된다
 
-이후 `main`에 푸시할 때마다 자동 배포된다.
-PR을 올리면 **Deploy Preview**가 따로 생겨서 합치기 전에 눌러볼 수 있다.
+GitHub Pages의 프로젝트 사이트는 **하위 폴더**(`/woow/`)에서 열린다.
+`base`가 `/`면 자바스크립트 주소가 `/assets/...`가 돼서 **흰 화면**만 나온다.
 
-> **`main`이 배포 브랜치다.** 작업은 `claude/...` 브랜치에서 하고 끝나면 `main`에 합친다.
-> 합친 순간이 배포되는 순간이므로, **`main`은 항상 켜지는 상태여야 한다** —
-> 합치기 전에 `npm run build`가 통과하는지 확인한다.
+`vite.config.ts`가 이걸 자동으로 고른다:
+
+| `public/CNAME` | base | 주소 |
+|---|---|---|
+| 없음 | `/woow/` | `jay-0216.github.io/woow/` |
+| 있음 | `/` | 커스텀 도메인 루트 |
+
+**스위치가 하나뿐**이라 둘이 어긋날 일이 없다.
 
 ### 커스텀 도메인
 
-1. Netlify 사이트 → **Domain management → Add a domain**
-2. 도메인을 입력하면 Netlify가 방식을 알려준다:
-   - **Netlify DNS로 옮기기 (권장)** — 도메인 등록업체에서 네임서버를 Netlify 것으로 바꾼다.
-     HTTPS 인증서와 갱신을 Netlify가 알아서 한다.
-   - **DNS만 가리키기** — 등록업체에 레코드를 직접 넣는다:
-     - 루트 `example.com` → **A 레코드 `75.2.60.5`** (또는 ALIAS/ANAME을 지원하면 `apex-loadbalancer.netlify.com`)
-     - `www` → **CNAME `<사이트이름>.netlify.app`**
-3. DNS가 퍼지면 (보통 몇 분~몇 시간) Netlify가 **Let's Encrypt 인증서를 자동 발급**한다.
-   HTTPS가 안 켜지면 Domain management에서 **Verify DNS configuration**을 눌러본다.
+1. 저장소에 **`public/CNAME`** 파일을 만들고 도메인만 한 줄 적는다:
+   ```
+   race.example.com
+   ```
+   빌드하면 `dist/CNAME`으로 복사되고, 동시에 base가 `/`로 바뀐다.
+2. 도메인 등록업체 DNS에 레코드를 넣는다:
+   - 서브도메인(`race.example.com`) → **CNAME** `jay-0216.github.io`
+   - 루트(`example.com`) → **A 레코드 4개**
+     `185.199.108.153` / `185.199.109.153` / `185.199.110.153` / `185.199.111.153`
+3. Settings → Pages → **Custom domain**에 같은 도메인을 넣고
+   **Enforce HTTPS**를 켠다 (인증서 발급까지 몇 분~몇 시간)
 
-> **주의:** `vite.config.ts`의 `base`는 `"/"`다. Netlify는 도메인 루트에 배포하기 때문.
-> GitHub Pages로 되돌린다면 그때만 `"/woow/"`로 바꾸면 된다.
+> **`main`이 배포 브랜치다.** 작업은 `claude/...` 브랜치에서 하고 끝나면 `main`에 합친다.
+> 합친 순간이 배포되는 순간이므로 **`main`은 항상 켜지는 상태여야 한다** —
+> 합치기 전에 `npm run build`가 통과하는지 확인한다.
 
-### GitHub Pages는 뺐다
-
-Netlify로 가기로 했으므로 `.github/workflows/deploy.yml`은 삭제했다.
-두 곳에 동시에 배포하면 어느 쪽이 최신인지 헷갈리고, Pages는 base 경로가 달라서
-같은 빌드로 둘 다 맞출 수 없다.
+> **주의:** GitHub Pages에는 리다이렉트 규칙이 없다. 지금은 화면 전환이
+> 전부 React 상태라 주소가 하나뿐이라 상관없지만, 나중에 진짜 라우터를 넣으면
+> `dist/404.html`에 `index.html`을 복사하는 단계가 필요해진다.
 
 ---
 
 ## 2. Supabase 연결
+
+### 2-0. 프로젝트는 네 계정에서 네가 만든다
+
+여기(이 세션)에 연결된 Supabase 계정은 **네 계정이 아니다.**
+그래서 마이그레이션을 대신 실행해 줄 수가 없다 — 남의 계정 DB에 테이블을 만드는 셈이 된다.
+아래 순서대로 하면 5분이면 된다. SQL은 저장소에 이미 다 들어 있고, 붙여넣기만 하면 된다.
+
+1. [supabase.com](https://supabase.com) → 네 계정으로 로그인 (GitHub 계정으로 바로 됨)
+2. **New project**
+   - **Name**: `woow` (뭐든 상관없다)
+   - **Database Password**: 자동 생성 눌러서 나온 걸 **어딘가 저장해 둔다.**
+     이건 브라우저 앱에서는 안 쓰지만, 잃어버리면 재설정해야 한다
+   - **Region**: `Northeast Asia (Seoul)` — 한국에서 하면 여기가 제일 빠르다
+   - **Plan**: Free
+3. 2분쯤 기다리면 프로젝트가 뜬다
+
+무료 플랜은 **일주일 동안 아무도 안 쓰면 자동으로 일시정지**된다.
+멈춰도 데이터는 안 없어지고, 대시보드에서 **Restore**를 누르면 다시 산다.
 
 ### 2-1. 키 가져오기
 
@@ -65,7 +87,23 @@ VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 ```
 
-Netlify는 **Site settings → Environment variables**에 같은 두 개를 넣고 재배포한다.
+**배포본에도 같은 두 개가 필요하다.** GitHub Pages는 정적 호스팅이라 환경변수 설정 칸이
+없고, 값은 **빌드할 때** 번들에 박힌다. 그래서 GitHub Actions 쪽에 넣는다:
+
+1. 저장소 → **Settings → Secrets and variables → Actions → New repository secret**
+2. `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` 두 개를 만든다
+3. `.github/workflows/deploy.yml`의 빌드 단계에 넘겨준다:
+
+```yaml
+      - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+```
+
+> 이 두 값은 **빌드 결과물에 그대로 들어간다.** 브라우저에서 보면 보인다.
+> 그래도 되는 이유는 아래 3장에 있다 — `anon` 키는 RLS가 허락한 것만 할 수 있다.
+> Secret에 넣는 건 저장소에 커밋하지 않으려는 것뿐이다.
 
 > ⚠️ **`service_role` 키는 절대 넣지 말 것.** 그 키는 RLS를 통째로 무시한다.
 > 브라우저에 들어가는 순간 누구나 남의 선택을 읽고 남의 방을 지울 수 있다.

@@ -93,20 +93,21 @@
   color: var(--ink-2);
 }
 
-@media (max-height: 720px) {
-  .game-panel { gap: 8px; padding: 10px 14px 12px; }
+@media (max-height: 760px) {
+  .game-panel { gap: 7px; padding: 9px 13px 11px; }
+  .game-panel .boost { padding: 5px 10px 5px 5px; gap: 9px; }
+  .game-panel .boost-btn { width: 42px; height: 42px; }
+  .game-bar { padding: 7px 12px; }
 }
 
 /* The panel is taller than its content on a big phone. Rather than leaving a
    pool of dead space under everything, the choices take the slack and the
    board sits on the bottom edge where a scoreboard belongs. */
 .game-panel .choices { flex: 1 1 auto; max-height: 260px; }
-.game-panel .choice { min-height: 132px; justify-content: center; }
+/* Fluid rather than stepped: a hard 132 with a single breakpoint at 720
+   overflowed every height in between. */
+.game-panel .choice { min-height: clamp(72px, 12vh, 128px); justify-content: center; }
 .game-panel .board { margin-top: auto; padding-top: 4px; }
-
-@media (max-height: 720px) {
-  .game-panel .choice { min-height: 84px; }
-}
 
 /* the special round announces itself before it is played - that is what makes
    it psychological rather than random */

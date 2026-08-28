@@ -36,10 +36,10 @@ export function tileWidth(style: ThemeStyle, layer: 0 | 1 | 2) {
 
 export const THEMES: Theme[] = [
   {
-    id: "school", name: "새벽 학교",
-    sky: ["#0c1420", "#213049", "#4b4767"],
-    bands: ["#141d2a", "#1b2536", "#0c1117"],
-    road: ["#4a5a65", "#333f49", "#5f7079"],
+    id: "school", name: "이른 아침 학교",
+    sky: ["#26405f", "#4a6d94", "#9d7fa0"],
+    bands: ["#2c4055", "#35495e", "#1d2a37"],
+    road: ["#5e7180", "#44535f", "#7b8d99"],
     style: "hills",
   },
   {
@@ -51,16 +51,16 @@ export const THEMES: Theme[] = [
   },
   {
     id: "city", name: "도시 밤",
-    sky: ["#070b12", "#131c31", "#2b2752"],
-    bands: ["#0f1626", "#161f33", "#070a11"],
-    road: ["#3d4852", "#262e36", "#7c8b96"],
+    sky: ["#141d31", "#233158", "#463f7d"],
+    bands: ["#1d2740", "#26314c", "#141a28"],
+    road: ["#4c5a68", "#343f4b", "#8b9aa6"],
     style: "city",
   },
   {
     id: "space", name: "우주",
-    sky: ["#020308", "#0a0820", "#1c1038"],
-    bands: ["#0a0a18", "#100c22", "#04040e"],
-    road: ["#4b3f74", "#2a2340", "#9d8fe0"],
+    sky: ["#0c0d1c", "#191436", "#33205c"],
+    bands: ["#161629", "#1e1838", "#0d0d1c"],
+    road: ["#5b4d8a", "#372e52", "#ab9ef0"],
     style: "space",
   },
 ];

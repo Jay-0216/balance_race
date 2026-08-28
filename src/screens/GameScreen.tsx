@@ -126,6 +126,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
           dilemma={g.dilemma}
           disabled={g.phase !== "choosing"}
           picked={g.myChoice}
+          over={g.phase === "done"}
           onPick={g.pick}
         />
 

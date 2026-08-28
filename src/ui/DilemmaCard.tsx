@@ -10,11 +10,14 @@ export default function DilemmaCard({
   dilemma,
   disabled,
   picked,
+  over,
   onPick,
 }: {
   dilemma: Dilemma;
   disabled: boolean;
   picked: Choice | null;
+  /** the game is finished - there is no choice left, so no VS either */
+  over?: boolean;
   onPick: (c: Choice) => void;
 }) {
   return (
@@ -35,7 +38,9 @@ export default function DilemmaCard({
           </button>
         );
       })}
-      <span className="vs" aria-hidden="true">VS</span>
+      {/* The result overlay is translucent, and gold VS punched straight
+          through it - a versus badge on top of the final standings. */}
+      {!over && <span className="vs" aria-hidden="true">VS</span>}
     </div>
   );
 }

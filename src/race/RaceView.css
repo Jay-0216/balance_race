@@ -6,7 +6,19 @@
   flex: none;
   width: 100%;
   aspect-ratio: 12 / 9;
-  max-height: 46vh;
+  /* Two caps, and the tighter one wins. The vh cap keeps the band off a
+     short screen; the absolute cap stops it growing when the stage gets
+     wider on a laptop, which is what pushed the leaderboard out of the
+     panel the moment the frame stopped being a fixed 9/16.
+     (A percentage cap does not work here - the band's parent is auto-height,
+     so the percentage has nothing to resolve against and collapses it.) */
+  max-height: min(40vh, 372px);
+}
+
+/* Short screens: the band yields first. A cramped race is still a race; a
+   leaderboard you have to scroll to is not a leaderboard. */
+@media (max-height: 760px) {
+  .race-view { max-height: 32vh; }
   overflow: hidden;
   background: #121a20;
 }

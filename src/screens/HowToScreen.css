@@ -1,0 +1,87 @@
+.how {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 16px;
+  gap: 14px;
+}
+
+.how-head { flex: none; }
+.how-eyebrow {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+.how-head h2 { margin: 6px 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+.how-head p { margin: 0; font-size: 13px; color: var(--ink-3); }
+.how-head b { color: var(--ink-2); }
+
+/* The list scrolls; the button under it never does. */
+.how-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.how-step {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 11px;
+  padding: 12px 13px;
+  border-radius: 12px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+}
+.how-step.gold { border-color: rgba(240, 180, 41, 0.5); background: rgba(240, 180, 41, 0.08); }
+
+.how-n {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 99px;
+  background: var(--screen-3);
+  color: var(--ink-2);
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+.how-step.gold .how-n { background: var(--gold); color: #16202a; }
+
+.how-step h3 { margin: 3px 0 5px; font-size: 14.5px; font-weight: 700; }
+.how-step p { margin: 0 0 4px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+.how-step p:last-child { margin-bottom: 0; }
+.how-step b { color: var(--ink); }
+
+.how-step ul { margin: 4px 0 0; padding-left: 17px; }
+.how-step li { font-size: 12.5px; color: var(--ink-2); line-height: 1.65; }
+
+.how-note { color: var(--ink-3) !important; font-size: 11.5px !important; }
+
+.how-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
+.how-table td { padding: 3px 0; font-size: 12.5px; color: var(--ink-2); vertical-align: top; }
+.how-table td:first-child {
+  width: 78px;
+  color: var(--ink-3);
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.how-table span { color: var(--ink-3); font-size: 11.5px; }
+
+.how-go {
+  flex: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #16202a;
+  background: var(--gold);
+}
+.how-go:hover { filter: brightness(1.07); }

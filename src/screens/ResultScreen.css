@@ -93,3 +93,44 @@
   border: 1.5px solid var(--line);
 }
 .result-out:hover { background: var(--screen-3); }
+
+/* ---- my placing, stamped ------------------------------------------------ */
+.result-stamp {
+  position: absolute;
+  z-index: 4;
+  top: 8%;
+  right: 7%;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 10px 16px 12px;
+  border-radius: 14px;
+  color: var(--ink-2);
+  border: 3.5px solid currentColor;
+  background: rgba(18, 26, 33, 0.72);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  animation: rank-slam 0.6s cubic-bezier(0.18, 1.5, 0.35, 1) 0.42s both;
+}
+.result-stamp.win { color: var(--gold); }
+
+.result-stamp b {
+  font-size: clamp(34px, 11vw, 48px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.result-stamp span { font-size: 17px; font-weight: 700; }
+
+/* Overshoot and settle - a stamp bites, it does not glide in. */
+@keyframes rank-slam {
+  0%   { opacity: 0; transform: scale(2.2) rotate(-16deg); }
+  55%  { opacity: 1; transform: scale(0.93) rotate(6deg); }
+  75%  { transform: scale(1.05) rotate(-3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-stamp { animation: none; opacity: 1; transform: rotate(-7deg); }
+}
