@@ -24,7 +24,7 @@ export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void })
       {/* The account lives in the corner, as a face, the way every app puts it.
           A row in the menu made it look like a mode you could play. */}
       <button className="title-account" onClick={() => onPick("login")} aria-label="계정">
-        <Avatar id={me.id} nickname={me.nickname} size={38} />
+        <Avatar id={me.id} nickname={me.nickname} look={me.look} size={38} />
       </button>
 
       <div className="title-mark">

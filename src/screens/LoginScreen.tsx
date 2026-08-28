@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import {
-  currentSession, loadAccount, onAuthChange, saveNickname, sendMagicLink, signOut,
-  type Account,
+  currentSession, loadAccount, onAuthChange, saveLook, saveNickname, sendMagicLink,
+  signOut, type Account,
 } from "../net/auth";
 import FeedbackSection from "../ui/FeedbackSection";
-import { getIdentity, setNickname } from "../net/identity";
+import { getIdentity, setLook, setNickname, type Look } from "../net/identity";
 import { isOnlineAvailable } from "../net/supabase";
 import Avatar from "../ui/Avatar";
+import AvatarPicker from "../ui/AvatarPicker";
 import Offline from "../ui/Offline";
 import "../ui/Form.css";
 
@@ -19,6 +20,8 @@ import "../ui/Form.css";
  */
 export default function LoginScreen({ onBack }: { onBack: () => void }) {
   const [nick, setNick] = useState(() => getIdentity().nickname);
+  const [look, setLookState] = useState<Look | null>(() => getIdentity().look);
+  const myId = getIdentity().id;
   const [email, setEmail] = useState("");
   const [account, setAccount] = useState<Account | null>(null);
   const [busy, setBusy] = useState(false);
@@ -39,6 +42,18 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
       setAccount(acc);
       setNick(acc.nickname);
       setNickname(acc.nickname);      // keep the local copy in step
+      // The profile row wins over this browser's copy: that is the whole
+      // point of signing in. Only when the account has no face yet does the
+      // guest's choice get pushed up, so picking one before logging in is
+      // not thrown away by logging in.
+      if (acc.look) {
+        setLookState(acc.look);
+        setLook(acc.look);
+      } else {
+        const local = getIdentity().look;
+        setLookState(local);
+        if (local) void saveLook(acc.userId, local);
+      }
     };
     currentSession().then(adopt);
     const off = onAuthChange(adopt);
@@ -51,6 +66,12 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
     if (account) void saveNickname(account.userId, saved.nickname);
     setMsg({ ok: true, text: `이제 "${saved.nickname}"으로 달린다.` });
   };
+
+  const applyLook = (next: Look | null) => {
+    setLookState(next);
+    setLook(next);                    // saved on the spot: a face has no
+    if (account) void saveLook(account.userId, next);   // "save" button to
+  };                                                    // forget to press
 
   const link = async () => {
     setBusy(true);
@@ -87,11 +108,16 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
         {/* The face reacts to the name as you type it, so it is obvious that
             the two are the same thing. */}
         <div className="lg-me">
-          <Avatar id={getIdentity().id} nickname={nick || "나"} size={56} />
+          <Avatar id={myId} nickname={nick || "나"} look={look} size={56} />
           <div>
             <b>{nick.trim() || "나"}</b>
             <span>{account ? (account.email ?? "로그인됨") : "게스트"}</span>
           </div>
+        </div>
+
+        <div className="field">
+          <label>프로필 사진</label>
+          <AvatarPicker id={myId} nickname={nick || "나"} look={look} onChange={applyLook} />
         </div>
 
         <div className="field">

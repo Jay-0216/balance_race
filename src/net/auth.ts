@@ -1,4 +1,5 @@
 import type { Session } from "@supabase/supabase-js";
+import type { Look } from "./identity";
 import { isOnlineAvailable, supabase } from "./supabase";
 
 /**
@@ -20,6 +21,8 @@ export type Account = {
   userId: string;
   email: string | null;
   nickname: string;
+  /** the chosen face, or null for the one derived from the id */
+  look: Look | null;
 };
 
 /** Where the magic link comes back to. Must match Supabase's allow-list. */
@@ -41,16 +44,40 @@ export async function loadAccount(session: Session): Promise<Account> {
 
   const { data } = await sb
     .from("profiles")
-    .select("nickname")
+    .select("nickname, avatar_emoji, avatar_hue")
     .eq("id", session.user.id)
     .maybeSingle();
 
   if (data) {
-    return { userId: session.user.id, email: session.user.email ?? null, nickname: data.nickname };
+    return {
+      userId: session.user.id,
+      email: session.user.email ?? null,
+      nickname: data.nickname,
+      // Half a face is no face: an emoji with no hue (or the other way round)
+      // means the row predates the columns, so fall back to the derived one.
+      look:
+        data.avatar_emoji && data.avatar_hue !== null
+          ? { emoji: data.avatar_emoji, hue: data.avatar_hue }
+          : null,
+    };
   }
 
   await sb.from("profiles").insert({ id: session.user.id, nickname: fallback });
-  return { userId: session.user.id, email: session.user.email ?? null, nickname: fallback };
+  return {
+    userId: session.user.id,
+    email: session.user.email ?? null,
+    nickname: fallback,
+    look: null,
+  };
+}
+
+/** Clearing it (null) is a real choice, so both columns go back to null. */
+export async function saveLook(userId: string, look: Look | null) {
+  if (!isOnlineAvailable()) return;
+  await supabase()
+    .from("profiles")
+    .update({ avatar_emoji: look?.emoji ?? null, avatar_hue: look?.hue ?? null })
+    .eq("id", userId);
 }
 
 export async function saveNickname(userId: string, nickname: string) {

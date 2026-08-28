@@ -9,6 +9,26 @@ export type Dilemma = {
   popularBias: number;
 };
 
+/**
+ * A quiz card: same two-button shape as a dilemma, but one side is right.
+ *
+ * The deck (src/data/quizzes.json) is written and checked; the quiz *mode* is
+ * not built yet, and it cannot simply reuse the race: this game scores you for
+ * reading the room, and a question with a correct answer has no room to read.
+ * Scoring, bots and the reveal all have to be rethought, so the cards wait
+ * here rather than being half-wired into a mode that would play wrong.
+ */
+export type Quiz = {
+  id: string;
+  category: string;
+  question: string;
+  a: { text: string; emoji: string };
+  b: { text: string; emoji: string };
+  answer: Choice;
+  /** one line of why, shown after the reveal */
+  note: string;
+};
+
 export type BotProfile = {
   /** pull toward whatever is popular */
   conformity: number;

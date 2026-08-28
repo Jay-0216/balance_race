@@ -12,7 +12,21 @@ export type Identity = {
   id: string;
   nickname: string;
   provider: "local" | "supabase";
+  /** a chosen face, or null to keep the one derived from the id */
+  look: Look | null;
 };
+
+/**
+ * A picked profile picture.
+ *
+ * There is no upload and no storage bucket, and there deliberately still is
+ * not one: a photo uploaded by a middle-schooler is a moderation problem, a
+ * storage bill and a privacy question all at once, for a face that shows at
+ * 38px. An emoji and a hue are two small values that need no bucket, cannot
+ * carry anything a stranger should not see, and travel to another device as
+ * eight bytes of profile row.
+ */
+export type Look = { emoji: string; hue: number };
 
 const KEY = "ddr.identity";
 const DEFAULT_NICKNAME = "나";
@@ -28,7 +42,12 @@ function read(): Identity | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<Identity>;
     if (!parsed.id || !parsed.nickname) return null;
-    return { id: parsed.id, nickname: parsed.nickname, provider: "local" };
+    return {
+      id: parsed.id,
+      nickname: parsed.nickname,
+      provider: "local",
+      look: cleanLook(parsed.look),
+    };
   } catch {
     return null;
   }
@@ -49,6 +68,7 @@ export function getIdentity(): Identity {
     id: randomId(),
     nickname: DEFAULT_NICKNAME,
     provider: "local",
+    look: null,
   };
   write(fresh);
   return fresh;
@@ -57,6 +77,26 @@ export function getIdentity(): Identity {
 export function setNickname(nickname: string): Identity {
   const trimmed = nickname.trim().slice(0, 8) || DEFAULT_NICKNAME;
   const next: Identity = { ...getIdentity(), nickname: trimmed };
+  write(next);
+  return next;
+}
+
+/**
+ * Anything at all can be in localStorage - an old shape, a hand-edited value,
+ * a half-written write. A face is cosmetic, so a bad one falls back to the
+ * derived face rather than throwing on the title screen.
+ */
+function cleanLook(v: unknown): Look | null {
+  if (!v || typeof v !== "object") return null;
+  const l = v as Partial<Look>;
+  if (typeof l.emoji !== "string" || !l.emoji) return null;
+  if (typeof l.hue !== "number" || !Number.isFinite(l.hue)) return null;
+  return { emoji: [...l.emoji][0], hue: ((l.hue % 360) + 360) % 360 };
+}
+
+/** Picking a face, or null to go back to the one derived from the id. */
+export function setLook(look: Look | null): Identity {
+  const next: Identity = { ...getIdentity(), look: cleanLook(look) };
   write(next);
   return next;
 }
