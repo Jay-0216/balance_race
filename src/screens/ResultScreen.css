@@ -123,6 +123,27 @@
 }
 .result-stamp span { font-size: 17px; font-weight: 700; }
 
+/* "공동" rides above the number rather than beside it: the stamp is read as
+   one figure at a glance, and a word in front of it breaks that read. */
+.result-stamp.shared { padding-top: 16px; }
+.result-stamp i {
+  position: absolute;
+  top: 6px;
+  left: 16px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+}
+
+/* a shared place in the list, marked so two identical numbers do not read as
+   a bug */
+.result-rank.shared { color: var(--gold); }
+.result-rank.shared::after { content: "="; margin-left: 1px; opacity: 0.7; }
+
+.result-dots { display: flex; gap: 3px; flex: none; }
+
 /* Overshoot and settle - a stamp bites, it does not glide in. */
 @keyframes rank-slam {
   0%   { opacity: 0; transform: scale(2.2) rotate(-16deg); }

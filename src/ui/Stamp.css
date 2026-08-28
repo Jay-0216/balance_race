@@ -3,16 +3,51 @@
   left: 50%;
   top: 42%;
   z-index: 3;
-  font-size: clamp(30px, 10vw, 42px);
-  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
   letter-spacing: 0.03em;
-  color: var(--gold);
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   animation: stamp-hit 0.95s cubic-bezier(0.2, 1.4, 0.4, 1) both;
 }
-.stamp.minority { color: var(--a); }
-.stamp.tie { color: var(--ink-2); }
+
+/* The lead-in is the setup, the hit is the punchline, so they are not the
+   same size: "소수…" has to read as the bad news it looks like right up to
+   the moment "지만 앞으로!" lands underneath it. */
+.stamp-lead {
+  font-size: clamp(15px, 4.6vw, 20px);
+  font-style: normal;
+  font-weight: 700;
+  opacity: 0.85;
+  animation: stamp-lead 0.95s ease-out both;
+}
+.stamp-hit {
+  font-size: clamp(28px, 9.4vw, 40px);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.stamp.majority-ahead { color: var(--gold); }
+.stamp.minority-stuck { color: var(--a); }
+.stamp.tie            { color: var(--ink-2); }
+
+/* Moving from the small side is the best thing that can happen to you, so it
+   gets the green the score delta already uses for "you gained". */
+.stamp.minority-ahead { color: #7fd6a6; }
+.stamp.minority-ahead .stamp-lead { color: var(--a); opacity: 1; }
+
+.stamp.majority-stuck { color: var(--ink-2); }
+.stamp.majority-stuck .stamp-lead { color: var(--gold); opacity: 1; }
+
+/* a beat behind the hit, so the reversal reads as a turn rather than a title */
+@keyframes stamp-lead {
+  0%, 12% { opacity: 0; transform: translateY(6px); }
+  30%     { opacity: 1; transform: none; }
+  70%     { opacity: 1; }
+  100%    { opacity: 0; }
+}
 
 @keyframes stamp-hit {
   0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.9) rotate(-8deg); }
@@ -34,5 +69,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stamp { animation: none; opacity: 1; transform: translate(-50%, -50%); }
+  .stamp-lead { animation: none; opacity: 1; }
   .shake { animation: none; }
 }

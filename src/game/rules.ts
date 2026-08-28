@@ -188,6 +188,33 @@ export function resolveRound(
   return { kind, countA, countB, tie, advancingSide, majorityShare, gain, moves };
 }
 
+/**
+ * What happened to one player this round, as the two facts that matter:
+ * which side they were on, and whether it moved them.
+ *
+ * These come apart on a reverse round - the round where the minority is the
+ * side that advances - and conflating them is a bug the game shipped with:
+ * the reveal asked only "did I advance", so going small on a reverse round
+ * and being paid for it announced 다수!, and reading the room correctly to
+ * stay with the crowd announced 소수…. Both backwards, on the one round where
+ * a player most needs to be told what just happened.
+ */
+export type SideStory =
+  | "majority-ahead"    // the ordinary win
+  | "minority-ahead"    // a reverse round paying off
+  | "majority-stuck"    // a reverse round biting
+  | "minority-stuck"
+  | "tie";
+
+export function sideStory(outcome: RoundOutcome, myChoice: Choice | null): SideStory {
+  if (outcome.tie) return "tie";
+  const big: Choice = outcome.countA > outcome.countB ? "a" : "b";
+  const inMajority = myChoice === big;
+  return myChoice === outcome.advancingSide
+    ? inMajority ? "majority-ahead" : "minority-ahead"
+    : inMajority ? "majority-stuck" : "minority-stuck";
+}
+
 /** Applies an outcome, returning new players. Never mutates. */
 export function applyOutcome(players: Player[], outcome: RoundOutcome): Player[] {
   const byId = new Map(outcome.moves.map((m) => [m.playerId, m]));
@@ -207,4 +234,36 @@ export function isOver(players: Player[], round: number): boolean {
 
 export function ranked(players: Player[]): Player[] {
   return [...players].sort((x, y) => y.pos - x.pos || x.id - y.id);
+}
+
+export type Placement = {
+  player: Player;
+  /** standard competition ranking: 1, 1, 3 - never 1, 2, 3 for a shared cell */
+  place: number;
+  /** somebody else finished on exactly this cell */
+  shared: boolean;
+};
+
+/**
+ * Places, not row numbers.
+ *
+ * ranked() sorts, and sorting has to break ties somehow - here by player id,
+ * which is seat order and means nothing. Reading a place off that sorted list
+ * quietly turns "we both finished on 24" into "you were second", deciding a
+ * dead heat by who happened to sit down first. Two players on the same cell
+ * are the same place, and the next player skips.
+ */
+export function placements(players: Player[]): Placement[] {
+  const order = ranked(players);
+  const out: Placement[] = [];
+  for (let i = 0; i < order.length; i++) {
+    const p = order[i];
+    // first row at this cell sets the place; everyone level with it shares it
+    const place = i > 0 && order[i - 1].pos === p.pos ? out[i - 1].place : i + 1;
+    out.push({ player: p, place, shared: false });
+  }
+  for (const row of out) {
+    row.shared = out.some((o) => o !== row && o.place === row.place);
+  }
+  return out;
 }

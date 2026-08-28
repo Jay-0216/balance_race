@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGame } from "../game/useGame";
-import { CELLS, KIND_LABEL, ROUNDS, TIME_LIMIT } from "../game/rules";
+import { CELLS, KIND_LABEL, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
 import RaceView from "../race/RaceView";
 import type { RaceEffect } from "../race/effects";
 import type { RacerView } from "../race/world";
@@ -27,13 +27,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
   // the stage jolts on the stamp, not the page - jolting the chrome of a phone
   // game reads as a bug rather than a hit
   const stageRef = useRef<HTMLDivElement>(null);
-  const stamp: StampKind = !g.outcome
-    ? null
-    : g.outcome.tie
-      ? "tie"
-      : g.myChoice === g.outcome.advancingSide
-        ? "majority"
-        : "minority";
+  const stamp: StampKind = g.outcome ? sideStory(g.outcome, g.myChoice) : null;
 
   useEffect(() => {
     if (g.phase !== "reveal" || !stageRef.current) return;
@@ -176,13 +170,8 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         <Leaderboard players={g.players} cells={CELLS} />
       </div>
 
-      {g.phase === "done" && g.winner && (
-        <ResultScreen
-          players={g.players}
-          winner={g.winner}
-          onAgain={g.restart}
-          onBack={onBack}
-        />
+      {g.phase === "done" && (
+        <ResultScreen players={g.players} onAgain={g.restart} onBack={onBack} />
       )}
     </div>
   );

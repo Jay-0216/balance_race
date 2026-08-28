@@ -1,55 +1,80 @@
-import { CELLS, ranked } from "../game/rules";
+import { CELLS, placements } from "../game/rules";
 import type { Player } from "../game/types";
 import "./ResultScreen.css";
 
 export default function ResultScreen({
   players,
-  winner,
   onAgain,
   onBack,
 }: {
   players: Player[];
-  winner: Player;
   onAgain: () => void;
   onBack: () => void;
 }) {
-  const order = ranked(players);
-  const me = players.find((p) => !p.isBot);
-  const myRank = order.findIndex((p) => !p.isBot) + 1;
+  const order = placements(players);
+  const mine = order.find((r) => !r.player.isBot);
+  // Everyone who finished on the top cell - usually one, sometimes not. The
+  // race can genuinely end level: the clock runs out on round 12 with two
+  // players on the same cell, or two of them cross the line in the same
+  // round. Picking a "winner" out of those by seat order is inventing a
+  // result the game did not produce.
+  const champions = order.filter((r) => r.place === 1);
+  const tiedTop = champions.length > 1;
 
   return (
     <div className="result" role="dialog" aria-label="결과">
       {/* Your own placing lands like the round stamp does, because it is the
           one number on this screen you actually came for. It stays put
           instead of fading: the round stamp is a beat, this is the verdict. */}
-      <div className={"result-stamp" + (myRank === 1 ? " win" : "")} aria-hidden="true">
-        <b>{myRank}</b>
-        <span>등</span>
-      </div>
+      {mine && (
+        <div
+          className={"result-stamp" + (mine.place === 1 ? " win" : "") + (mine.shared ? " shared" : "")}
+          aria-hidden="true"
+        >
+          {mine.shared && <i>공동</i>}
+          <b>{mine.place}</b>
+          <span>등</span>
+        </div>
+      )}
 
       <div className="result-card">
         <span className="result-eyebrow">결승</span>
         <h2 className="result-winner">
-          <span className="result-dot" style={{ background: winner.color }} />
-          {winner.name}
+          {tiedTop ? (
+            <>
+              <span className="result-dots">
+                {champions.map((r) => (
+                  <span key={r.player.id} className="result-dot" style={{ background: r.player.color }} />
+                ))}
+              </span>
+              공동 우승
+            </>
+          ) : (
+            <>
+              <span className="result-dot" style={{ background: champions[0].player.color }} />
+              {champions[0].player.name}
+            </>
+          )}
         </h2>
         <p className="result-sub">
-          {winner.pos}/{CELLS}칸으로 우승
-          {me && ` · 나는 ${myRank}등 (${me.pos}칸)`}
+          {tiedTop
+            ? `${champions.map((r) => r.player.name).join(" · ")} — ${champions[0].player.pos}/${CELLS}칸으로 동률`
+            : `${champions[0].player.pos}/${CELLS}칸으로 우승`}
+          {mine && ` · 나는 ${mine.shared ? "공동 " : ""}${mine.place}등 (${mine.player.pos}칸)`}
         </p>
 
         <ol className="result-list">
-          {order.map((p, i) => (
-            <li key={p.id} className={p.isBot ? "" : "me"}>
-              <span className="result-rank">{i + 1}</span>
+          {order.map((r) => (
+            <li key={r.player.id} className={r.player.isBot ? "" : "me"}>
+              <span className={"result-rank" + (r.shared ? " shared" : "")}>{r.place}</span>
               <span className="result-name">
-                <span className="result-dot sm" style={{ background: p.color }} />
-                {p.name}
+                <span className="result-dot sm" style={{ background: r.player.color }} />
+                {r.player.name}
               </span>
               <span className="result-bar">
-                <span style={{ width: `${(p.pos / CELLS) * 100}%`, background: p.color }} />
+                <span style={{ width: `${(r.player.pos / CELLS) * 100}%`, background: r.player.color }} />
               </span>
-              <span className="result-pos">{p.pos}</span>
+              <span className="result-pos">{r.player.pos}</span>
             </li>
           ))}
         </ol>

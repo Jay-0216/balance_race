@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   padding: 18px 18px 16px;
-  gap: 14px;
+  gap: 12px;
 }
 
 .how-head { flex: none; }
@@ -14,74 +14,147 @@
   letter-spacing: 0.16em;
   color: var(--gold);
 }
-.how-head h2 { margin: 6px 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
-.how-head p { margin: 0; font-size: 13px; color: var(--ink-3); }
-.how-head b { color: var(--ink-2); }
+.how-head h2 { margin: 6px 0 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
 
-/* The list scrolls; the button under it never does. */
-.how-body {
-  flex: 1;
+/* ---- the picture -------------------------------------------------------- */
+
+/* A button, because tapping the picture is what everyone tries first. It has
+   to look like a panel and behave like a control. */
+.how-stage {
+  /* Hugs its picture rather than stretching. The drawing has a fixed aspect,
+     so a panel taller than the drawing cannot make the drawing bigger - it
+     just puts a field of empty card around it. `margin: auto 0` hands that
+     spare height back to the screen, split above and below, and the picture
+     ends up centred with the buttons still pinned to the bottom. */
+  flex: 0 1 auto;
+  margin: auto 0;
   min-height: 0;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 12px;
-  padding-right: 4px;
-}
-
-.how-step {
-  display: grid;
-  grid-template-columns: 26px 1fr;
-  gap: 11px;
-  padding: 12px 13px;
-  border-radius: 12px;
+  padding: 10px 14px 16px;
+  text-align: left;
+  border-radius: 14px;
   background: var(--screen-2);
   border: 1.5px solid var(--line);
 }
-.how-step.gold { border-color: rgba(240, 180, 41, 0.5); background: rgba(240, 180, 41, 0.08); }
 
-.how-n {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
+.how-art {
+  width: 100%;
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 380px;
+  overflow: visible;
+}
+
+.how-say { flex: none; display: flex; flex-direction: column; gap: 5px; min-height: 62px; }
+.how-title { font-size: 16.5px; font-weight: 800; line-height: 1.35; }
+.how-line { font-size: 12.5px; line-height: 1.6; color: var(--ink-2); }
+
+/* ---- type inside the drawing ------------------------------------------- */
+
+.how-art text {
+  font-family: "IBM Plex Sans KR", system-ui, sans-serif;
+  fill: var(--ink-2);
+}
+.how-tag { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 700; }
+.how-tag.a { fill: var(--a); }
+.how-tag.b { fill: var(--b); }
+.how-emoji { font-size: 24px; }
+.how-opt { font-size: 15px; font-weight: 600; fill: var(--ink); }
+.how-vs {
+  font-family: ui-monospace, monospace;
+  font-size: 17px; font-weight: 700;
+  fill: var(--gold); text-anchor: middle;
+}
+.how-clock {
+  font-family: ui-monospace, monospace;
+  font-size: 15px; font-weight: 700;
+  fill: var(--ink); text-anchor: middle;
+}
+.how-count { font-size: 17px; font-weight: 700; text-anchor: middle; }
+.how-count.a { fill: var(--a); }
+.how-count.b { fill: var(--b); }
+.how-note { font-size: 13px; fill: var(--ink-3); text-anchor: middle; }
+.how-split {
+  font-family: ui-monospace, monospace;
+  font-size: 21px; font-weight: 700; fill: var(--ink-2); text-anchor: middle;
+}
+.how-gain { font-size: 21px; font-weight: 800; text-anchor: middle; }
+.how-boost { font-size: 15px; font-weight: 700; fill: var(--gold); text-anchor: middle; }
+.how-mult { font-size: 30px; font-weight: 800; fill: var(--gold); text-anchor: middle; }
+.how-chip { font-size: 14px; font-weight: 700; text-anchor: middle; }
+.how-what { font-size: 13.5px; fill: var(--ink-3); }
+.how-me { font-size: 13px; font-weight: 700; fill: var(--ink); text-anchor: middle; }
+.how-cells { font-size: 17px; font-weight: 800; fill: var(--gold); text-anchor: middle; }
+
+/* ---- where you are ------------------------------------------------------ */
+
+.how-dots { flex: none; display: flex; gap: 6px; }
+
+.how-dot {
+  position: relative;
+  flex: 1;
+  height: 4px;
   border-radius: 99px;
   background: var(--screen-3);
-  color: var(--ink-2);
-  font-family: ui-monospace, monospace;
-  font-size: 13px;
-  font-weight: 700;
+  overflow: hidden;
 }
-.how-step.gold .how-n { background: var(--gold); color: #16202a; }
+.how-dot.done { background: var(--line); }
+.how-dot.on { background: var(--screen-3); }
 
-.how-step h3 { margin: 3px 0 5px; font-size: 14.5px; font-weight: 700; }
-.how-step p { margin: 0 0 4px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
-.how-step p:last-child { margin-bottom: 0; }
-.how-step b { color: var(--ink); }
-
-.how-step ul { margin: 4px 0 0; padding-left: 17px; }
-.how-step li { font-size: 12.5px; color: var(--ink-2); line-height: 1.65; }
-
-.how-note { color: var(--ink-3) !important; font-size: 11.5px !important; }
-
-.how-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
-.how-table td { padding: 3px 0; font-size: 12.5px; color: var(--ink-2); vertical-align: top; }
-.how-table td:first-child {
-  width: 78px;
-  color: var(--ink-3);
-  font-family: ui-monospace, monospace;
-  font-size: 11.5px;
-  white-space: nowrap;
+/* The bar runs for exactly the dwell, so it is a promise about when the
+   picture turns rather than decoration. */
+.how-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  border-radius: 99px;
+  background: var(--gold);
+  animation: how-fill 5.6s linear both;
 }
-.how-table span { color: var(--ink-3); font-size: 11.5px; }
 
-.how-go {
-  flex: none;
-  padding: 15px;
+@keyframes how-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ---- controls ----------------------------------------------------------- */
+
+.how-nav { flex: none; display: flex; gap: 8px; }
+
+.how-prev, .how-skip {
+  padding: 13px 16px;
   border-radius: 12px;
-  font-size: 15.5px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+}
+.how-prev:hover:not(:disabled), .how-skip:hover { color: var(--ink-2); }
+.how-prev:disabled { opacity: 0.35; cursor: default; }
+
+.how-next, .how-go {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 700;
   color: #16202a;
   background: var(--gold);
 }
-.how-go:hover { filter: brightness(1.07); }
+.how-next:hover, .how-go:hover { filter: brightness(1.07); }
+
+@media (max-height: 700px) {
+  .how { gap: 9px; padding: 12px 14px 12px; }
+  .how-head h2 { font-size: 17px; }
+  .how-stage { padding: 6px 11px 12px; gap: 8px; }
+  .how-say { min-height: 54px; }
+  .how-title { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .how-fill { animation: none; transform: scaleX(1); opacity: 0.4; }
+}

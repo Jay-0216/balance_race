@@ -1,0 +1,40 @@
+.sc-draw {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: sc-draw 0.66s cubic-bezier(0.4, 0.1, 0.25, 1) both;
+}
+
+@keyframes sc-draw {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Characters rise into place instead of fading: a fade reads as a slide
+   transition, a rise reads as a hand moving along the line. */
+.sc-wr span {
+  display: inline-block;
+  white-space: pre;
+  animation: sc-write 0.34s var(--ease-out) both;
+}
+
+@keyframes sc-write {
+  from { opacity: 0; transform: translateY(0.32em) rotate(-4deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* things inside a scene that appear before anything is drawn on them */
+.sc-in { animation: sc-in 0.42s var(--ease-out) both; }
+
+@keyframes sc-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-draw { stroke-dashoffset: 0; animation: none; }
+  .sc-wr span, .sc-in { animation: none; opacity: 1; transform: none; }
+}
