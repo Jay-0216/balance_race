@@ -6,10 +6,14 @@
   border-radius: 12px;
   background: var(--screen-3);
   border: 1.5px solid var(--line);
-  transition: border-color 0.25s ease, background 0.25s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
-.boost.full { border-color: rgba(240, 180, 41, 0.55); }
-.boost.armed { border-color: var(--gold); background: rgba(240, 180, 41, 0.12); }
+.boost.full { border-color: rgba(240, 180, 41, 0.5); }
+.boost.armed {
+  border-color: var(--gold);
+  background: rgba(240, 180, 41, 0.16);
+  box-shadow: 0 0 0 1.5px rgba(240, 180, 41, 0.45), 0 6px 22px -8px rgba(240, 180, 41, 0.7);
+}
 
 .boost-btn {
   position: relative;
@@ -19,18 +23,20 @@
   border-radius: 99px;
   display: grid;
   place-items: center;
-  transition: transform 0.16s var(--ease-out), background 0.25s ease;
+  transition: transform 0.16s var(--ease-out);
 }
 .boost-btn:disabled { cursor: default; }
 .boost-btn:not(:disabled):hover { transform: translateY(-2px); }
-.boost-btn:not(:disabled):active { transform: translateY(0) scale(0.96); }
+.boost-btn:not(:disabled):active { transform: translateY(0) scale(0.94); }
 
 .boost-btn svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
+/* --- off / charging: a dark disc with an outlined ring --- */
 .boost-track {
-  fill: rgba(17, 23, 28, 0.5);
+  fill: rgba(17, 23, 28, 0.55);
   stroke: var(--line);
   stroke-width: 5;
+  transition: fill 0.2s ease;
 }
 
 .boost-fill {
@@ -41,25 +47,33 @@
   transition: stroke-dashoffset 0.55s var(--ease-out);
 }
 
-.boost-icon {
-  position: relative;
-  font-size: 19px;
-  line-height: 1;
-  filter: grayscale(1) brightness(1.6);
-  opacity: 0.45;
-  transition: filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+.boost-bolt {
+  fill: #55636d;
+  transition: fill 0.2s ease;
 }
-.boost.full .boost-icon { filter: none; opacity: 1; }
+.boost.full .boost-bolt { fill: var(--gold); }
 
-/* Full but unpressed: the ring breathes to say the button is now live. */
+/* Full but off: the ring breathes to say the button has become pressable. */
 .boost.full:not(.armed) .boost-fill { animation: boost-ready 1.5s ease-in-out infinite; }
-.boost.armed .boost-icon { transform: scale(1.15); }
+
+/* --- on: the disc floods gold and the bolt punches out of it --- */
+.boost.armed .boost-track {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
 .boost.armed .boost-fill { stroke: var(--gold); }
-.boost.armed .boost-btn { background: rgba(240, 180, 41, 0.22); }
+.boost.armed .boost-bolt { fill: #16202a; }
+.boost.armed .boost-btn { animation: boost-on 1.6s ease-in-out infinite; }
 
 @keyframes boost-ready {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+  50% { opacity: 0.4; }
+}
+
+/* a halo that pulses outward - visible at a glance mid-round */
+@keyframes boost-on {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 180, 41, 0.55); }
+  70% { box-shadow: 0 0 0 11px rgba(240, 180, 41, 0); }
 }
 
 .boost-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -69,4 +83,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .boost-fill { animation: none; transition: none; }
+  .boost.armed .boost-btn { animation: none; }
 }

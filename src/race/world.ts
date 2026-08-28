@@ -14,7 +14,15 @@ export const WORLD = { w: 5760, h: 250 } as const;
  * off lead/CELLS) could never fully arrive.
  */
 export { CELLS } from "../game/rules";
-export const LANE_GAP = 13;
+/**
+ * Car, lane and road are one set of proportions, taken straight from the
+ * mockup (which was authored against a 240-unit world) and scaled to this
+ * one. Re-deriving them by eye made the pack too small for a road too narrow:
+ * eight cars 13 apart on a 112 road left the outside lanes riding the kerb,
+ * and a 17-unit car is barely 20px on a phone - too small for the wing, the
+ * cockpit or the nose highlight to survive.
+ */
+export const LANE_GAP = 17.7;
 export const RACER_R = 7;
 /**
  * Ambient cruise in cells per second. Everything on the track - cars, distance
@@ -25,12 +33,10 @@ export const RACER_R = 7;
  */
 export const CRUISE = 0.25;
 
-/** chassis size in world units - 15px on a phone at the default zoom */
-export const CAR = { len: 17, w: 9 } as const;
-export const ROAD_W = 112;
-/** A half-lane of along-track stagger so neighbouring lanes never touch.
- *  0.125 of a cell - visible separation, no misread of who is ahead. */
-export const LANE_STAGGER = 3.5;
+/** chassis size in world units - ~34px on a phone at the default zoom */
+export const CAR = { len: 27, w: 13.5 } as const;
+/** the road surface; the edge underneath it is drawn 7 wider */
+export const ROAD_W = 129;
 
 /**
  * The track is far longer than the 20 cells anyone scores, because the cars

@@ -41,8 +41,14 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     el.classList.add("shake");
   }, [g.phase, g.round]);
 
-  // Winners get a gust, booster holders get a flare. Keyed on the round so the
-  // race view replays them exactly once.
+  // Winners get a gust, booster holders get a flare, keyed so the race view
+  // plays each exactly once.
+  //
+  // The key used to be the round number, which fired every gust twice: the
+  // round counter increments while the phase is still "moving" and the old
+  // outcome is still on screen, so the same eight moves came back under new
+  // keys ~1.7s later - a second gust behind cars that had already stopped.
+  // outcomeSeq changes once per resolution and nowhere else.
   const effects: RaceEffect[] = useMemo(() => {
     // only once the cars actually dash - fired at reveal they were over
     // before anyone had moved
@@ -50,11 +56,11 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     return g.outcome.moves
       .filter((m) => m.to > m.from)
       .map((m) => ({
-        key: g.round * 100 + m.playerId,
+        key: g.outcomeSeq * 100 + m.playerId,
         playerId: m.playerId,
         kind: m.boosterFired ? ("booster" as const) : ("advance" as const),
       }));
-  }, [g.outcome, g.phase, g.round]);
+  }, [g.outcome, g.phase, g.outcomeSeq]);
 
   const racers: RacerView[] = useMemo(
     () => g.players.map((p) => ({

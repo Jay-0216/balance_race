@@ -26,6 +26,13 @@ export type GameState = {
   dilemma: Dilemma;
   phase: Phase;
   outcome: RoundOutcome | null;
+  /**
+   * Bumped once per resolution and never again. The round number cannot stand
+   * in for it: the round counter increments while the phase is still "moving"
+   * and the outcome is still on screen, so anything keyed on the round is
+   * keyed on a number that changes twice per round.
+   */
+  outcomeSeq: number;
   myChoice: Choice | null;
   lockedCount: number;
   myLockIndex: number;
@@ -39,6 +46,7 @@ export function useGame() {
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState<Phase>("choosing");
   const [outcome, setOutcome] = useState<RoundOutcome | null>(null);
+  const [outcomeSeq, setOutcomeSeq] = useState(0);
   const [myChoice, setMyChoice] = useState<Choice | null>(null);
   const [lockedCount, setLockedCount] = useState(0);
   const [myLockIndex, setMyLockIndex] = useState(-1);
@@ -100,6 +108,7 @@ export function useGame() {
       setTimedOut(viaTimeout);
       setLockedCount(players.length);
       setOutcome(result);
+      setOutcomeSeq((n) => n + 1);
       setPhase("reveal");
       play("stamp");
 
@@ -113,16 +122,16 @@ export function useGame() {
       }, REVEAL_MS);
 
       later(() => {
-        setPlayers((prev) => {
-          const finished = prev.some((p) => p.pos >= CELLS);
-          if (finished || round >= ROUNDS) {
-            setPhase("done");
-            play("finish");
-          } else {
-            setRound((r) => r + 1);
-          }
-          return prev;
-        });
+        // Decided from the outcome, not by peeking at state inside an updater:
+        // setState inside another setState's updater is a side effect in a
+        // place React is entitled to call twice.
+        const finished = result.moves.some((m) => m.to >= CELLS);
+        if (finished || round >= ROUNDS) {
+          setPhase("done");
+          play("finish");
+        } else {
+          setRound((r) => r + 1);
+        }
       }, REVEAL_MS + MOVING_MS);
     },
     [players, dilemma, kind, round, stake, useBoost]
@@ -173,7 +182,7 @@ export function useGame() {
   }, [startRound]);
 
   return {
-    players, round, kind, dilemma, phase, outcome, myChoice,
+    players, round, kind, dilemma, phase, outcome, outcomeSeq, myChoice,
     lockedCount, myLockIndex, deadline, timedOut,
     winner: phase === "done" ? ranked(players)[0] : null,
     stake, setStake,

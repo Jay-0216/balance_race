@@ -7,7 +7,7 @@ import type { RaceEffect } from "./effects";
 import Car from "./Racer";
 import Track from "./Track";
 import {
-  CAR, CELLS, CRUISE, LANE_GAP, LANE_STAGGER, LEAD_CELLS, TRACK_CELLS, WORLD,
+  CAR, CELLS, CRUISE, LANE_GAP, LEAD_CELLS, TRACK_CELLS, WORLD,
   type RacerView,
 } from "./world";
 import "./RaceView.css";
@@ -63,7 +63,9 @@ export default function RaceView({
   const tickRefs = useRef<(SVGGElement | null)[]>([]);
   const startRef = useRef<SVGGElement | null>(null);
   const finishRef = useRef<SVGGElement | null>(null);
-  const activeFx = useRef<{ playerId: number; kind: RaceEffect["kind"]; until: number }[]>([]);
+  const activeFx = useRef<
+    { playerId: number; kind: RaceEffect["kind"]; t0: number; dur: number }[]
+  >([]);
   const seenFx = useRef(new Set<number>());
 
   const reduce =
@@ -95,7 +97,10 @@ export default function RaceView({
       activeFx.current.push({
         playerId: e.playerId,
         kind: e.kind,
-        until: now + (e.kind === "booster" ? 950 : 700),
+        t0: now,
+        // Both end with the dash (MOVE_MS). A gust that outlives the movement
+        // reads as the car still accelerating after it has stopped.
+        dur: e.kind === "booster" ? MOVE_MS + 120 : MOVE_MS - 80,
       });
     }
     if (seenFx.current.size > 400) seenFx.current.clear();
@@ -278,9 +283,11 @@ export default function RaceView({
             Math.sin(now / (1130 + i * 83) + i) * 0.1;
         const p = at(d + cruise + jostle);
         const nx = -Math.sin(p.ang), ny = Math.cos(p.ang);
-        const stagger = (i % 2 === 0 ? 1 : -1) * LANE_STAGGER;
-        const wx = p.x + nx * lane * LANE_GAP + Math.cos(p.ang) * stagger;
-        const wy = p.y + ny * lane * LANE_GAP + Math.sin(p.ang) * stagger;
+        // No along-track stagger. It was there to keep neighbouring lanes
+        // apart, but the lane gap does that on its own now, and zig-zagging
+        // every other car broke the clean diagonal the pack makes on a bend.
+        const wx = p.x + nx * lane * LANE_GAP;
+        const wy = p.y + ny * lane * LANE_GAP;
 
         seats.set(list[i].id, {
           x: sx(wx), y: sy(wy), ang: p.ang,
@@ -345,24 +352,36 @@ export default function RaceView({
       // one-shot flourishes: a gust behind whoever won the round, a flare for
       // a booster. They ride on top of the ordinary dust, never replace it.
       if (!reduce && activeFx.current.length) {
-        activeFx.current = activeFx.current.filter((e) => e.until > now);
+        activeFx.current = activeFx.current.filter((e) => now - e.t0 < e.dur);
         // boosters first: they must never be starved of pool slots by the
         // gusts firing in the same frame
         for (const e of activeFx.current) {
           if (e.kind !== "booster") continue;
           const seat = seats.get(e.playerId);
           if (!seat) continue;
+          // A flare, not a jet: everything at once for the first few frames,
+          // then a thinning tail. Emitting a flat 12 per frame for the whole
+          // duration was ~470 particles alive off one car.
+          const age = (now - e.t0) / e.dur;
+          const n = age < 0.07 ? 11 : Math.round(4 * Math.pow(1 - age, 1.6));
+          if (n <= 0) continue;
           fx.flame(
-            seat.x - Math.cos(seat.ang) * 13,
-            seat.y - Math.sin(seat.ang) * 13,
-            seat.ang, 12
+            seat.x - Math.cos(seat.ang) * CAR.len * 0.55,
+            seat.y - Math.sin(seat.ang) * CAR.len * 0.55,
+            seat.ang, n
           );
         }
         for (const e of activeFx.current) {
           if (e.kind !== "advance") continue;
           const seat = seats.get(e.playerId);
           if (!seat) continue;
-          fx.wind(seat.cell - 0.42, seat.lateral, 3);
+          // Front-loaded too. A constant 3 per car per frame with seven cars
+          // gusting was more than the whole pool could hold, so the wind kept
+          // cutting out and coming back as slots freed.
+          const age = (now - e.t0) / e.dur;
+          const n = Math.round(2.1 * Math.pow(1 - age, 1.5));
+          if (n <= 0) continue;
+          fx.wind(seat.cell - 0.42, seat.lateral, n);
         }
       }
 

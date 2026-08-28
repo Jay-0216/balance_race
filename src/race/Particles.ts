@@ -29,11 +29,14 @@ export class Particles {
   private cursor = 0;
 
   /**
-   * Sized for the worst case: seven cars gusting at once will happily eat a
-   * small pool, and the booster flare - which fires in the same frame and is
-   * the most important thing on screen - was losing the race for slots.
+   * Sized for the worst case, and then some. Seven cars gusting at once was
+   * arithmetically over the old 560: 3 streaks per car per frame with a
+   * ~17-frame life is ~360 alive from wind alone, and dust, trails and speed
+   * lines took the rest. The pool ran dry mid-gust, the wind visibly stopped
+   * and restarted as slots freed, and the booster flare - the most important
+   * thing on screen - often never appeared at all.
    */
-  constructor(size = 560) {
+  constructor(size = 800) {
     for (let i = 0; i < size; i++) {
       this.pool.push({
         on: false, x: 0, y: 0, vx: 0, vy: 0,
@@ -43,7 +46,12 @@ export class Particles {
     }
   }
 
-  private take(): Particle | null {
+  /**
+   * @param priority the flare may evict the faintest wind streak rather than
+   * be dropped. Sizing the pool is the real fix, but a booster is a once-a-
+   * game moment and must never lose a race for slots to ambient wind.
+   */
+  private take(priority = false): Particle | null {
     for (let i = 0; i < this.pool.length; i++) {
       const p = this.pool[(this.cursor + i) % this.pool.length];
       if (!p.on) {
@@ -51,7 +59,14 @@ export class Particles {
         return p;
       }
     }
-    return null;
+    if (!priority) return null;
+
+    let victim: Particle | null = null;
+    for (const p of this.pool) {
+      if (!p.path) continue;                       // only ever evict wind
+      if (!victim || p.life < victim.life) victim = p;
+    }
+    return victim;
   }
 
   /** kicked-up dust behind a running racer */
@@ -127,7 +142,7 @@ export class Particles {
   flame(x: number, y: number, angle: number, n: number) {
     const hues = ["#fff2c4", "#ffd24a", "#ff9d2e", "#f4562a", "#c22f1a"];
     for (let i = 0; i < n; i++) {
-      const p = this.take();
+      const p = this.take(true);
       if (!p) return;
       const t = i / n;
       const spray = angle + Math.PI + (Math.random() - 0.5) * 1.1;
@@ -222,7 +237,7 @@ export class Particles {
     for (let step = 0; step < buckets.length; step++) {
       const ids = buckets[step];
       if (!ids.length) continue;
-      ctx.globalAlpha = ((step + 0.5) / Particles.ALPHA_STEPS) * 0.85;
+      ctx.globalAlpha = ((step + 0.5) / Particles.ALPHA_STEPS) * 0.6;
       ctx.strokeStyle = this.pool[ids[0]].color;
       ctx.lineWidth = 1.6;
       ctx.beginPath();
