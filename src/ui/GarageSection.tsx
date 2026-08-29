@@ -20,8 +20,18 @@ import "./GarageSection.css";
  * here; buying is a different screen, because choosing and spending are
  * different decisions and mixing them makes a menu you cannot skim.
  */
-export default function GarageSection({ onShop }: { onShop: () => void }) {
+export default function GarageSection({
+  onShop,
+  signedIn,
+}: {
+  onShop: () => void;
+  /** whether this garage is backed by an account or only by this browser */
+  signedIn?: boolean;
+}) {
   const [garage, setGarage] = useState<GarageState>(loadGarage);
+  const synced = signedIn
+    ? "이 차고는 계정에 저장된다. 다른 기기에서 로그인해도 그대로 따라온다."
+    : "이 차고는 이 브라우저에만 있다. 로그인하면 계정에 저장돼서 안 날아간다.";
 
   const mine = PIECES.filter((p) => isOwned(p.id, garage));
   const locked = PIECES.filter((p) => !isOwned(p.id, garage));
@@ -91,6 +101,8 @@ export default function GarageSection({ onShop }: { onShop: () => void }) {
       <div className="form-actions">
         <button className="btn-quiet" onClick={onShop}>상점 열기</button>
       </div>
+
+      <p className="gr-sync">{synced}</p>
 
       <p className="gr-stats">
         {garage.stats.games}판 · {garage.stats.wins}승

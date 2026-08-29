@@ -109,47 +109,69 @@ export function ownsGear(id: string, state: GarageState): boolean {
   return state.owned.includes(id);
 }
 
+/**
+ * A save from anywhere - localStorage, or a profile row on another device -
+ * made safe. Both sources are equally untrustworthy, so there is one
+ * validator and not two.
+ */
+function parse(p: Partial<GarageState>): GarageState {
+  const stats: Stats = { ...EMPTY };
+  for (const k of Object.keys(EMPTY) as (keyof Stats)[]) {
+    const v = (p.stats as Record<string, unknown> | undefined)?.[k];
+    if (k === "quizPerfect") stats.quizPerfect = v === true;
+    else if (typeof v === "number" && Number.isFinite(v) && v >= 0) {
+      (stats[k] as number) = Math.floor(v);
+    }
+  }
+
+  const known = new Set([
+    ...PIECES.map((x) => pieceKey(x.id)),
+    ...PAINTS.map((x) => paintKey(x.id)),
+    ...GEAR.map((x) => x.id),
+  ]);
+  const owned = Array.isArray(p.owned)
+    ? [...new Set(p.owned.filter((x): x is string => typeof x === "string" && known.has(x)))]
+    : [];
+
+  const num = (v: unknown) =>
+    typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.floor(v) : 0;
+
+  const state: GarageState = {
+    equipped: DEFAULT_PIECE,
+    paint: PAINTS.some((x) => x.id === p.paint) ? (p.paint as string) : DEFAULT_PAINT,
+    owned, bolts: num(p.bolts), earned: num(p.earned), stats,
+  };
+  // An equipped piece you do not own is not an error worth surfacing - it
+  // is a save from before a rename, or cleared stats. Race the default.
+  if (isPieceId(p.equipped) && isOwned(p.equipped, state)) state.equipped = p.equipped;
+  if (!ownsPaint(state.paint, state)) state.paint = DEFAULT_PAINT;
+  return state;
+}
+
 /** localStorage holds whatever was last written there, which may be anything. */
 function read(): GarageState {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return { ...FRESH, stats: { ...EMPTY } };
-    const p = JSON.parse(raw) as Partial<GarageState>;
-
-    const stats: Stats = { ...EMPTY };
-    for (const k of Object.keys(EMPTY) as (keyof Stats)[]) {
-      const v = (p.stats as Record<string, unknown> | undefined)?.[k];
-      if (k === "quizPerfect") stats.quizPerfect = v === true;
-      else if (typeof v === "number" && Number.isFinite(v) && v >= 0) {
-        (stats[k] as number) = Math.floor(v);
-      }
-    }
-
-    const known = new Set([
-      ...PIECES.map((x) => pieceKey(x.id)),
-      ...PAINTS.map((x) => paintKey(x.id)),
-      ...GEAR.map((x) => x.id),
-    ]);
-    const owned = Array.isArray(p.owned)
-      ? [...new Set(p.owned.filter((x): x is string => typeof x === "string" && known.has(x)))]
-      : [];
-
-    const num = (v: unknown) =>
-      typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.floor(v) : 0;
-
-    const state: GarageState = {
-      equipped: DEFAULT_PIECE,
-      paint: PAINTS.some((x) => x.id === p.paint) ? (p.paint as string) : DEFAULT_PAINT,
-      owned, bolts: num(p.bolts), earned: num(p.earned), stats,
-    };
-    // An equipped piece you do not own is not an error worth surfacing - it
-    // is a save from before a rename, or cleared stats. Race the default.
-    if (isPieceId(p.equipped) && isOwned(p.equipped, state)) state.equipped = p.equipped;
-    if (!ownsPaint(state.paint, state)) state.paint = DEFAULT_PAINT;
-    return state;
+    return parse(JSON.parse(raw) as Partial<GarageState>);
   } catch {
     return { ...FRESH, stats: { ...EMPTY } };
   }
+}
+
+/**
+ * Anyone who wants to know the garage changed.
+ *
+ * A listener rather than a call into the network layer: this module is game
+ * state and knows nothing about accounts, and keeping it that way is what lets
+ * the whole game run signed out.
+ */
+type Watcher = (state: GarageState) => void;
+const watchers = new Set<Watcher>();
+
+export function onGarageChange(fn: Watcher) {
+  watchers.add(fn);
+  return () => watchers.delete(fn);
 }
 
 function write(state: GarageState) {
@@ -158,6 +180,56 @@ function write(state: GarageState) {
   } catch {
     // a private window just means the garage resets next launch
   }
+  for (const fn of watchers) fn(state);
+}
+
+/**
+ * Two saves of the same garage, combined so that nothing is ever lost.
+ *
+ * Every number takes the larger side and everything owned is unioned, which
+ * means a merge can occasionally be generous - buy something online, come back
+ * with an older local save, and the union keeps the item while the max keeps
+ * the older, higher balance.
+ *
+ * That is the deliberate half of the trade. The other direction loses a kid's
+ * stuff, and there is no real money here: the shop sells paint, pieces and one
+ * solo-only perk. **Given a choice between occasionally too generous and
+ * occasionally taking things away, a game like this picks generous.**
+ */
+export function mergeGarage(a: GarageState, b: GarageState): GarageState {
+  const stats: Stats = { ...EMPTY };
+  for (const k of Object.keys(EMPTY) as (keyof Stats)[]) {
+    if (k === "quizPerfect") stats.quizPerfect = a.stats.quizPerfect || b.stats.quizPerfect;
+    else (stats[k] as number) = Math.max(a.stats[k] as number, b.stats[k] as number);
+  }
+  const merged: GarageState = {
+    equipped: DEFAULT_PIECE,
+    paint: DEFAULT_PAINT,
+    owned: [...new Set([...a.owned, ...b.owned])],
+    bolts: Math.max(a.bolts, b.bolts),
+    earned: Math.max(a.earned, b.earned),
+    stats,
+  };
+  // keep whichever side's choices still make sense after the merge, mine first
+  for (const pick of [a.equipped, b.equipped]) {
+    if (isOwned(pick, merged)) { merged.equipped = pick; break; }
+  }
+  for (const pick of [a.paint, b.paint]) {
+    if (ownsPaint(pick, merged)) { merged.paint = pick; break; }
+  }
+  return merged;
+}
+
+/** Replace the whole save - used when a merged copy comes back from the cloud. */
+export function putGarage(state: GarageState): GarageState {
+  write(state);
+  return state;
+}
+
+/** Whatever came out of a profile row, checked by the same validator. */
+export function parseGarage(raw: unknown): GarageState | null {
+  if (!raw || typeof raw !== "object") return null;
+  return parse(raw as Partial<GarageState>);
 }
 
 export function loadGarage(): GarageState {

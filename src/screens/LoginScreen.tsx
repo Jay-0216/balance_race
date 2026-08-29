@@ -7,6 +7,7 @@ import {
 import FeedbackSection from "../ui/FeedbackSection";
 import GarageSection from "../ui/GarageSection";
 import { getIdentity, setLook, setNickname, setPhoto, type Look } from "../net/identity";
+import { pullAndMerge } from "../net/garageSync";
 import { isOnlineAvailable } from "../net/supabase";
 import Avatar from "../ui/Avatar";
 import AvatarPicker from "../ui/AvatarPicker";
@@ -48,6 +49,9 @@ export default function LoginScreen({ onBack, onShop }: { onBack: () => void; on
       // point of signing in. Only when the account has no face yet does the
       // guest's choice get pushed up, so picking one before logging in is
       // not thrown away by logging in.
+      // signing in is the moment the two saves have to meet
+      void pullAndMerge();
+
       if (acc.look || acc.photo) {
         setLookState(acc.look);
         setPhotoState(acc.photo);
@@ -182,7 +186,7 @@ export default function LoginScreen({ onBack, onShop }: { onBack: () => void; on
           </>
         )}
 
-        <GarageSection onShop={onShop} />
+        <GarageSection onShop={onShop} signedIn={!!account} />
 
         <FeedbackSection />
       </div>

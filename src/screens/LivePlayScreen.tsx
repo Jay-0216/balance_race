@@ -17,7 +17,15 @@ import "./LiveScreen.css";
  * question comes back without its answer until the host reveals, because that
  * is enforced in the database rather than here.
  */
-export default function LivePlayScreen({ code, onBack }: { code: string; onBack: () => void }) {
+export default function LivePlayScreen({
+  code: given,
+  onBack,
+}: {
+  /** null when the player arrived without a code and has to type one */
+  code: string | null;
+  onBack: () => void;
+}) {
+  const [typed, setTyped] = useState("");
   const [nick, setNick] = useState(() => getIdentity().nickname);
   const [joined, setJoined] = useState(false);
   const [session, setSession] = useState<LiveSession | null>(null);
@@ -27,6 +35,12 @@ export default function LivePlayScreen({ code, onBack }: { code: string; onBack:
   const [rank, setRank] = useState<LiveScore[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The code is either handed in (someone tapped a link, or the title's one
+  // code box resolved it) or typed here. One screen either way: making people
+  // type a code on one page and a name on the next is two taps and a page
+  // turn for two fields that fit together.
+  const code = (given ?? typed).trim().toUpperCase();
 
   const join = useCallback(async () => {
     setBusy(true);
@@ -92,11 +106,32 @@ export default function LivePlayScreen({ code, onBack }: { code: string; onBack:
           <button className="form-back" onClick={onBack} aria-label="뒤로">←</button>
           <div className="form-title">
             <span className="form-eyebrow">라이브 참가</span>
-            <h2>{code} 방에 들어간다</h2>
-            <p>이름만 정하면 끝. 인원 제한은 없다.</p>
+            <h2>{given ? `${given} 방에 들어간다` : "코드를 받았어?"}</h2>
+            <p>
+              {given
+                ? "이름만 정하면 끝. 인원 제한은 없다."
+                : "방장이 불러준 6자리를 넣으면 된다. 인원 제한은 없다."}
+            </p>
           </div>
         </header>
         <div className="form-body">
+          {!given && (
+            <div className="field">
+              <label htmlFor="lp-code">참가 코드</label>
+              <input
+                id="lp-code"
+                className="lp-code"
+                value={typed}
+                maxLength={6}
+                autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
+                onChange={(e) => setTyped(e.target.value.toUpperCase())}
+                placeholder="ABC123"
+              />
+            </div>
+          )}
+
           <div className="field">
             <label htmlFor="lp-nick">이름</label>
             <input
@@ -106,7 +141,11 @@ export default function LivePlayScreen({ code, onBack }: { code: string; onBack:
             />
           </div>
           <div className="form-actions">
-            <button className="btn-go" onClick={() => void join()} disabled={busy || !nick.trim()}>
+            <button
+              className="btn-go"
+              onClick={() => void join()}
+              disabled={busy || !nick.trim() || code.length < 4}
+            >
               {busy ? "들어가는 중…" : "들어가기"}
             </button>
           </div>

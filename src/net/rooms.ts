@@ -1,3 +1,24 @@
+/**
+ * PARKED — not reachable from the menu, and deliberately kept.
+ *
+ * The race room is Phase 4 and Phase 4 is not finished: there is no online
+ * round synchronisation, so this lobby gathers people and then has nowhere to
+ * send them. Two menu rows that lead to a dead end are worse than two rows
+ * that are not there, so 방 만들기 is out of the menu and 참가하기 now goes
+ * straight to a live session.
+ *
+ * Deleted, this would have to be written again; unreferenced, it costs the
+ * bundle nothing (Vite drops it) and it is here the day round sync lands.
+ * What is still missing: dealing the deck server-side, closing a round on a
+ * shared clock, broadcasting the moves, filling empty seats with bots, and
+ * handling someone closing their tab mid-round.
+ *
+ * It also still has the identity hole that live sessions fixed in 0007 - the
+ * player id is taken as an argument and trusted, and `players` is world
+ * readable. Nothing can be submitted today because there is no game to submit
+ * to, but that has to be closed with the same seat-token trick before this is
+ * ever wired up.
+ */
 import type { Player } from "../game/types";
 import { PLAYER_COLORS } from "../game/setup";
 import { getIdentity } from "./identity";

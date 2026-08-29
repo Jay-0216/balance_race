@@ -241,3 +241,14 @@
   color: #16202a;
   background: var(--gold);
 }
+
+/* Codes are read out loud and typed in a hurry, so they get the room they
+   need: monospace, spaced out, and big enough to check against a screen
+   across a classroom. */
+.lp-code {
+  font-family: ui-monospace, monospace !important;
+  font-size: 24px !important;
+  letter-spacing: 0.24em;
+  text-align: center;
+  text-transform: uppercase;
+}

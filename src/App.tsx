@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { addApprovedCards } from "./game/setup";
 import { activeCode } from "./net/live";
+import { pullAndMerge, startGarageSync } from "./net/garageSync";
 import { fetchApprovedCards } from "./net/submissions";
 import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
@@ -8,7 +9,6 @@ import GameScreen from "./screens/GameScreen";
 import CardSubmitScreen from "./screens/CardSubmitScreen";
 import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
-import LobbyScreen from "./screens/LobbyScreen";
 import LiveHostScreen from "./screens/LiveHostScreen";
 import ShopScreen from "./screens/ShopScreen";
 import LivePlayScreen from "./screens/LivePlayScreen";
@@ -16,7 +16,7 @@ import QuizScreen from "./screens/QuizScreen";
 import RaceScreen from "./screens/RaceScreen";
 
 export type Screen =
-  | "title" | "solo" | "quiz" | "shop" | "proto" | "host" | "join"
+  | "title" | "solo" | "quiz" | "shop" | "proto" | "join"
   | "live" | "how" | "cards" | "login";
 
 const SEEN = "ddr.seen-rules";
@@ -35,6 +35,13 @@ export default function App() {
   // it: a deck without them is the deck the game has always had.
   useEffect(() => {
     void fetchApprovedCards().then(addApprovedCards);
+  }, []);
+
+  // The garage follows the account. Nothing waits on it: the local save is
+  // what the game reads, and this only reconciles it with the profile row.
+  useEffect(() => {
+    void pullAndMerge();
+    return startGarageSync();
   }, []);
 
   /**
@@ -80,7 +87,7 @@ export default function App() {
         <TitleScreen onPick={setScreen} />
       ) : screen === "solo" ? (
         <GameScreen onBack={() => setScreen("title")} />
-      ) : liveCode ? (
+      ) : screen === "join" || liveCode ? (
         <LivePlayScreen
           code={liveCode}
           onBack={() => { setLiveCode(null); setScreen("title"); }}
@@ -95,14 +102,8 @@ export default function App() {
         <CardSubmitScreen onBack={() => setScreen("title")} />
       ) : screen === "login" ? (
         <LoginScreen onBack={() => setScreen("title")} onShop={() => setScreen("shop")} />
-      ) : screen === "proto" ? (
-        <RaceScreen onBack={() => setScreen("title")} />
       ) : (
-        <LobbyScreen
-          mode={screen}
-          onLive={setLiveCode}
-          onBack={() => setScreen("title")}
-        />
+        <RaceScreen onBack={() => setScreen("title")} />
       )}
     </Stage>
   );

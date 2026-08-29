@@ -89,3 +89,10 @@
 .gr-paint.on { border-color: var(--gold); }
 
 .gr-locked { margin: 0; font-size: 11px; line-height: 1.6; color: var(--ink-3); }
+
+.gr-sync {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--ink-3);
+}
