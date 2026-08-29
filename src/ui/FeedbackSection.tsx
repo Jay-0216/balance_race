@@ -19,7 +19,6 @@ import "./FeedbackSection.css";
 export default function FeedbackSection() {
   const [kind, setKind] = useState<FeedbackKind>("bug");
   const [body, setBody] = useState("");
-  const [contact, setContact] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -31,9 +30,8 @@ export default function FeedbackSection() {
     setBusy(true);
     setMsg(null);
     try {
-      await sendFeedback({ kind, body, contact });
+      await sendFeedback({ kind, body });
       setBody("");
-      setContact("");
       setMsg({ ok: true, text: "보냈다. 고맙다 — 확인하고 고칠게." });
     } catch (e) {
       setMsg({ ok: false, text: "보내지 못했다. 잠시 뒤에 다시 눌러줘. (" + String(e) + ")" });
@@ -76,16 +74,6 @@ export default function FeedbackSection() {
               <span className="hint">{body.trim().length} / 1000 · 5글자 이상</span>
             </div>
 
-            <div className="field">
-              <label htmlFor="fb-contact">연락처 (선택)</label>
-              <input
-                id="fb-contact"
-                value={contact}
-                maxLength={120}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder="답이 필요하면 남겨줘"
-              />
-            </div>
 
             <p className="form-offline">
               화면 크기와 브라우저 정보가 같이 저장된다. 재현할 때 필요해서다.

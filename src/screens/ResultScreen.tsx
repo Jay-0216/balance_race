@@ -1,16 +1,20 @@
 import { CELLS, placements } from "../game/rules";
+import { COIN, COIN_ICON } from "../game/shop";
 import type { Player } from "../game/types";
 import "./ResultScreen.css";
 
 export default function ResultScreen({
   players,
   unlocked = [],
+  prize = 0,
   onAgain,
   onBack,
 }: {
   players: Player[];
   /** names of pieces this game earned, if any */
   unlocked?: string[];
+  /** 볼트 won by this race */
+  prize?: number;
   onAgain: () => void;
   onBack: () => void;
 }) {
@@ -81,6 +85,12 @@ export default function ResultScreen({
             </li>
           ))}
         </ol>
+
+        {prize > 0 && (
+          <p className="result-prize">
+            {COIN_ICON} <b>+{prize.toLocaleString()}</b> {COIN}
+          </p>
+        )}
 
         {unlocked.length > 0 && (
           <p className="unlock-note">🔓 차고에 새 말이 들어왔다 — {unlocked.join(", ")}</p>

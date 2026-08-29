@@ -2,7 +2,7 @@
   /* Never squeezed to nothing: it is the filler, so with a long menu there is
      no space left to give it and it collapsed to a squiggle. */
   flex: 1 1 auto;
-  min-height: 88px;
+  min-height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +20,7 @@
 }
 
 @media (max-height: 800px) {
-  .tp { min-height: 62px; }
+  .tp { min-height: 74px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -8,12 +8,11 @@ import "./TitleScreen.css";
 const MENU: { key: Screen; label: string; hint: string }[] = [
   { key: "solo", label: "혼자 하기", hint: "봇 7명과 12라운드" },
   { key: "quiz", label: "퀴즈 혼자 풀기", hint: "10문제, 내 기록 재기" },
-  { key: "live", label: "라이브 만들기", hint: "문제 내고 코드로 초대 · 인원 제한 없음" },
+  { key: "live", label: "라이브 만들기", hint: "코드로 초대 · 인원 무제한" },
   { key: "host", label: "방 만들기", hint: "친구를 코드로 초대" },
-  { key: "join", label: "참가하기", hint: "코드 하나로 라이브도 레이스도" },
-  { key: "garage", label: "차고", hint: "타고 다닐 말 고르기" },
+  { key: "join", label: "참가하기", hint: "코드 하나로 둘 다" },
   { key: "cards", label: "카드 만들기", hint: "밸런스 게임을 직접 낸다" },
-  { key: "proto", label: "레이스 프로토타입", hint: "시각화만 따로 보기" },
+  { key: "proto", label: "레이스 미리보기", hint: "트랙만 따로 보기" },
 ];
 
 export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void }) {
@@ -62,6 +61,17 @@ export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void })
           </button>
         ))}
       </nav>
+
+      {/* Whose game this is. Opens in its own tab: a game that navigates you
+          away mid-session and loses your garage is a rude credit. */}
+      <a
+        className="title-by"
+        href="http://jay-0216.kro.kr/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Made by Jay-0216
+      </a>
     </div>
   );
 }

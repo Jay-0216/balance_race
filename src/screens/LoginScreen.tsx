@@ -5,6 +5,7 @@ import {
   sendMagicLink, signOut, type Account,
 } from "../net/auth";
 import FeedbackSection from "../ui/FeedbackSection";
+import GarageSection from "../ui/GarageSection";
 import { getIdentity, setLook, setNickname, setPhoto, type Look } from "../net/identity";
 import { isOnlineAvailable } from "../net/supabase";
 import Avatar from "../ui/Avatar";
@@ -18,7 +19,7 @@ import "../ui/Form.css";
  * guest, saved to your profile once you are not - so a player who never signs
  * in loses nothing except carrying that name to another device.
  */
-export default function LoginScreen({ onBack }: { onBack: () => void }) {
+export default function LoginScreen({ onBack, onShop }: { onBack: () => void; onShop: () => void }) {
   const [nick, setNick] = useState(() => getIdentity().nickname);
   const [look, setLookState] = useState<Look | null>(() => getIdentity().look);
   const [photo, setPhotoState] = useState<string | null>(() => getIdentity().photo);
@@ -180,6 +181,8 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
             </div>
           </>
         )}
+
+        <GarageSection onShop={onShop} />
 
         <FeedbackSection />
       </div>

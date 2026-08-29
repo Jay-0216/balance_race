@@ -24,6 +24,15 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Shorter than the game's band: here the track is the reward, not the thing
+   you are reading, and the question has to stay above the fold. */
+.quiz-track { flex: none; position: relative; }
+.quiz-track .race-view { max-height: min(34vh, 300px); }
+
+@media (max-height: 760px) {
+  .quiz-track .race-view { max-height: 26vh; }
+}
+
 .quiz-pips { flex: none; display: flex; gap: 3px; padding: 8px 12px 0; }
 .quiz-pip { flex: 1; height: 3px; border-radius: 99px; background: var(--screen-3); }
 .quiz-pip.past { background: var(--line); }

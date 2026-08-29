@@ -1,5 +1,6 @@
 import dilemmaData from "../data/dilemmas.json";
 import { getIdentity } from "../net/identity";
+import { hasJumpstart, myPaint } from "./garage";
 import { BOT_ROSTER } from "./bots";
 import type { Dilemma, Player } from "./types";
 
@@ -32,10 +33,13 @@ export function makePlayers(botCount = 7): Player[] {
   const me: Player = {
     id: 0,
     name: getIdentity().nickname,
-    color: PLAYER_COLORS[0],
+    color: myPaint(),
     isBot: false,
     pos: 0,
-    charge: 0,
+    // The one bought thing that is not a decoration, and it is solo-only:
+    // the same perk in a room full of classmates would be paying for an
+    // advantage over them, which is a different game from this one.
+    charge: hasJumpstart() ? 1 : 0,
   };
   const bots = BOT_ROSTER.slice(0, botCount).map((b, i) => ({
     id: i + 1,

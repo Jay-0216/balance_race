@@ -1,4 +1,4 @@
-import { equippedPiece } from "../game/garage";
+import { equippedPiece, myPaint } from "../game/garage";
 import Piece from "../race/Racer";
 import "./TrackPreview.css";
 
@@ -17,6 +17,7 @@ const RACERS = [
  */
 export default function TrackPreview() {
   const piece = equippedPiece();
+  const paint = myPaint();
 
   return (
     <div className="tp" aria-hidden="true">
@@ -45,13 +46,14 @@ export default function TrackPreview() {
 
         {RACERS.map((r, i) =>
           r.me ? (
-            <g
-              key={i}
-              className="tp-racer tp-me"
-              transform={`translate(30 ${132 + i * 5.2}) scale(0.62)`}
-              style={{ animationDelay: `${i * 0.14}s` }}
-            >
-              <Piece piece={piece} color={r.c} />
+            // Two groups, not one. The bob is a CSS animation on `transform`,
+            // and a CSS transform beats an SVG transform *attribute* - so a
+            // single group had its position overwritten by the bob and my
+            // piece floated off on its own, away from the grid.
+            <g key={i} transform={`translate(30 ${132 + i * 5.2}) scale(0.62)`}>
+              <g className="tp-racer tp-me" style={{ animationDelay: `${i * 0.14}s` }}>
+                <Piece piece={piece} color={paint} />
+              </g>
             </g>
           ) : (
             <circle

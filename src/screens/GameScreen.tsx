@@ -27,6 +27,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
   // render would put a localStorage hit in the frame loop's way
   const [myPiece] = useState<PieceId>(equippedPiece);
   const [unlocked, setUnlocked] = useState<string[]>([]);
+  const [prize, setPrize] = useState(0);
   const [muted, setMutedState] = useState(isMuted);
   const onFps = useCallback((v: number) => setFps(v), []);
 
@@ -83,6 +84,8 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
   // would stop standing out - which is the one thing the piece is for.
   const racers: RacerView[] = useMemo(
     () => g.players.map((p) => ({
+      // the paint is already on the player: makePlayers() reads it, so the
+      // leaderboard dot and the piece on the track cannot disagree
       id: p.id, name: p.name, color: p.color, me: !p.isBot, pos: p.pos,
       piece: p.isBot ? undefined : myPiece,
     })),
@@ -100,7 +103,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       // pure, and React is entitled to call it more than once. Under
       // StrictMode it does exactly that, and the garage counted two boosters
       // for one.
-      const won = names(recordBoost());
+      const won = names(recordBoost().unlocked);
       if (won.length) setUnlocked((u) => [...u, ...won]);
     }
   }, [g.outcome, g.outcomeSeq]);
@@ -115,11 +118,14 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     const back = Math.min(...g.players.map((p) => p.pos));
     // likewise outside the updater - this one writes the games-played count,
     // and StrictMode was recording every finished race twice
-    const earned = names(recordRace({
+    const reward = recordRace({
+      place: mine.place,
       won: mine.place === 1,
       last: mine.player.pos === back,
       finished: mine.player.pos >= CELLS,
-    }));
+    });
+    setPrize(reward.bolts);
+    const earned = names(reward.unlocked);
     if (earned.length) setUnlocked((u) => [...u, ...earned]);
   }, [g.phase, g.players]);
 
@@ -128,6 +134,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     if (g.phase === "choosing" && g.round === 1) {
       tallied.current = false;
       setUnlocked([]);
+      setPrize(0);
     }
   }, [g.phase, g.round]);
 
@@ -227,6 +234,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         <ResultScreen
           players={g.players}
           unlocked={unlocked}
+          prize={prize}
           onAgain={g.restart}
           onBack={onBack}
         />

@@ -13,17 +13,23 @@ import { isOnlineAvailable, supabase } from "./supabase";
 
 export type FeedbackKind = "bug" | "idea";
 
+/**
+ * No contact field.
+ *
+ * It asked a middle-schooler for a way to reach them and then filed it into a
+ * table nobody reads back to them - so it collected personal data it could not
+ * use for the thing it implied. The column is left in the schema (dropping it
+ * would throw away reports already filed) and simply never written again.
+ */
 export async function sendFeedback(input: {
   kind: FeedbackKind;
   body: string;
-  contact?: string;
 }) {
   const session = await currentSession();
   const { error } = await supabase().from("feedback").insert({
     user_id: session?.user.id ?? null,
     kind: input.kind,
     body: input.body.trim(),
-    contact: input.contact?.trim() || null,
     // Enough to reproduce it without asking a follow-up question.
     context: {
       ua: navigator.userAgent.slice(0, 200),

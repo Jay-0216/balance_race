@@ -176,3 +176,19 @@
   background: rgba(240, 180, 41, 0.12);
   border: 1px solid rgba(240, 180, 41, 0.45);
 }
+
+/* The prize, shared with the quiz record screen. Big enough to notice, quiet
+   enough that it is not the headline - the headline is where you came. */
+.result-prize {
+  margin: 0 0 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-3);
+  text-align: center;
+}
+.result-prize b {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}

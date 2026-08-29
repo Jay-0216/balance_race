@@ -13,14 +13,17 @@
      (A percentage cap does not work here - the band's parent is auto-height,
      so the percentage has nothing to resolve against and collapses it.) */
   max-height: min(40vh, 372px);
+  /* These two had slipped INSIDE the media query below, where they were not
+     inside any rule at all - so the band had no background and no clip, and
+     the canvas was free to paint past its own edge. */
+  overflow: hidden;
+  background: #121a20;
 }
 
 /* Short screens: the band yields first. A cramped race is still a race; a
    leaderboard you have to scroll to is not a leaderboard. */
 @media (max-height: 760px) {
   .race-view { max-height: 32vh; }
-  overflow: hidden;
-  background: #121a20;
 }
 
 .race-svg,
