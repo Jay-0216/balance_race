@@ -91,7 +91,7 @@ GitHub이 DNS를 확인하는 데 몇 분~몇 시간 걸린다. 확인되면 **E
 
 1. [supabase.com](https://supabase.com) → 네 계정으로 로그인 (GitHub 계정으로 바로 됨)
 2. **New project** → Name 아무거나 / Region은 서울이나 도쿄 / Plan은 Free
-3. `supabase/migrations/`의 `.sql` 다섯 개를 **번호 순서대로** SQL Editor에 붙여넣고 Run
+3. `supabase/migrations/`의 `.sql` 여섯 개를 **번호 순서대로** SQL Editor에 붙여넣고 Run
 
 무료 플랜은 **일주일 동안 아무도 안 쓰면 자동으로 일시정지**된다.
 멈춰도 데이터는 안 없어지고, 대시보드에서 **Restore**를 누르면 다시 산다.

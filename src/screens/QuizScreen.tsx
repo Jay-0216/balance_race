@@ -95,7 +95,7 @@ export default function QuizScreen({ onBack }: { onBack: () => void }) {
   if (done) return <QuizResult {...done} total={deck.length} onAgain={again} onBack={onBack} />;
 
   return (
-    <div className="quiz">
+    <div className="quiz-screen">
       <header className="quiz-bar">
         <button className="game-back" onClick={onBack} aria-label="나가기">←</button>
         <span className="quiz-count">문제 {at + 1} / {deck.length}</span>

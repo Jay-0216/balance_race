@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MAX_SEATS, createRoom, joinRoom, leaveRoom, listPlayers, type PlayerRow } from "../net/rooms";
 import { getIdentity, setNickname } from "../net/identity";
+import { readSession } from "../net/live";
 import { isOnlineAvailable, supabase } from "../net/supabase";
 import Offline from "../ui/Offline";
 import "./LobbyScreen.css";
@@ -14,9 +15,12 @@ export type LobbyMode = "host" | "join";
  */
 export default function LobbyScreen({
   mode,
+  onLive,
   onBack,
 }: {
   mode: LobbyMode;
+  /** the code turned out to belong to a live session, not a race room */
+  onLive?: (code: string) => void;
   onBack: () => void;
 }) {
   const [code, setCode] = useState("");
@@ -85,7 +89,16 @@ export default function LobbyScreen({
     setError(null);
     try {
       setNickname(nick);
-      const room = await joinRoom(entry.trim().toUpperCase());
+      const typed = entry.trim().toUpperCase();
+      // One code box. A code is just a code - which kind of room it opens is a
+      // question the app can answer and the player cannot, so it answers it
+      // rather than making them pick the right button first.
+      const live = await readSession(typed).catch(() => null);
+      if (live && onLive) {
+        onLive(typed);
+        return;
+      }
+      const room = await joinRoom(typed);
       setCode(room.code);
     } catch (e) {
       setError(message(e));

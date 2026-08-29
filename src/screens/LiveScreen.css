@@ -1,0 +1,243 @@
+/* ---- the code, which is the whole invitation ---------------------------- */
+.lv-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--gold);
+}
+.lv-code > div { display: flex; flex-direction: column; gap: 2px; }
+.lv-code span { font-size: 10.5px; letter-spacing: 0.14em; color: var(--ink-3); }
+.lv-code b {
+  font-family: ui-monospace, monospace;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+}
+.lv-code.compact b { font-size: 20px; }
+.lv-here {
+  flex: none;
+  padding: 5px 11px;
+  border-radius: 99px;
+  font-size: 12.5px !important;
+  font-weight: 700;
+  letter-spacing: 0 !important;
+  color: var(--ink) !important;
+  background: var(--screen-3);
+}
+
+.lv-ask {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 14px;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+}
+.lv-ask .lv-prompt { margin: 0; }
+.lv-ask-opts { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.lv-ask-opts span { font-size: 13.5px; font-weight: 600; }
+.lv-ask-opts .a { color: var(--a); }
+.lv-ask-opts .b { color: var(--b); }
+
+/* ---- the live count ------------------------------------------------------ */
+.lv-watch { margin: 0; font-size: 14px; color: var(--ink-2); text-align: center; }
+.lv-watch b {
+  font-family: ui-monospace, monospace;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.lv-split { display: flex; flex-direction: column; gap: 6px; }
+.lv-bar {
+  display: flex;
+  height: 26px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--screen-3);
+}
+/* width is the only thing that moves, so the bar slides rather than jumping
+   every time the poll comes back */
+.lv-bar span { transition: width 0.45s var(--ease-out); }
+.lv-bar .a { background: var(--a); }
+.lv-bar .b { background: var(--b); }
+
+.lv-legend { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; }
+.lv-legend .a { color: var(--a); }
+.lv-legend .b { color: var(--b); }
+
+/* ---- reveal -------------------------------------------------------------- */
+.lv-reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 13px 14px;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+}
+.lv-reveal b { font-size: 15.5px; font-weight: 800; }
+.lv-reveal b.ok { color: #7fd6a6; }
+.lv-reveal b.bad { color: var(--a); }
+.lv-reveal b.tie { color: var(--ink-2); }
+.lv-reveal span { font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+
+/* ---- the board ----------------------------------------------------------- */
+.lv-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lv-rank li {
+  display: grid;
+  grid-template-columns: 24px 1fr auto auto;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: var(--screen-2);
+  font-size: 13px;
+}
+.lv-rank li.me { background: rgba(240, 180, 41, 0.14); }
+.lv-rank-n {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-3);
+  text-align: center;
+}
+.lv-rank li.me .lv-rank-n { color: var(--gold); }
+.lv-rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lv-rank-hits { font-size: 11px; color: var(--ink-3); }
+.lv-rank-score {
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  min-width: 38px;
+  text-align: right;
+}
+
+.lv-done { margin: 4px 0 0; font-size: 18px; font-weight: 800; text-align: center; }
+.lv-wait { margin: 0; font-size: 13px; color: var(--ink-3); text-align: center; }
+.lv-me { margin: 0; font-size: 13px; color: var(--ink-2); text-align: center; }
+.lv-me b { color: var(--gold); }
+
+/* ---- writing questions --------------------------------------------------- */
+.lv-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.lv-list li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: var(--screen-2);
+  border: 1px solid var(--line);
+}
+.lv-list-q {
+  flex: 1;
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lv-del { width: 24px; height: 24px; border-radius: 7px; color: var(--ink-3); font-size: 12px; }
+.lv-del:hover { background: var(--screen-3); color: var(--a); }
+
+/* The modifier is `lv-quiz`, not `quiz`.
+   A bare `quiz` on this element was also matching `.quiz` - the solo quiz
+   SCREEN's root rule, `flex: 1; display: flex` - which turned a 102x22 pill
+   into a 100x230 blob that ate the middle of the player's screen. In one
+   global stylesheet a one-word modifier is a one-word selector, and screens
+   own the short names. */
+.lv-kind {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  align-self: flex-start;
+}
+.lv-kind.lv-quiz { color: var(--b); background: rgba(63, 176, 206, 0.16); }
+.lv-kind.lv-balance { color: var(--gold); background: rgba(240, 180, 41, 0.16); }
+
+.lv-new {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px dashed var(--line);
+}
+
+.lv-kinds { display: flex; gap: 7px; }
+.lv-kind-btn {
+  flex: 1;
+  padding: 9px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  background: var(--screen);
+  border: 1.5px solid var(--line);
+}
+.lv-kind-btn.on { color: var(--ink); border-color: var(--gold); background: rgba(240, 180, 41, 0.1); }
+
+.lv-side { display: flex; gap: 7px; align-items: center; }
+.lv-side input { flex: 1; }
+.lv-emoji { flex: 0 0 52px !important; text-align: center; }
+.lv-ans {
+  flex: none;
+  padding: 0 11px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+  background: var(--screen);
+  border: 1.5px solid var(--line);
+}
+.lv-ans.on { color: #16202a; background: #7fd6a6; border-color: #7fd6a6; }
+
+.lv-add { display: flex; gap: 8px; }
+.lv-add button { flex: 1; }
+
+/* ---- answering ----------------------------------------------------------- */
+.lv-prompt { margin: 2px 0 4px; font-size: 20px; font-weight: 800; line-height: 1.35; }
+
+.lv-opts { display: flex; flex-direction: column; gap: 10px; }
+.lv-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 14px;
+  text-align: left;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+  transition: transform 0.14s var(--ease-out), border-color 0.16s ease, background 0.16s ease;
+}
+.lv-opt:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ink-3); }
+.lv-opt:disabled { cursor: default; }
+.lv-opt.picked { border-color: var(--gold); background: rgba(240, 180, 41, 0.1); }
+.lv-opt.key { border-color: #7fd6a6; background: rgba(127, 214, 166, 0.14); }
+.lv-opt.miss { border-color: var(--a); background: rgba(244, 104, 91, 0.1); }
+.lv-opt-emoji { font-size: 21px; line-height: 1; flex: none; }
+.lv-opt-text { font-size: 15px; font-weight: 600; line-height: 1.35; }
+.lv-tag {
+  margin-left: auto;
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #16202a;
+  background: var(--gold);
+}

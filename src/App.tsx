@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { addApprovedCards } from "./game/setup";
+import { activeCode } from "./net/live";
 import { fetchApprovedCards } from "./net/submissions";
 import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
@@ -9,12 +10,14 @@ import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
 import LobbyScreen from "./screens/LobbyScreen";
 import GarageScreen from "./screens/GarageScreen";
+import LiveHostScreen from "./screens/LiveHostScreen";
+import LivePlayScreen from "./screens/LivePlayScreen";
 import QuizScreen from "./screens/QuizScreen";
 import RaceScreen from "./screens/RaceScreen";
 
 export type Screen =
   | "title" | "solo" | "quiz" | "garage" | "proto" | "host" | "join"
-  | "how" | "cards" | "login";
+  | "live" | "how" | "cards" | "login";
 
 const SEEN = "ddr.seen-rules";
 
@@ -34,7 +37,23 @@ export default function App() {
     void fetchApprovedCards().then(addApprovedCards);
   }, []);
 
-  const [screen, setScreen] = useState<Screen>("title");
+  /**
+   * A host who reloads mid-session comes back to the session.
+   *
+   * The resume logic itself lives in the live screen, which was useless on its
+   * own: after a reload the app opens on the title, so that screen was never
+   * mounted to run it. Twenty people waiting on a host whose phone locked is
+   * exactly the case this has to survive, so the decision is made here, before
+   * anything renders.
+   */
+  const [screen, setScreen] = useState<Screen>(() => (activeCode() ? "live" : "title"));
+  /**
+   * A live session the player is joining. There is one code box, not two: the
+   * code you were handed is just a code, and having to know in advance whether
+   * it belongs to a race or to a live session is a question only the app can
+   * answer, so the app answers it.
+   */
+  const [liveCode, setLiveCode] = useState<string | null>(null);
   // First visit opens on the rules. A 눈치게임 where you do not know what the
   // majority does is just guessing, so this is not an optional detour.
   const [first, setFirst] = useState(() => !seenRules());
@@ -61,6 +80,13 @@ export default function App() {
         <TitleScreen onPick={setScreen} />
       ) : screen === "solo" ? (
         <GameScreen onBack={() => setScreen("title")} />
+      ) : liveCode ? (
+        <LivePlayScreen
+          code={liveCode}
+          onBack={() => { setLiveCode(null); setScreen("title"); }}
+        />
+      ) : screen === "live" ? (
+        <LiveHostScreen onBack={() => setScreen("title")} />
       ) : screen === "quiz" ? (
         <QuizScreen onBack={() => setScreen("title")} />
       ) : screen === "garage" ? (
@@ -72,7 +98,11 @@ export default function App() {
       ) : screen === "proto" ? (
         <RaceScreen onBack={() => setScreen("title")} />
       ) : (
-        <LobbyScreen mode={screen} onBack={() => setScreen("title")} />
+        <LobbyScreen
+          mode={screen}
+          onLive={setLiveCode}
+          onBack={() => setScreen("title")}
+        />
       )}
     </Stage>
   );
