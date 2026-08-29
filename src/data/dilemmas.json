@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "power_15", "category": "초능력", "a": {"text": "순간적으로 커지기", "emoji": "🦣"}, "b": {"text": "순간적으로 작아지기", "emoji": "🐜"}, "popularBias": 0.5},
+  {"id": "power_16", "category": "초능력", "a": {"text": "과거로 편지 보내기", "emoji": "📮"}, "b": {"text": "미래에서 편지 받기", "emoji": "📩"}, "popularBias": 0.47},
+  {"id": "money_13", "category": "돈", "a": {"text": "매일 만원씩 평생", "emoji": "💵"}, "b": {"text": "딱 한 번 5천만원", "emoji": "💰"}, "popularBias": 0.45},
+  {"id": "money_14", "category": "돈", "a": {"text": "용돈 인상 대신 자유시간 축소", "emoji": "🕹️"}, "b": {"text": "자유시간 늘고 용돈 그대로", "emoji": "💴"}, "popularBias": 0.5},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "내 플레이리스트 전체 공개", "emoji": "🎧"}, "b": {"text": "내 사진첩 전체 공개", "emoji": "🖼️"}, "popularBias": 0.4},
+  {"id": "net_14", "category": "인터넷·게임", "a": {"text": "팔로워 10만 명, 소통 없음", "emoji": "📈"}, "b": {"text": "팔로워 10명, 매일 소통", "emoji": "💬"}, "popularBias": 0.35},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "원하는 대학 무시험 합격", "emoji": "🎓"}, "b": {"text": "시험 봐서 원하는 대학 합격", "emoji": "📝"}, "popularBias": 0.6},
+  {"id": "future_16", "category": "미래·진로", "a": {"text": "하고 싶은 일 늦게 시작", "emoji": "🐢"}, "b": {"text": "하기 싫은 일 빨리 시작", "emoji": "🐇"}, "popularBias": 0.7},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 성적 몰래 올려주기", "emoji": "📈"}, "b": {"text": "내 성적 몰래 올리기", "emoji": "🙊"}, "popularBias": 0.3},
+  {"id": "moral_16", "category": "도덕적 딜레마", "a": {"text": "모두를 위해 내가 손해", "emoji": "🫡"}, "b": {"text": "나를 위해 모두가 손해", "emoji": "😬"}, "popularBias": 0.78}
 ]

@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "지구상 가장 큰 동물은?", "a": {"text": "대왕고래", "emoji": "🐋"}, "b": {"text": "아프리카코끼리", "emoji": "🐘"}, "answer": "a", "note": "대왕고래는 몸무게가 최대 190톤에 달한다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 몸에서 가장 단단한 부분은?", "a": {"text": "치아 법랑질", "emoji": "🦷"}, "b": {"text": "뼈", "emoji": "🦴"}, "answer": "a", "note": "법랑질은 몸에서 가장 단단한 조직이다."},
+  {"id": "sci_19", "category": "과학", "question": "지구에서 가장 깊은 곳은?", "a": {"text": "마리아나 해구", "emoji": "🌊"}, "b": {"text": "그랜드캐니언", "emoji": "🏜️"}, "answer": "a", "note": "마리아나 해구는 수심이 약 11km에 달한다."},
+  {"id": "his_13", "category": "역사", "question": "한글날은 언제일까?", "a": {"text": "10월 9일", "emoji": "🇰🇷"}, "b": {"text": "10월 3일", "emoji": "📅"}, "answer": "a", "note": "10월 3일은 개천절이다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "이성계", "emoji": "⚔️"}, "answer": "a", "note": "이성계는 조선을 세운 인물이다."},
+  {"id": "wor_13", "category": "세계상식", "question": "미국의 수도는?", "a": {"text": "뉴욕", "emoji": "🗽"}, "b": {"text": "워싱턴 D.C.", "emoji": "🏛️"}, "answer": "b", "note": "뉴욕은 가장 큰 도시일 뿐 수도가 아니다."},
+  {"id": "wor_14", "category": "세계상식", "question": "피라미드가 있는 대륙은?", "a": {"text": "아시아", "emoji": "🌏"}, "b": {"text": "아프리카", "emoji": "🌍"}, "answer": "b", "note": "이집트는 아프리카 대륙 북동부에 있다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "웃어른", "emoji": "🙇"}, "b": {"text": "윗어른", "emoji": "🧓"}, "answer": "a", "note": "위아래 대립이 없는 말은 '웃'을 쓴다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼지고기", "emoji": "🐷"}, "b": {"text": "되지고기", "emoji": "🥓"}, "answer": "a", "note": "'되지'가 아니라 '돼지'가 맞는 표기다."},
+  {"id": "non_05", "category": "넌센스", "question": "가장 부끄러움을 많이 타는 채소는?", "a": {"text": "부추", "emoji": "🌿"}, "b": {"text": "당근", "emoji": "🥕"}, "answer": "a", "note": "'부추'가 '부끄러워'와 발음이 비슷해서."}
 ]
