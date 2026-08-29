@@ -5,7 +5,9 @@ import { pullAndMerge, startGarageSync } from "./net/garageSync";
 import { fetchApprovedCards } from "./net/submissions";
 import Stage from "./ui/Stage";
 import TitleScreen from "./screens/TitleScreen";
-import GameScreen from "./screens/GameScreen";
+import SoloScreen from "./screens/SoloScreen";
+import RoomScreen from "./screens/RoomScreen";
+import LobbyScreen from "./screens/LobbyScreen";
 import CardSubmitScreen from "./screens/CardSubmitScreen";
 import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -16,7 +18,7 @@ import QuizScreen from "./screens/QuizScreen";
 import RaceScreen from "./screens/RaceScreen";
 
 export type Screen =
-  | "title" | "solo" | "quiz" | "shop" | "proto" | "join"
+  | "title" | "solo" | "quiz" | "shop" | "proto" | "join" | "room"
   | "live" | "how" | "cards" | "login";
 
 const SEEN = "ddr.seen-rules";
@@ -61,6 +63,8 @@ export default function App() {
    * answer, so the app answers it.
    */
   const [liveCode, setLiveCode] = useState<string | null>(null);
+  /** the race room this device is sitting in, once the lobby lets it through */
+  const [roomCode, setRoomCode] = useState<string | null>(null);
   // First visit opens on the rules. A 눈치게임 where you do not know what the
   // majority does is just guessing, so this is not an optional detour.
   const [first, setFirst] = useState(() => !seenRules());
@@ -86,7 +90,14 @@ export default function App() {
       ) : screen === "title" ? (
         <TitleScreen onPick={setScreen} />
       ) : screen === "solo" ? (
-        <GameScreen onBack={() => setScreen("title")} />
+        <SoloScreen onBack={() => setScreen("title")} />
+      ) : screen === "room" && roomCode ? (
+        <RoomScreen code={roomCode} onBack={() => { setRoomCode(null); setScreen("title"); }} />
+      ) : screen === "room" ? (
+        <LobbyScreen
+          onPlay={(code) => { setRoomCode(code); }}
+          onBack={() => setScreen("title")}
+        />
       ) : screen === "join" || liveCode ? (
         <LivePlayScreen
           code={liveCode}

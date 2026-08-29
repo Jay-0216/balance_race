@@ -1,59 +1,45 @@
-/**
- * PARKED — not reachable from the menu, and deliberately kept.
- *
- * The race room is Phase 4 and Phase 4 is not finished: there is no online
- * round synchronisation, so this lobby gathers people and then has nowhere to
- * send them. Two menu rows that lead to a dead end are worse than two rows
- * that are not there, so 방 만들기 is out of the menu and 참가하기 now goes
- * straight to a live session.
- *
- * Deleted, this would have to be written again; unreferenced, it costs the
- * bundle nothing (Vite drops it) and it is here the day round sync lands.
- * What is still missing: dealing the deck server-side, closing a round on a
- * shared clock, broadcasting the moves, filling empty seats with bots, and
- * handling someone closing their tab mid-round.
- *
- * It also still has the identity hole that live sessions fixed in 0007 - the
- * player id is taken as an argument and trusted, and `players` is world
- * readable. Nothing can be submitted today because there is no game to submit
- * to, but that has to be closed with the same seat-token trick before this is
- * ever wired up.
- */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAX_SEATS, createRoom, joinRoom, leaveRoom, listPlayers, type PlayerRow } from "../net/rooms";
+import {
+  createRoom, hostToken, joinRoom, leaveRoom, listPlayers, MAX_SEATS, mySeat,
+  readRoom, startRoom, watchRoom, type PlayerRow, type RoomRow,
+} from "../net/rooms";
 import { getIdentity, setNickname } from "../net/identity";
-import { readSession } from "../net/live";
+import { PLAYER_COLORS } from "../game/setup";
 import { isOnlineAvailable, supabase } from "../net/supabase";
 import Offline from "../ui/Offline";
+import "../ui/Form.css";
 import "./LobbyScreen.css";
 
-export type LobbyMode = "host" | "join";
-
 /**
- * Create or join a room and wait for people. Everything here is realtime on
- * the players table - a seat filling in is the only feedback that the code you
- * read out loud actually worked.
+ * Make a room or walk into one, then wait for people.
+ *
+ * The lobby used to be the end of the road - it gathered a table and had
+ * nowhere to send it, because the online round loop did not exist. It does
+ * now, so this screen's only remaining job is the bit it was always good at:
+ * showing that the code you read out loud actually worked.
+ *
+ * Empty seats become bots at the start, not before: filling them earlier would
+ * mean throwing a bot out every time a friend arrived.
  */
 export default function LobbyScreen({
-  mode,
-  onLive,
+  onPlay,
   onBack,
 }: {
-  mode: LobbyMode;
-  /** the code turned out to belong to a live session, not a race room */
-  onLive?: (code: string) => void;
+  onPlay: (code: string) => void;
   onBack: () => void;
 }) {
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState<string | null>(null);
   const [entry, setEntry] = useState("");
   const [nick, setNick] = useState(() => getIdentity().nickname);
   const [players, setPlayers] = useState<PlayerRow[]>([]);
+  const [room, setRoom] = useState<RoomRow | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const channelRef = useRef<ReturnType<ReturnType<typeof supabase>["channel"]> | null>(null);
+  const chanRef = useRef<ReturnType<ReturnType<typeof supabase>["channel"]> | null>(null);
 
-  const me = getIdentity();
-  const configured = isOnlineAvailable();
+  const online = isOnlineAvailable();
+  const iAmHost = !!code && !!hostToken(code);
+  const seat = code ? mySeat(code)?.seat ?? null : null;
 
   const refresh = useCallback(async (room: string) => {
     try {
@@ -63,27 +49,36 @@ export default function LobbyScreen({
     }
   }, []);
 
-  // subscribe once we are actually in a room
+  // people arriving is the only feedback that the code worked
   useEffect(() => {
-    if (!code || !configured) return;
+    if (!code || !online) return;
     const ch = supabase()
-      .channel(`room:${code}`)
-      .on(
-        "postgres_changes",
+      .channel(`lobby:${code}`)
+      .on("postgres_changes",
         { event: "*", schema: "public", table: "players", filter: `room_code=eq.${code}` },
-        () => void refresh(code)
-      )
+        () => void refresh(code))
       .subscribe();
-    channelRef.current = ch;
+    chanRef.current = ch;
     void refresh(code);
-
+    const poll = window.setInterval(() => void refresh(code), 2500);
     return () => {
+      window.clearInterval(poll);
       void supabase().removeChannel(ch);
-      channelRef.current = null;
+      chanRef.current = null;
     };
-  }, [code, configured, refresh]);
+  }, [code, online, refresh]);
 
-  // leaving the tab should free the seat rather than park a ghost in it
+  // the room row is what says "we have started" - to everyone at once
+  useEffect(() => {
+    if (!code) return;
+    return watchRoom(code, setRoom);
+  }, [code]);
+
+  useEffect(() => {
+    if (room?.status === "playing" && code) onPlay(code);
+  }, [room?.status, code, onPlay]);
+
+  // a closed tab should free the seat rather than park a ghost in it
   useEffect(() => {
     if (!code) return;
     const bye = () => void leaveRoom(code);
@@ -92,40 +87,33 @@ export default function LobbyScreen({
   }, [code]);
 
   const host = async () => {
-    setBusy(true);
-    setError(null);
+    setBusy(true); setError(null);
     try {
-      setNickname(nick);
-      const room = await createRoom();
-      setCode(room.code);
-    } catch (e) {
-      setError(message(e));
-    } finally {
-      setBusy(false);
-    }
+      const saved = setNickname(nick);
+      const made = await createRoom(saved.nickname);
+      setCode(made.code);
+    } catch (e) { setError(message(e)); } finally { setBusy(false); }
   };
 
   const join = async () => {
-    setBusy(true);
-    setError(null);
+    setBusy(true); setError(null);
     try {
-      setNickname(nick);
+      const saved = setNickname(nick);
       const typed = entry.trim().toUpperCase();
-      // One code box. A code is just a code - which kind of room it opens is a
-      // question the app can answer and the player cannot, so it answers it
-      // rather than making them pick the right button first.
-      const live = await readSession(typed).catch(() => null);
-      if (live && onLive) {
-        onLive(typed);
-        return;
-      }
-      const room = await joinRoom(typed);
-      setCode(room.code);
-    } catch (e) {
-      setError(message(e));
-    } finally {
-      setBusy(false);
-    }
+      const found = await readRoom(typed);
+      if (!found) throw new Error("그런 방이 없다. 코드를 확인해줘.");
+      await joinRoom(typed, saved.nickname);
+      setCode(typed);
+    } catch (e) { setError(message(e)); } finally { setBusy(false); }
+  };
+
+  const start = async () => {
+    if (!code) return;
+    setBusy(true); setError(null);
+    try {
+      await startRoom(code, players);
+      onPlay(code);
+    } catch (e) { setError(message(e)); } finally { setBusy(false); }
   };
 
   const quit = async () => {
@@ -133,9 +121,9 @@ export default function LobbyScreen({
     onBack();
   };
 
-  if (!configured) {
+  if (!online) {
     return (
-      <Frame title={mode === "host" ? "방 만들기" : "참가하기"} onBack={onBack}>
+      <Frame title="같이 하기" onBack={onBack}>
         <Offline what="친구랑 같이 할 수" />
       </Frame>
     );
@@ -143,102 +131,105 @@ export default function LobbyScreen({
 
   if (!code) {
     return (
-      <Frame title={mode === "host" ? "방 만들기" : "참가하기"} onBack={onBack}>
-        <label className="lobby-field">
-          <span>닉네임</span>
-          <input
-            value={nick}
-            maxLength={8}
-            onChange={(e) => setNick(e.target.value)}
-            placeholder="나"
-          />
-        </label>
+      <Frame title="같이 하기" onBack={onBack} lead="방을 만들어 코드를 불러주거나, 받은 코드로 들어가면 된다.">
+        <div className="field">
+          <label htmlFor="lb-nick">이름</label>
+          <input id="lb-nick" value={nick} maxLength={8}
+            onChange={(e) => setNick(e.target.value)} placeholder="8글자까지" />
+        </div>
+        <div className="form-actions">
+          <button className="btn-go" onClick={() => void host()} disabled={busy || !nick.trim()}>
+            {busy ? "만드는 중…" : "방 만들기"}
+          </button>
+        </div>
 
-        {mode === "join" && (
-          <label className="lobby-field">
-            <span>방 코드</span>
-            <input
-              className="lobby-code-input"
-              value={entry}
-              maxLength={6}
-              autoCapitalize="characters"
-              onChange={(e) => setEntry(e.target.value.toUpperCase())}
-              placeholder="ABC123"
-            />
-          </label>
-        )}
+        <p className="lb-or">또는</p>
 
-        {error && <p className="lobby-error">{error}</p>}
-
-        <button
-          className="lobby-go"
-          disabled={busy || (mode === "join" && entry.trim().length < 6)}
-          onClick={mode === "host" ? host : join}
-        >
-          {busy ? "잠시만…" : mode === "host" ? "방 만들기" : "들어가기"}
-        </button>
+        <div className="field">
+          <label htmlFor="lb-code">받은 코드</label>
+          <input id="lb-code" className="lb-code" value={entry} maxLength={6}
+            autoCapitalize="characters" autoCorrect="off" spellCheck={false}
+            onChange={(e) => setEntry(e.target.value.toUpperCase())} placeholder="ABC123" />
+        </div>
+        <div className="form-actions">
+          <button className="btn-quiet" onClick={() => void join()}
+            disabled={busy || entry.trim().length < 4 || !nick.trim()}>
+            들어가기
+          </button>
+        </div>
+        {error && <p className="form-msg bad">{error}</p>}
       </Frame>
     );
   }
 
+  const bots = MAX_SEATS - players.length;
+
   return (
-    <Frame title="대기실" onBack={quit}>
-      <div className="lobby-code">
-        <span className="lobby-code-label">방 코드</span>
-        <strong>{code}</strong>
-        <button
-          className="lobby-copy"
-          onClick={() => void navigator.clipboard?.writeText(code)}
-        >
-          복사
-        </button>
+    <Frame title="기다리는 중" onBack={() => void quit()}>
+      <div className="lb-codecard">
+        <div>
+          <span>방 코드</span>
+          <b>{code}</b>
+        </div>
+        <span className="lb-count">{players.length}명</span>
       </div>
 
-      <ol className="lobby-seats">
-        {Array.from({ length: MAX_SEATS }, (_, seat) => {
-          const p = players.find((x) => x.seat === seat);
-          return (
-            <li key={seat} className={p ? "taken" : "empty"}>
-              <span className="lobby-dot" style={{ background: p?.color ?? "transparent" }} />
-              <span className="lobby-name">
-                {p ? p.nickname : "봇으로 채움"}
-                {p?.player_id === me.id && <em> (나)</em>}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
+      <ul className="lb-seats">
+        {players.map((p) => (
+          <li key={p.player_id} className={p.seat === seat ? "me" : ""}>
+            <span className="lb-dot" style={{ background: PLAYER_COLORS[p.seat % PLAYER_COLORS.length] }} />
+            {p.nickname}
+            {p.seat === seat && <span className="lb-you">나</span>}
+          </li>
+        ))}
+      </ul>
 
-      {error && <p className="lobby-error">{error}</p>}
+      <p className="lb-note">
+        {bots > 0
+          ? `빈 자리 ${bots}개는 시작할 때 봇이 채운다.`
+          : "자리가 다 찼다."}
+      </p>
 
-      <p className="lobby-note dim">
-        {players.length}명 참가 · 빈 자리는 시작할 때 봇으로 채워집니다.
-      </p>
-      <p className="lobby-note dim">
-        온라인 대국 진행은 다음 단계입니다 — 지금은 방과 참가까지 동작합니다.
-      </p>
+      {iAmHost ? (
+        <div className="form-actions">
+          <button className="btn-go" onClick={() => void start()} disabled={busy}>
+            {busy ? "시작하는 중…" : "시작하기"}
+          </button>
+        </div>
+      ) : (
+        <p className="lb-note">방장이 시작하기를 기다리는 중…</p>
+      )}
+
+      {error && <p className="form-msg bad">{error}</p>}
     </Frame>
   );
 }
 
 function Frame({
-  title, onBack, children,
+  children, title, lead, onBack,
 }: {
-  title: string;
-  onBack: () => void;
-  children: React.ReactNode;
+  children: React.ReactNode; title: string; lead?: string; onBack: () => void;
 }) {
   return (
-    <div className="lobby">
-      <header className="lobby-bar">
-        <button className="lobby-back" onClick={onBack} aria-label="뒤로">←</button>
-        <span>{title}</span>
+    <div className="form-screen">
+      <header className="form-head">
+        <button className="form-back" onClick={onBack} aria-label="뒤로">←</button>
+        <div className="form-title">
+          <span className="form-eyebrow">레이스 방</span>
+          <h2>{title}</h2>
+          {lead && <p>{lead}</p>}
+        </div>
       </header>
-      <div className="lobby-body">{children}</div>
+      <div className="form-body">{children}</div>
     </div>
   );
 }
 
 function message(e: unknown) {
-  return e instanceof Error ? e.message : "알 수 없는 오류가 났습니다.";
+  const t = e instanceof Error ? e.message : String(e);
+  if (t.includes("no such room")) return "그런 방이 없다. 코드를 확인해줘.";
+  if (t.includes("already started")) return "이미 시작한 방이다.";
+  if (t.includes("room is full")) return "방이 가득 찼다.";
+  if (t.includes("not the host")) return "이 기기는 이 방의 방장이 아니다.";
+  return t;
 }

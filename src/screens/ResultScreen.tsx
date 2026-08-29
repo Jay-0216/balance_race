@@ -5,21 +5,25 @@ import "./ResultScreen.css";
 
 export default function ResultScreen({
   players,
+  meId = 0,
   unlocked = [],
   prize = 0,
   onAgain,
   onBack,
 }: {
   players: Player[];
+  /** which seat is mine - online, "not a bot" is most of the table */
+  meId?: number;
   /** names of pieces this game earned, if any */
   unlocked?: string[];
   /** 볼트 won by this race */
   prize?: number;
-  onAgain: () => void;
+  /** absent in an online room, which cannot be replayed on the spot */
+  onAgain?: () => void;
   onBack: () => void;
 }) {
   const order = placements(players);
-  const mine = order.find((r) => !r.player.isBot);
+  const mine = order.find((r) => r.player.id === meId);
   // Everyone who finished on the top cell - usually one, sometimes not. The
   // race can genuinely end level: the clock runs out on round 12 with two
   // players on the same cell, or two of them cross the line in the same
@@ -72,7 +76,7 @@ export default function ResultScreen({
 
         <ol className="result-list">
           {order.map((r) => (
-            <li key={r.player.id} className={r.player.isBot ? "" : "me"}>
+            <li key={r.player.id} className={r.player.id === meId ? "me" : ""}>
               <span className={"result-rank" + (r.shared ? " shared" : "")}>{r.place}</span>
               <span className="result-name">
                 <span className="result-dot sm" style={{ background: r.player.color }} />
@@ -97,8 +101,10 @@ export default function ResultScreen({
         )}
 
         <div className="result-actions">
-          <button className="result-again" onClick={onAgain}>한 판 더</button>
-          <button className="result-out" onClick={onBack}>나가기</button>
+          {onAgain && <button className="result-again" onClick={onAgain}>한 판 더</button>}
+          <button className="result-out" onClick={onBack}>
+            {onAgain ? "나가기" : "방에서 나가기"}
+          </button>
         </div>
       </div>
     </div>

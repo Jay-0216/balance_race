@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useGame } from "../game/useGame";
+import type { GameLike } from "../game/useGame";
 import { CELLS, KIND_LABEL, placements, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
 import { equippedPiece, PIECES, recordBoost, recordRace } from "../game/garage";
 import type { PieceId } from "../race/pieces";
@@ -20,8 +20,16 @@ import Timer from "../ui/Timer";
 import ResultScreen from "./ResultScreen";
 import "./GameScreen.css";
 
-export default function GameScreen({ onBack }: { onBack: () => void }) {
-  const g = useGame();
+/**
+ * One screen, two games.
+ *
+ * Solo and online hand in the same shape (GameLike), so nothing below knows or
+ * cares which it is drawing. The only thing that used to assume solo was
+ * `players[0]` meaning "me" - online that is whoever holds seat 0, which is
+ * usually somebody else.
+ */
+export default function GameScreen({ game, onBack }: { game: GameLike; onBack: () => void }) {
+  const g = game;
   const [fps, setFps] = useState(0);
   // read once: swapping pieces mid-race is not a thing, and re-reading every
   // render would put a localStorage hit in the frame loop's way
@@ -86,10 +94,10 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     () => g.players.map((p) => ({
       // the paint is already on the player: makePlayers() reads it, so the
       // leaderboard dot and the piece on the track cannot disagree
-      id: p.id, name: p.name, color: p.color, me: !p.isBot, pos: p.pos,
-      piece: p.isBot ? undefined : myPiece,
+      id: p.id, name: p.name, color: p.color, me: p.id === g.meId, pos: p.pos,
+      piece: p.id === g.meId ? myPiece : undefined,
     })),
-    [g.players, myPiece]
+    [g.players, myPiece, g.meId]
   );
 
   // Spending a booster counts the moment it fires: a game you walk out of
@@ -106,14 +114,14 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       const won = names(recordBoost().unlocked);
       if (won.length) setUnlocked((u) => [...u, ...won]);
     }
-  }, [g.outcome, g.outcomeSeq]);
+  }, [g.outcome, g.outcomeSeq, g.meId]);
 
   const tallied = useRef(false);
   useEffect(() => {
     if (g.phase !== "done" || tallied.current) return;
     tallied.current = true;
     const board = placements(g.players);
-    const mine = board.find((r) => !r.player.isBot);
+    const mine = board.find((r) => r.player.id === g.meId);
     if (!mine) return;
     const back = Math.min(...g.players.map((p) => p.pos));
     // likewise outside the updater - this one writes the games-played count,
@@ -127,7 +135,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     setPrize(reward.bolts);
     const earned = names(reward.unlocked);
     if (earned.length) setUnlocked((u) => [...u, ...earned]);
-  }, [g.phase, g.players]);
+  }, [g.phase, g.players, g.meId]);
 
   // a fresh game is a fresh tally
   useEffect(() => {
@@ -138,6 +146,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
     }
   }, [g.phase, g.round]);
 
+  const me = g.players.find((p) => p.id === g.meId);
   const kindLabel = KIND_LABEL[g.kind];
   const revealing = g.phase === "reveal" || g.phase === "moving";
 
@@ -179,7 +188,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         )}
         {/* and gone entirely once the game is over: the result screen states
             the same number, in more detail, right next to it */}
-        {g.phase !== "done" && <Score pos={g.players[0].pos} cells={CELLS} />}
+        {g.phase !== "done" && <Score pos={me?.pos ?? 0} cells={CELLS} />}
         <Stamp kind={g.phase === "reveal" ? stamp : null} at={g.round} />
         <RoundAlert kind={g.kind} round={g.round} />
       </div>
@@ -204,7 +213,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         />
 
         <BoosterGauge
-          charge={g.players[0].charge}
+          charge={me?.charge ?? 0}
           armed={g.useBoost}
           disabled={g.phase !== "choosing"}
           onToggle={() => g.setUseBoost(!g.useBoost)}
@@ -212,7 +221,7 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
 
         {g.kind === "allin" && (
           <StakePicker
-            pos={g.players[0].pos}
+            pos={me?.pos ?? 0}
             share={g.stake}
             disabled={g.phase !== "choosing"}
             onChange={g.setStake}
@@ -233,9 +242,10 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       {g.phase === "done" && (
         <ResultScreen
           players={g.players}
+          meId={g.meId}
           unlocked={unlocked}
           prize={prize}
-          onAgain={g.restart}
+          onAgain={g.canRestart ? g.restart : undefined}
           onBack={onBack}
         />
       )}
@@ -248,7 +258,7 @@ function names(ids: PieceId[]) {
   return ids.map((id) => PIECES.find((p) => p.id === id)?.name ?? id);
 }
 
-function RoundNote({ g }: { g: ReturnType<typeof useGame> }) {
+function RoundNote({ g }: { g: GameLike }) {
   const o = g.outcome;
   if (!o) return null;
 

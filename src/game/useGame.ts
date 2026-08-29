@@ -6,7 +6,7 @@ import {
 } from "./rules";
 import { play } from "../ui/sound";
 import { dealDeck, makePlayers } from "./setup";
-import type { Choice, Dilemma, Player, RoundOutcome } from "./types";
+import type { Choice, Dilemma, Player, RoundKind, RoundOutcome } from "./types";
 
 /**
  * choosing → reveal → moving → (next round | done)
@@ -19,6 +19,38 @@ export type Phase = "choosing" | "reveal" | "moving" | "done";
 
 export const REVEAL_MS = 900;
 export const MOVING_MS = 1700;
+
+/**
+ * What a game looks like to the screen that draws it.
+ *
+ * Solo and online produce this same shape, so GameScreen has no idea which one
+ * it is showing - which is what stopped the online race from needing a second
+ * copy of the screen.
+ */
+export type GameLike = {
+  players: Player[];
+  /** which player is me. Solo it is always seat 0; online it is my seat. */
+  meId: number;
+  round: number;
+  kind: RoundKind;
+  dilemma: Dilemma;
+  phase: Phase;
+  outcome: RoundOutcome | null;
+  outcomeSeq: number;
+  myChoice: Choice | null;
+  lockedCount: number;
+  myLockIndex: number;
+  deadline: number;
+  timedOut: boolean;
+  stake: number;
+  setStake: (v: number) => void;
+  useBoost: boolean;
+  setUseBoost: (v: boolean) => void;
+  pick: (c: Choice) => void;
+  restart: () => void;
+  /** online rooms cannot be replayed on the spot; leaving is the way out */
+  canRestart: boolean;
+};
 
 export type GameState = {
   players: Player[];
@@ -182,11 +214,11 @@ export function useGame() {
   }, [startRound]);
 
   return {
-    players, round, kind, dilemma, phase, outcome, outcomeSeq, myChoice,
+    players, meId: 0, round, kind, dilemma, phase, outcome, outcomeSeq, myChoice,
     lockedCount, myLockIndex, deadline, timedOut,
     winner: phase === "done" ? ranked(players)[0] : null,
     stake, setStake,
     useBoost, setUseBoost,
-    pick, restart,
+    pick, restart, canRestart: true,
   };
 }
