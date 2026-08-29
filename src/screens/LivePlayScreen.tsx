@@ -4,6 +4,7 @@ import {
   type LiveCurrent, type LiveScore, type LiveSession, type LiveTally,
 } from "../net/live";
 import { getIdentity, setNickname } from "../net/identity";
+import { buzz } from "../ui/haptics";
 import { play } from "../ui/sound";
 import { CodeCard, Ranking, SplitBar } from "./LiveHostScreen";
 import "../ui/Form.css";
@@ -84,13 +85,16 @@ export default function LivePlayScreen({
   // the sound of finding out
   useEffect(() => {
     if (phase !== "revealed" || !picked || !session?.reveal_choice) return;
-    play(picked === session.reveal_choice ? "stamp" : "slump");
+    const right = picked === session.reveal_choice;
+    play(right ? "stamp" : "slump");
+    buzz(right ? "reveal" : "miss");
   }, [phase, picked, session?.reveal_choice]);
 
   const answer = async (side: "a" | "b") => {
     if (picked || !q) return;
     setPicked(side);                    // optimistic: the tap has to feel instant
     play("click");
+    buzz("pick");
     try {
       await answerLive(code, q.idx, side);
     } catch (e) {

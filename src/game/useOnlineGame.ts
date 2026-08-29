@@ -5,6 +5,7 @@ import {
 } from "../net/rooms";
 import { ALLIN_STAKE, CELLS, ranked, roundKind, TIME_LIMIT } from "./rules";
 import { replay, type ClosedRound } from "./replay";
+import { buzz } from "../ui/haptics";
 import { play } from "../ui/sound";
 import type { Choice, Player } from "./types";
 import { submitChoice } from "../net/rooms";
@@ -131,10 +132,12 @@ export function useOnlineGame(code: string) {
         setPhase("reveal");
         setOutcomeSeq((n) => n + 1);
         play("stamp");
+        buzz("reveal");
 
         later(() => {
           setPhase("moving");
           play("dash");
+          buzz("dash");
         }, REVEAL_MS);
 
         // Whoever finishes the animation first moves the room on; the rest
@@ -184,6 +187,7 @@ export function useOnlineGame(code: string) {
     (choice: Choice) => {
       if (phase !== "choosing" || myChoice) return;
       play("click");
+      buzz("pick");
       setMyChoice(choice);            // optimistic: the tap has to feel instant
       setMyLockIndex(locked);
       void submitChoice(code, shown, choice, useBoost, stake).catch(() => {

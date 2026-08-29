@@ -12,6 +12,7 @@ import { CELLS, type RacerView } from "../race/world";
 import { getIdentity } from "../net/identity";
 import { myPaint } from "../game/garage";
 import Timer from "../ui/Timer";
+import { buzz } from "../ui/haptics";
 import { play } from "../ui/sound";
 import "./ResultScreen.css";   // .result-eyebrow / .result-actions / .unlock-note
 import "./QuizScreen.css";
@@ -76,6 +77,7 @@ export default function QuizScreen({ onBack }: { onBack: () => void }) {
       unlocked: reward.unlocked, prize: reward.bolts,
     });
     play(saved.improved ? "alert" : "finish");
+    buzz(saved.improved ? "alert" : "finish");
   }, [deck.length]);
 
   const answer = useCallback((picked: Choice | null) => {
@@ -86,6 +88,7 @@ export default function QuizScreen({ onBack }: { onBack: () => void }) {
     const next = correct + (right ? 1 : 0);
     if (right) setCorrect(next);
     play(right ? "stamp" : "slump");
+    buzz(right ? "reveal" : "miss");
 
     timers.current.push(window.setTimeout(() => {
       if (at + 1 >= deck.length) {

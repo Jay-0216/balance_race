@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { KIND_SUB, KIND_TITLE } from "../game/rules";
 import type { RoundKind } from "../game/types";
+import { buzz } from "./haptics";
 import { play } from "./sound";
 import "./RoundAlert.css";
 
@@ -30,6 +31,7 @@ export default function RoundAlert({
     if (kind === "normal") return;
     setShown({ kind, round });
     play("alert");
+    buzz("alert");
     const id = window.setTimeout(() => setShown(null), HOLD_MS);
     return () => clearTimeout(id);
   }, [kind, round]);

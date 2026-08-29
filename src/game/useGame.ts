@@ -4,6 +4,7 @@ import {
   ALLIN_STAKE, applyOutcome, CELLS, ranked, resolveRound, roundKind, ROUNDS,
   TIME_LIMIT,
 } from "./rules";
+import { buzz } from "../ui/haptics";
 import { play } from "../ui/sound";
 import { dealDeck, makePlayers } from "./setup";
 import type { Choice, Dilemma, Player, RoundKind, RoundOutcome } from "./types";
@@ -143,14 +144,15 @@ export function useGame() {
       setOutcomeSeq((n) => n + 1);
       setPhase("reveal");
       play("stamp");
+      buzz("reveal");
 
       later(() => {
         setPhase("moving");
         setPlayers((prev) => applyOutcome(prev, result));
         const mine = result.moves.find((m) => m.playerId === 0);
-        if (result.moves.some((m) => m.boosterFired)) play("flame");
-        else if (mine && mine.to > mine.from) play("dash");
-        else play("slump");
+        if (result.moves.some((m) => m.boosterFired)) { play("flame"); buzz("booster"); }
+        else if (mine && mine.to > mine.from) { play("dash"); buzz("dash"); }
+        else { play("slump"); buzz("miss"); }
       }, REVEAL_MS);
 
       later(() => {
@@ -161,6 +163,7 @@ export function useGame() {
         if (finished || round >= ROUNDS) {
           setPhase("done");
           play("finish");
+          buzz("finish");
         } else {
           setRound((r) => r + 1);
         }
@@ -198,6 +201,7 @@ export function useGame() {
     (choice: Choice) => {
       if (phase !== "choosing" || settled.current) return;
       play("click");
+      buzz("pick");
       setMyLockIndex(lockedCount);
       settle(choice, false);
     },

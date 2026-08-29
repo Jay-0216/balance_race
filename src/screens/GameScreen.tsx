@@ -13,6 +13,7 @@ import LockPips from "../ui/LockPips";
 import RoundAlert from "../ui/RoundAlert";
 import Score from "../ui/Score";
 import TallyBar from "../ui/TallyBar";
+import { buzzOn, canBuzz, setBuzz } from "../ui/haptics";
 import { isMuted, setMuted } from "../ui/sound";
 import Stamp, { type StampKind } from "../ui/Stamp";
 import StakePicker from "../ui/StakePicker";
@@ -37,6 +38,7 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
   const [unlocked, setUnlocked] = useState<string[]>([]);
   const [prize, setPrize] = useState(0);
   const [muted, setMutedState] = useState(isMuted);
+  const [buzzing, setBuzzing] = useState(buzzOn);
   const onFps = useCallback((v: number) => setFps(v), []);
 
   // the stage jolts on the stamp, not the page - jolting the chrome of a phone
@@ -165,6 +167,18 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
         >
           {muted ? "🔇" : "🔊"}
         </button>
+        {/* only where it can do something: iOS ignores vibrate entirely, and a
+            dead toggle is worse than no toggle */}
+        {canBuzz() && (
+          <button
+            className="game-mute"
+            onClick={() => { const next = !buzzing; setBuzz(next); setBuzzing(next); }}
+            aria-label={buzzing ? "진동 끄기" : "진동 켜기"}
+            title={buzzing ? "진동 끄기" : "진동 켜기"}
+          >
+            {buzzing ? "📳" : "📴"}
+          </button>
+        )}
         <span className="game-fps">{fps} fps</span>
       </header>
 
