@@ -21,7 +21,17 @@ export default function TrackPreview() {
 
   return (
     <div className="tp" aria-hidden="true">
-      <svg viewBox="0 0 300 220" preserveAspectRatio="xMidYMid meet">
+      <svg
+        viewBox="0 0 300 220"
+        // "meet" was fitting the whole 220-unit-tall drawing inside a box
+        // that had gone very wide and short (the preview no longer competes
+        // with the menu for height, so its own box widened) - it let over a
+        // third of the width sit empty on both sides rather than grow the
+        // picture into it. "slice" fills the box and crops the spare canvas
+        // above and below instead, which is exactly what ambience is allowed
+        // to lose.
+        preserveAspectRatio="xMidYMid slice"
+      >
         <defs>
           <linearGradient id="tpFade" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stopColor="#2c373f" stopOpacity="1" />

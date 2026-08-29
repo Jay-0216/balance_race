@@ -475,10 +475,15 @@ export default function RaceView({
               textAnchor="middle"
               fill={r.me ? "#f2f6f8" : r.color}
               fontSize={r.me ? 10.5 : 7.6}
-              fontWeight={r.me ? 700 : 600}
+              fontWeight={r.me ? 600 : 600}
               opacity={r.me ? 1 : 0.92}
               stroke="#0b1015"
-              strokeWidth={r.me ? 2.2 : 1.9}
+              // A stroke this close to the font size is what read as too bold
+              // on a real phone: at 2.2/10.5 the outline was a fifth of the
+              // glyph's own size, which fattens every stroke of the letterform
+              // rather than just edging it. Halving it keeps the plate legible
+              // against the road without thickening the letters themselves.
+              strokeWidth={r.me ? 1.1 : 0.95}
               paintOrder="stroke"
               strokeLinejoin="round"
               fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'

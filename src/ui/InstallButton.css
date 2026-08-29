@@ -1,0 +1,30 @@
+.install-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(240, 180, 41, 0.1);
+  border: 1.5px solid rgba(240, 180, 41, 0.4);
+  transition: background 0.16s ease, transform 0.16s var(--ease-out);
+}
+.install-btn:hover:not(:disabled) { background: rgba(240, 180, 41, 0.16); transform: translateY(-1px); }
+.install-btn:disabled { opacity: 0.6; }
+
+.install-hint {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+  text-align: center;
+}
+.install-hint b { color: var(--ink); }

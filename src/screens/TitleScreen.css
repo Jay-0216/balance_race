@@ -5,24 +5,36 @@
   display: flex;
   flex-direction: column;
   padding: 40px 24px 28px;
+  gap: 16px;
+}
+
+/* Everything down to the preview is a fixed header: it no longer competes
+   with the menu for whatever space is left over. The menu used to win that
+   fight by simply having more rows than the picture had patience for - seven
+   of them now - which crushed the preview toward nothing every time a mode
+   was added. Only .title-scroll answers for the menu's length now. */
+.title-mark,
+.tp { flex: none; }
+
+.title-scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  /* The menu grew past what a short phone holds. Scrolling is the honest
-     answer: the alternative is a preview crushed to a sliver and a last row
-     pinned against the bottom edge. */
   overflow-y: auto;
 }
 
-/* Short screens give the ambience up first, not the buttons. */
+/* Short screens give the menu's own padding up first, not the picture. */
 @media (max-height: 800px) {
-  .title { padding: 26px 20px 22px; gap: 13px; }
+  .title { padding: 26px 20px 22px; gap: 11px; }
+  .title-scroll { gap: 13px; }
   .title h1 { margin-bottom: 8px; font-size: clamp(32px, 9.5vw, 44px); }
   .title-eyebrow { margin-bottom: 9px; }
   .title-menu { gap: 8px; }
   .title-btn { padding: 13px 17px; }
   .title-btn-label { font-size: 16px; }
 }
-
-.title-mark { flex: none; }
 
 /* ---- the account, in the corner ---------------------------------------- */
 .title-account {

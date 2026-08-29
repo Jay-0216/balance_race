@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Screen } from "../App";
 import Avatar from "../ui/Avatar";
 import TrackPreview from "../ui/TrackPreview";
+import InstallButton from "../ui/InstallButton";
 import { getIdentity, type Identity } from "../net/identity";
 import "./TitleScreen.css";
 
@@ -51,27 +52,36 @@ export default function TitleScreen({ onPick }: { onPick: (s: Screen) => void })
         <p>다수와 같은 선택을 하면 전진한다.</p>
       </div>
 
+      {/* The preview used to compete with the menu for leftover space, which
+          meant every row the menu grew - and it has grown to seven - squeezed
+          the picture down toward nothing. It has its own fixed-ish height now
+          (see .tp in the stylesheet) and never answers to how long the menu
+          gets; the menu is what scrolls instead. */}
       <TrackPreview />
 
-      <nav className="title-menu">
-        {MENU.map((m) => (
-          <button key={m.key} className="title-btn" onClick={() => onPick(m.key)}>
-            <span className="title-btn-label">{m.label}</span>
-            <span className="title-btn-hint">{m.hint}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="title-scroll">
+        <nav className="title-menu">
+          {MENU.map((m) => (
+            <button key={m.key} className="title-btn" onClick={() => onPick(m.key)}>
+              <span className="title-btn-label">{m.label}</span>
+              <span className="title-btn-hint">{m.hint}</span>
+            </button>
+          ))}
+        </nav>
 
-      {/* Whose game this is. Opens in its own tab: a game that navigates you
-          away mid-session and loses your garage is a rude credit. */}
-      <a
-        className="title-by"
-        href="http://jay-0216.kro.kr/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Made by Jay-0216
-      </a>
+        <InstallButton />
+
+        {/* Whose game this is. Opens in its own tab: a game that navigates you
+            away mid-session and loses your garage is a rude credit. */}
+        <a
+          className="title-by"
+          href="http://jay-0216.kro.kr/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Made by Jay-0216
+        </a>
+      </div>
     </div>
   );
 }
