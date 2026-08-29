@@ -64,10 +64,51 @@ export type LiveScore = {
  */
 const TOKEN_KEY = (code: string) => `ddr.live.${code}`;
 
+/**
+ * A player's seat secret, and the id the seat came back with.
+ *
+ * The id used to be the player's own local identity, sent as an argument and
+ * trusted - but live_players is the leaderboard, so those ids were listed, not
+ * guessed, and anyone with the room code could answer as a classmate. Now the
+ * client proves who it is with a secret it generates and never shows, and the
+ * id is whatever the server hands back: safe to print, useless to copy.
+ *
+ * Per code, so one device can hold seats in several sessions, and stored so a
+ * reload comes back to the same seat instead of joining twice.
+ */
+const SEAT_KEY = (code: string) => `ddr.live.seat.${code}`;
+
+type Seat = { token: string; id: string };
+
 function newToken() {
   const b = new Uint8Array(24);
   crypto.getRandomValues(b);
   return [...b].map((n) => n.toString(36).padStart(2, "0")).join("");
+}
+
+function readSeat(code: string): Seat | null {
+  try {
+    const raw = localStorage.getItem(SEAT_KEY(code));
+    if (!raw) return null;
+    const p = JSON.parse(raw) as Partial<Seat>;
+    return p.token && p.id ? { token: p.token, id: p.id } : null;
+  } catch {
+    return null;
+  }
+}
+
+function keepSeat(code: string, seat: Seat) {
+  try {
+    localStorage.setItem(SEAT_KEY(code), JSON.stringify(seat));
+  } catch {
+    // a private window means a reload joins again as a new seat; the old one
+    // is simply abandoned, which is a stale name on the board and nothing more
+  }
+}
+
+/** My seat id in this session, once I have joined. */
+export function seatId(code: string): string | null {
+  return readSeat(code)?.id ?? null;
 }
 
 export function hostToken(code: string): string | null {
@@ -180,12 +221,18 @@ export async function board(code: string): Promise<LiveBoard | null> {
 }
 
 export async function joinLive(code: string, nickname: string) {
-  const me = getIdentity();
+  // reuse this device's secret for this session, so a reload keeps the seat
+  const token = readSeat(code)?.token ?? newToken();
   const { data, error } = await supabase().rpc("live_join", {
-    p_code: code, p_player: me.id, p_nick: nickname,
+    p_code: code, p_token: token, p_nick: nickname,
   });
   if (error) throw error;
-  return data?.[0] as { phase: LivePhase; current_idx: number; question_count: number; title: string };
+  const row = data?.[0] as {
+    seat_id: string; phase: LivePhase; current_idx: number;
+    question_count: number; title: string;
+  };
+  keepSeat(code, { token, id: row.seat_id });
+  return row;
 }
 
 export async function currentQuestion(code: string): Promise<LiveCurrent | null> {
@@ -195,9 +242,10 @@ export async function currentQuestion(code: string): Promise<LiveCurrent | null>
 }
 
 export async function answerLive(code: string, idx: number, choice: "a" | "b") {
-  const me = getIdentity();
+  const seat = readSeat(code);
+  if (!seat) throw new Error("not in this session");
   const { error } = await supabase().rpc("live_answer", {
-    p_code: code, p_player: me.id, p_idx: idx, p_choice: choice,
+    p_code: code, p_token: seat.token, p_idx: idx, p_choice: choice,
   });
   if (error) throw error;
 }
@@ -209,9 +257,8 @@ export async function tally(code: string): Promise<LiveTally | null> {
 }
 
 export async function scores(code: string, top = 10): Promise<LiveScore[]> {
-  const me = getIdentity();
   const { data, error } = await supabase().rpc("live_scores", {
-    p_code: code, p_player: me.id, p_top: top,
+    p_code: code, p_player: seatId(code) ?? "", p_top: top,
   });
   if (error) throw error;
   return (data ?? []) as LiveScore[];
