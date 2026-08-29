@@ -47,6 +47,45 @@ button {
 }
 button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
+/* ---- scroll panels ------------------------------------------------------
+   Every scrolling area in the game (the title menu, a form body, the round
+   panel, the quiz body) gets the same thin, dark-matched bar instead of the
+   OS default - a wide light-grey track was the one piece of chrome on the
+   whole screen that did not belong to the game. Firefox and WebKit need
+   separate properties; there is no single rule that reaches both. */
+.title-scroll,
+.form-body,
+.game-panel,
+.quiz-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.title-scroll::-webkit-scrollbar,
+.form-body::-webkit-scrollbar,
+.game-panel::-webkit-scrollbar,
+.quiz-body::-webkit-scrollbar {
+  width: 6px;
+}
+.title-scroll::-webkit-scrollbar-track,
+.form-body::-webkit-scrollbar-track,
+.game-panel::-webkit-scrollbar-track,
+.quiz-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.title-scroll::-webkit-scrollbar-thumb,
+.form-body::-webkit-scrollbar-thumb,
+.game-panel::-webkit-scrollbar-thumb,
+.quiz-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 99px;
+}
+.title-scroll::-webkit-scrollbar-thumb:hover,
+.form-body::-webkit-scrollbar-thumb:hover,
+.game-panel::-webkit-scrollbar-thumb:hover,
+.quiz-body::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3);
+}
+
 /* ---- the frame --------------------------------------------------------- */
 /* Everything is authored for a phone, and the same layout is reused
    everywhere - that is what makes the Capacitor build a wrap rather than a

@@ -11,8 +11,19 @@
  *
  * Nothing cross-origin is touched at all. Caching Supabase would serve a stale
  * room, and caching the font would be someone else's bytes to manage.
+ *
+ * "Network first" for the page used a bare fetch(req), which only ever
+ * bypasses OUR Cache Storage - it says nothing about the browser's ordinary
+ * HTTP disk cache underneath it, which still gets to hand back a cached
+ * response of its own without a real round trip. In practice that meant a
+ * page loaded once could keep re-serving that same snapshot on every later
+ * visit, deploy after deploy - a build from before a fix looking rendered
+ * with the fix's own code, on a device this environment cannot reach to
+ * reproduce, is exactly that shape of bug. cache: "no-store" on the request
+ * is what actually forces a real fetch. Bumped to v2 so anyone already stuck
+ * on an old snapshot gets unstuck the moment this file itself is fetched.
  */
-const CACHE = "balance-race-v1";
+const CACHE = "balance-race-v2";
 const PAGE = "page";
 
 self.addEventListener("install", () => self.skipWaiting());
@@ -32,7 +43,7 @@ self.addEventListener("fetch", (event) => {
   if (req.mode === "navigate") {
     event.respondWith((async () => {
       try {
-        const fresh = await fetch(req);
+        const fresh = await fetch(new Request(req, { cache: "no-store" }));
         (await caches.open(CACHE)).put(PAGE, fresh.clone());
         return fresh;
       } catch {

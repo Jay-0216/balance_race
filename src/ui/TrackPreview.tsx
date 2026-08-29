@@ -22,15 +22,16 @@ export default function TrackPreview() {
   return (
     <div className="tp" aria-hidden="true">
       <svg
-        viewBox="0 0 300 220"
-        // "meet" was fitting the whole 220-unit-tall drawing inside a box
-        // that had gone very wide and short (the preview no longer competes
-        // with the menu for height, so its own box widened) - it let over a
-        // third of the width sit empty on both sides rather than grow the
-        // picture into it. "slice" fills the box and crops the spare canvas
-        // above and below instead, which is exactly what ambience is allowed
-        // to lose.
-        preserveAspectRatio="xMidYMid slice"
+        // Redrawn on a wide canvas rather than cropped into one. "slice" (the
+        // previous fix for the letterboxing below) filled the box, but it did
+        // that by cutting off however much of a nearly-square 300x220 drawing
+        // did not fit a ~1.9:1 box - on some phones that took the whole curve
+        // with it, leaving almost nothing recognisable. The viewBox is that
+        // same ~1.9:1 now, drawn to fill it on purpose, so "meet" (which can
+        // only ever add a sliver of empty margin, never remove content) is
+        // both safe and sufficient.
+        viewBox="0 0 360 190"
+        preserveAspectRatio="xMidYMid meet"
       >
         <defs>
           <linearGradient id="tpFade" x1="0" y1="0" x2="1" y2="0">
@@ -45,11 +46,11 @@ export default function TrackPreview() {
         </defs>
 
         <path
-          d="M 26 150 C 90 150 96 74 160 74 S 240 132 300 122"
+          d="M 30 132 C 100 132 108 78 175 78 S 270 118 360 108"
           fill="none" stroke="url(#tpFade)" strokeWidth="46" strokeLinecap="round"
         />
         <path
-          d="M 26 150 C 90 150 96 74 160 74 S 240 132 300 122"
+          d="M 30 132 C 100 132 108 78 175 78 S 270 118 360 108"
           fill="none" stroke="url(#tpDash)" strokeWidth="1.5"
           strokeDasharray="7 11" strokeLinecap="round"
         />
@@ -60,7 +61,7 @@ export default function TrackPreview() {
             // and a CSS transform beats an SVG transform *attribute* - so a
             // single group had its position overwritten by the bob and my
             // piece floated off on its own, away from the grid.
-            <g key={i} transform={`translate(30 ${132 + i * 5.2}) scale(0.62)`}>
+            <g key={i} transform={`translate(34 ${100 + i * 5}) scale(0.62)`}>
               <g className="tp-racer tp-me" style={{ animationDelay: `${i * 0.14}s` }}>
                 <Piece piece={piece} color={paint} />
               </g>
@@ -69,8 +70,8 @@ export default function TrackPreview() {
             <circle
               key={i}
               className="tp-racer"
-              cx={30}
-              cy={132 + i * 5.2}
+              cx={34}
+              cy={100 + i * 5}
               r={4.6}
               fill={r.c}
               stroke="#11171c"
