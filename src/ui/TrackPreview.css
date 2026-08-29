@@ -1,6 +1,8 @@
 .tp {
-  flex: 1;
-  min-height: 0;
+  /* Never squeezed to nothing: it is the filler, so with a long menu there is
+     no space left to give it and it collapsed to a squiggle. */
+  flex: 1 1 auto;
+  min-height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,6 +17,10 @@
 @keyframes tp-bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2.5px); }
+}
+
+@media (max-height: 800px) {
+  .tp { min-height: 62px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

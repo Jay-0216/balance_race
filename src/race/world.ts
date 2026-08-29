@@ -1,3 +1,5 @@
+import type { PieceId } from "./pieces";
+
 /**
  * The race world, in world units. The mockup was authored landscape; the app
  * is a 9:16 phone, so the numbers are re-derived rather than reused: the
@@ -85,6 +87,8 @@ export type RacerView = {
   me: boolean;
   /** authoritative position in cells */
   pos: number;
+  /** which piece to draw; the default car when absent */
+  piece?: PieceId;
 };
 
 export function makeRacers(): RacerView[] {

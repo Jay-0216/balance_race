@@ -23,6 +23,30 @@
 .pick-face:hover { transform: translateY(-2px); }
 .pick-face.on { border-color: var(--gold); }
 
+/* A label, not a button: the file input lives inside it, so the whole tile is
+   the picker without any click-forwarding. */
+.pick-file {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  border: 2px dashed var(--line);
+}
+.pick-file:hover { border-color: var(--ink-3); }
+.pick-file.on { border-style: solid; border-color: var(--gold); }
+.pick-file input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.pick-plus { font-size: 19px; line-height: 1; color: var(--ink-3); }
+
+.pick-bad { font-size: 11.5px; line-height: 1.5; color: var(--a); }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
 .pick-row.hues { gap: 10px; }
 
 .pick-hue {

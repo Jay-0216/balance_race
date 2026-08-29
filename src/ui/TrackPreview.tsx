@@ -1,3 +1,5 @@
+import { equippedPiece } from "../game/garage";
+import Piece from "../race/Racer";
 import "./TrackPreview.css";
 
 const RACERS = [
@@ -9,8 +11,13 @@ const RACERS = [
 /**
  * Title-screen ambience: the game's own track, with everyone still parked at
  * the start line. Not gameplay - it just stops the frame reading as empty.
+ *
+ * The others stay dots. Only mine is the real piece, so a trip to the garage
+ * shows up on the first screen you see rather than only once a race starts.
  */
 export default function TrackPreview() {
+  const piece = equippedPiece();
+
   return (
     <div className="tp" aria-hidden="true">
       <svg viewBox="0 0 300 220" preserveAspectRatio="xMidYMid meet">
@@ -36,19 +43,30 @@ export default function TrackPreview() {
           strokeDasharray="7 11" strokeLinecap="round"
         />
 
-        {RACERS.map((r, i) => (
-          <circle
-            key={i}
-            className={"tp-racer" + (r.me ? " tp-me" : "")}
-            cx={30}
-            cy={132 + i * 5.2}
-            r={r.me ? 5.4 : 4.6}
-            fill={r.c}
-            stroke="#11171c"
-            strokeWidth="1.6"
-            style={{ animationDelay: `${i * 0.14}s` }}
-          />
-        ))}
+        {RACERS.map((r, i) =>
+          r.me ? (
+            <g
+              key={i}
+              className="tp-racer tp-me"
+              transform={`translate(30 ${132 + i * 5.2}) scale(0.62)`}
+              style={{ animationDelay: `${i * 0.14}s` }}
+            >
+              <Piece piece={piece} color={r.c} />
+            </g>
+          ) : (
+            <circle
+              key={i}
+              className="tp-racer"
+              cx={30}
+              cy={132 + i * 5.2}
+              r={4.6}
+              fill={r.c}
+              stroke="#11171c"
+              strokeWidth="1.6"
+              style={{ animationDelay: `${i * 0.14}s` }}
+            />
+          )
+        )}
       </svg>
     </div>
   );

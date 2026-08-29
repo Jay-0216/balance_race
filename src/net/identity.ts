@@ -14,17 +14,25 @@ export type Identity = {
   provider: "local" | "supabase";
   /** a chosen face, or null to keep the one derived from the id */
   look: Look | null;
+  /**
+   * An uploaded picture, already cropped and shrunk to a small data URL.
+   * Wins over `look` when set - it is the most specific thing you chose.
+   */
+  photo: string | null;
 };
 
 /**
  * A picked profile picture.
  *
- * There is no upload and no storage bucket, and there deliberately still is
- * not one: a photo uploaded by a middle-schooler is a moderation problem, a
- * storage bill and a privacy question all at once, for a face that shows at
- * 38px. An emoji and a hue are two small values that need no bucket, cannot
- * carry anything a stranger should not see, and travel to another device as
- * eight bytes of profile row.
+ * An emoji and a hue: two small values that need no storage bucket and travel
+ * to another device as eight bytes of profile row. This is still the default,
+ * and still what a guest gets before they have chosen anything.
+ *
+ * A real photo is possible too (see `photo`), and it is safe here for a
+ * specific reason rather than by luck: `profiles` is readable only by its
+ * owner, so an uploaded picture has no gallery to appear in and no stranger
+ * who can fetch it. The picture is also re-encoded before it is stored, which
+ * drops the EXIF block where a phone records where the shot was taken.
  */
 export type Look = { emoji: string; hue: number };
 
@@ -47,6 +55,7 @@ function read(): Identity | null {
       nickname: parsed.nickname,
       provider: "local",
       look: cleanLook(parsed.look),
+      photo: cleanPhoto(parsed.photo),
     };
   } catch {
     return null;
@@ -69,6 +78,7 @@ export function getIdentity(): Identity {
     nickname: DEFAULT_NICKNAME,
     provider: "local",
     look: null,
+    photo: null,
   };
   write(fresh);
   return fresh;
@@ -94,12 +104,34 @@ function cleanLook(v: unknown): Look | null {
   return { emoji: [...l.emoji][0], hue: ((l.hue % 360) + 360) % 360 };
 }
 
+/**
+ * Anything at all can be in localStorage, and a photo is the one field here
+ * big enough to be worth abusing. Only a data: image URL of a sane length is
+ * ever handed back to a component that will put it in a src.
+ */
+const MAX_PHOTO = 260_000;
+
+function cleanPhoto(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  if (!/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(v)) return null;
+  return v.length <= MAX_PHOTO ? v : null;
+}
+
 /** Picking a face, or null to go back to the one derived from the id. */
 export function setLook(look: Look | null): Identity {
   const next: Identity = { ...getIdentity(), look: cleanLook(look) };
   write(next);
   return next;
 }
+
+/** Setting a photo, or null to fall back to the emoji face. */
+export function setPhoto(photo: string | null): Identity {
+  const next: Identity = { ...getIdentity(), photo: cleanPhoto(photo) };
+  write(next);
+  return next;
+}
+
+export { cleanPhoto };
 
 /** True once a real account backs this identity. Nothing branches on it yet. */
 export function isSignedIn(identity: Identity = getIdentity()) {

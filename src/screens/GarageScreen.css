@@ -1,0 +1,58 @@
+.gr-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.gr-card {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  text-align: left;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+  transition: transform 0.16s var(--ease-out), border-color 0.16s ease;
+}
+.gr-card:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ink-3); }
+.gr-card.on { border-color: var(--gold); background: rgba(240, 180, 41, 0.09); }
+
+/* Locked pieces stay visible - you cannot want one you have never seen - but
+   they are drained of colour so there is no mistaking one for owned. */
+.gr-card.locked { cursor: default; }
+.gr-card.locked .gr-art { opacity: 0.42; filter: grayscale(1); }
+.gr-card.locked .gr-name { color: var(--ink-3); }
+
+.gr-art { width: 100%; height: 56px; margin-bottom: 2px; overflow: visible; }
+
+.gr-name { font-size: 13.5px; font-weight: 700; }
+.gr-blurb { font-size: 11px; line-height: 1.45; color: var(--ink-3); }
+
+.gr-on {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #16202a;
+  background: var(--gold);
+}
+
+.gr-lock { position: absolute; top: 8px; right: 9px; font-size: 12px; opacity: 0.75; }
+
+.gr-stats {
+  margin: 14px 0 0;
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  text-align: center;
+}

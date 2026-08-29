@@ -1,0 +1,153 @@
+.quiz { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+.quiz-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.quiz-count {
+  flex: 1;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.quiz-score {
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.quiz-pips { flex: none; display: flex; gap: 3px; padding: 8px 12px 0; }
+.quiz-pip { flex: 1; height: 3px; border-radius: 99px; background: var(--screen-3); }
+.quiz-pip.past { background: var(--line); }
+.quiz-pip.now { background: var(--gold); }
+
+.quiz-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px 16px;
+}
+
+/* Centred with `margin: auto 0` rather than justify-content: a centred flex
+   child that outgrows a scrolling parent has its top clipped and cannot be
+   scrolled back to; auto margins collapse instead. */
+.quiz-inner {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-cat {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+}
+.quiz-q {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+
+.quiz-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 15px 14px;
+  text-align: left;
+  border-radius: 13px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+  transition: transform 0.14s var(--ease-out), border-color 0.16s ease,
+    background 0.16s ease, opacity 0.16s ease;
+}
+.quiz-opt:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ink-3); }
+.quiz-opt:disabled { cursor: default; }
+
+.quiz-opt.right { border-color: #7fd6a6; background: rgba(127, 214, 166, 0.12); }
+.quiz-opt.wrong { border-color: var(--a); background: rgba(244, 104, 91, 0.1); }
+.quiz-opt.dim { opacity: 0.45; }
+
+.quiz-emoji { font-size: 21px; line-height: 1; flex: none; }
+.quiz-text { font-size: 15px; font-weight: 600; line-height: 1.35; }
+
+.quiz-mark {
+  margin-left: auto;
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #16202a;
+  background: #7fd6a6;
+}
+.quiz-mark.bad { background: var(--a); color: #2a0f0c; }
+
+/* Reserved from the start, so answering never shoves the buttons up the
+   screen under the thumb that is still on them. */
+.quiz-note {
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: var(--screen-2);
+  border: 1.5px solid var(--line);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.quiz-note.show { opacity: 1; }
+.quiz-note b { font-size: 14px; font-weight: 800; }
+.quiz-note b.ok { color: #7fd6a6; }
+.quiz-note b.bad { color: var(--a); }
+.quiz-note span { font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+
+.quiz-best {
+  flex: none;
+  margin: 0;
+  padding: 10px 16px calc(12px + var(--safe-b));
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+/* ---- the record screen -------------------------------------------------- */
+
+.quiz-done {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.quiz-card {
+  width: 100%;
+  max-width: 340px;
+  padding: 22px 20px 20px;
+  border-radius: 16px;
+  background: var(--screen-2);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+.quiz-final { margin: 10px 0 4px; font-size: 22px; font-weight: 700; color: var(--ink-3); }
+.quiz-final b { font-size: 52px; font-weight: 800; color: var(--gold); letter-spacing: -0.03em; }
+.quiz-sub { margin: 0 0 14px; font-size: 13px; color: var(--ink-3); }

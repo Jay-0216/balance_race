@@ -9,9 +9,11 @@ import "./Avatar.css";
  * device and with no network - the only kind of avatar that can exist before
  * you have signed in.
  *
- * With a `look` it is chosen: an emoji and a hue the player picked. Still two
- * small values rather than an upload, so it costs no bucket and travels with
- * the profile row.
+ * With a `look` it is chosen: an emoji and a hue the player picked - two small
+ * values that cost no bucket and travel with the profile row.
+ *
+ * With a `photo` it is a picture, already cropped and shrunk to a data URL by
+ * the time it gets here.
  */
 
 /** FNV-1a, small and stable. Same string must always give the same face. */
@@ -28,14 +30,29 @@ export default function Avatar({
   id,
   nickname,
   look,
+  photo,
   size = 36,
 }: {
   id: string;
   nickname: string;
   /** a chosen face; omit for the one derived from the id */
   look?: Look | null;
+  /** an uploaded picture as a data URL; wins over `look` */
+  photo?: string | null;
   size?: number;
 }) {
+  // Most specific first: a picture you chose, then a face you chose, then the
+  // one your id was going to give you anyway.
+  if (photo) {
+    return (
+      <span
+        className="avatar photo"
+        style={{ width: size, height: size, backgroundImage: `url(${photo})` }}
+        aria-hidden="true"
+      />
+    );
+  }
+
   const h = hash(id);
   const hue = look ? look.hue : h % 360;
   // A second hue a third of the wheel away, so the gradient reads as two

@@ -4,7 +4,7 @@ import { Particles } from "./Particles";
 import Backdrop, { PARALLAX_FACTORS, THEMES, mixColors, themeWeights } from "./Backdrop";
 import Markers, { TICKS } from "./Markers";
 import type { RaceEffect } from "./effects";
-import Car from "./Racer";
+import Piece from "./Racer";
 import Track from "./Track";
 import {
   CAR, CELLS, CRUISE, LANE_GAP, LEAD_CELLS, TRACK_CELLS, WORLD,
@@ -457,7 +457,7 @@ export default function RaceView({
           <g key={r.id} ref={setNode(i, "root")}>
             <g ref={setNode(i, "spin")}>
               <g ref={setNode(i, "squash")}>
-                <Car color={r.color} />
+                <Piece piece={r.piece} color={r.color} />
               </g>
             </g>
             {/* Everyone is named, not just me. Knowing that the car half a

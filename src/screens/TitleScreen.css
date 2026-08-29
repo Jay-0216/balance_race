@@ -4,8 +4,22 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 48px 24px 32px;
-  gap: 24px;
+  padding: 40px 24px 28px;
+  gap: 20px;
+  /* The menu grew past what a short phone holds. Scrolling is the honest
+     answer: the alternative is a preview crushed to a sliver and a last row
+     pinned against the bottom edge. */
+  overflow-y: auto;
+}
+
+/* Short screens give the ambience up first, not the buttons. */
+@media (max-height: 800px) {
+  .title { padding: 26px 20px 22px; gap: 13px; }
+  .title h1 { margin-bottom: 8px; font-size: clamp(32px, 9.5vw, 44px); }
+  .title-eyebrow { margin-bottom: 9px; }
+  .title-menu { gap: 8px; }
+  .title-btn { padding: 13px 17px; }
+  .title-btn-label { font-size: 16px; }
 }
 
 .title-mark { flex: none; }

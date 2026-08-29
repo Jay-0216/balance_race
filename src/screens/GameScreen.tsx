@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGame } from "../game/useGame";
-import { CELLS, KIND_LABEL, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
+import { CELLS, KIND_LABEL, placements, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
+import { equippedPiece, PIECES, recordBoost, recordRace } from "../game/garage";
+import type { PieceId } from "../race/pieces";
 import RaceView from "../race/RaceView";
 import type { RaceEffect } from "../race/effects";
 import type { RacerView } from "../race/world";
@@ -21,6 +23,10 @@ import "./GameScreen.css";
 export default function GameScreen({ onBack }: { onBack: () => void }) {
   const g = useGame();
   const [fps, setFps] = useState(0);
+  // read once: swapping pieces mid-race is not a thing, and re-reading every
+  // render would put a localStorage hit in the frame loop's way
+  const [myPiece] = useState<PieceId>(equippedPiece);
+  const [unlocked, setUnlocked] = useState<string[]>([]);
   const [muted, setMutedState] = useState(isMuted);
   const onFps = useCallback((v: number) => setFps(v), []);
 
@@ -73,12 +79,57 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       }));
   }, [g.outcome, g.phase, g.outcomeSeq]);
 
+  // Only I get my piece. Eight assorted shapes would be a zoo and my own
+  // would stop standing out - which is the one thing the piece is for.
   const racers: RacerView[] = useMemo(
     () => g.players.map((p) => ({
       id: p.id, name: p.name, color: p.color, me: !p.isBot, pos: p.pos,
+      piece: p.isBot ? undefined : myPiece,
     })),
-    [g.players]
+    [g.players, myPiece]
   );
+
+  // Spending a booster counts the moment it fires: a game you walk out of
+  // still contained the round where you spent one.
+  const boostSeen = useRef(0);
+  useEffect(() => {
+    if (!g.outcome || g.outcomeSeq === boostSeen.current) return;
+    boostSeen.current = g.outcomeSeq;
+    if (g.outcome.moves.some((m) => m.playerId === 0 && m.boosterFired)) {
+      // recorded here, not inside the updater below: a state updater must be
+      // pure, and React is entitled to call it more than once. Under
+      // StrictMode it does exactly that, and the garage counted two boosters
+      // for one.
+      const won = names(recordBoost());
+      if (won.length) setUnlocked((u) => [...u, ...won]);
+    }
+  }, [g.outcome, g.outcomeSeq]);
+
+  const tallied = useRef(false);
+  useEffect(() => {
+    if (g.phase !== "done" || tallied.current) return;
+    tallied.current = true;
+    const board = placements(g.players);
+    const mine = board.find((r) => !r.player.isBot);
+    if (!mine) return;
+    const back = Math.min(...g.players.map((p) => p.pos));
+    // likewise outside the updater - this one writes the games-played count,
+    // and StrictMode was recording every finished race twice
+    const earned = names(recordRace({
+      won: mine.place === 1,
+      last: mine.player.pos === back,
+      finished: mine.player.pos >= CELLS,
+    }));
+    if (earned.length) setUnlocked((u) => [...u, ...earned]);
+  }, [g.phase, g.players]);
+
+  // a fresh game is a fresh tally
+  useEffect(() => {
+    if (g.phase === "choosing" && g.round === 1) {
+      tallied.current = false;
+      setUnlocked([]);
+    }
+  }, [g.phase, g.round]);
 
   const kindLabel = KIND_LABEL[g.kind];
   const revealing = g.phase === "reveal" || g.phase === "moving";
@@ -119,7 +170,9 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
         {kindLabel && (
           <div key={g.round} className={"game-kind " + g.kind}>{kindLabel}</div>
         )}
-        <Score pos={g.players[0].pos} cells={CELLS} />
+        {/* and gone entirely once the game is over: the result screen states
+            the same number, in more detail, right next to it */}
+        {g.phase !== "done" && <Score pos={g.players[0].pos} cells={CELLS} />}
         <Stamp kind={g.phase === "reveal" ? stamp : null} at={g.round} />
         <RoundAlert kind={g.kind} round={g.round} />
       </div>
@@ -171,10 +224,20 @@ export default function GameScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {g.phase === "done" && (
-        <ResultScreen players={g.players} onAgain={g.restart} onBack={onBack} />
+        <ResultScreen
+          players={g.players}
+          unlocked={unlocked}
+          onAgain={g.restart}
+          onBack={onBack}
+        />
       )}
     </div>
   );
+}
+
+/** piece ids -> the names a player would recognise */
+function names(ids: PieceId[]) {
+  return ids.map((id) => PIECES.find((p) => p.id === id)?.name ?? id);
 }
 
 function RoundNote({ g }: { g: ReturnType<typeof useGame> }) {

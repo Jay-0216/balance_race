@@ -4,10 +4,13 @@ import "./ResultScreen.css";
 
 export default function ResultScreen({
   players,
+  unlocked = [],
   onAgain,
   onBack,
 }: {
   players: Player[];
+  /** names of pieces this game earned, if any */
+  unlocked?: string[];
   onAgain: () => void;
   onBack: () => void;
 }) {
@@ -78,6 +81,10 @@ export default function ResultScreen({
             </li>
           ))}
         </ol>
+
+        {unlocked.length > 0 && (
+          <p className="unlock-note">🔓 차고에 새 말이 들어왔다 — {unlocked.join(", ")}</p>
+        )}
 
         <div className="result-actions">
           <button className="result-again" onClick={onAgain}>한 판 더</button>

@@ -8,10 +8,12 @@ import CardSubmitScreen from "./screens/CardSubmitScreen";
 import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
 import LobbyScreen from "./screens/LobbyScreen";
+import GarageScreen from "./screens/GarageScreen";
+import QuizScreen from "./screens/QuizScreen";
 import RaceScreen from "./screens/RaceScreen";
 
 export type Screen =
-  | "title" | "solo" | "proto" | "host" | "join"
+  | "title" | "solo" | "quiz" | "garage" | "proto" | "host" | "join"
   | "how" | "cards" | "login";
 
 const SEEN = "ddr.seen-rules";
@@ -59,6 +61,10 @@ export default function App() {
         <TitleScreen onPick={setScreen} />
       ) : screen === "solo" ? (
         <GameScreen onBack={() => setScreen("title")} />
+      ) : screen === "quiz" ? (
+        <QuizScreen onBack={() => setScreen("title")} />
+      ) : screen === "garage" ? (
+        <GarageScreen onBack={() => setScreen("title")} />
       ) : screen === "cards" ? (
         <CardSubmitScreen onBack={() => setScreen("title")} />
       ) : screen === "login" ? (

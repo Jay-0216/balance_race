@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import {
-  currentSession, loadAccount, onAuthChange, saveLook, saveNickname, sendMagicLink,
-  signOut, type Account,
+  currentSession, loadAccount, onAuthChange, saveLook, saveNickname, savePhoto,
+  sendMagicLink, signOut, type Account,
 } from "../net/auth";
 import FeedbackSection from "../ui/FeedbackSection";
-import { getIdentity, setLook, setNickname, type Look } from "../net/identity";
+import { getIdentity, setLook, setNickname, setPhoto, type Look } from "../net/identity";
 import { isOnlineAvailable } from "../net/supabase";
 import Avatar from "../ui/Avatar";
 import AvatarPicker from "../ui/AvatarPicker";
@@ -21,6 +21,7 @@ import "../ui/Form.css";
 export default function LoginScreen({ onBack }: { onBack: () => void }) {
   const [nick, setNick] = useState(() => getIdentity().nickname);
   const [look, setLookState] = useState<Look | null>(() => getIdentity().look);
+  const [photo, setPhotoState] = useState<string | null>(() => getIdentity().photo);
   const myId = getIdentity().id;
   const [email, setEmail] = useState("");
   const [account, setAccount] = useState<Account | null>(null);
@@ -46,13 +47,17 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
       // point of signing in. Only when the account has no face yet does the
       // guest's choice get pushed up, so picking one before logging in is
       // not thrown away by logging in.
-      if (acc.look) {
+      if (acc.look || acc.photo) {
         setLookState(acc.look);
+        setPhotoState(acc.photo);
         setLook(acc.look);
+        setPhoto(acc.photo);
       } else {
-        const local = getIdentity().look;
-        setLookState(local);
-        if (local) void saveLook(acc.userId, local);
+        const me = getIdentity();
+        setLookState(me.look);
+        setPhotoState(me.photo);
+        if (me.look) void saveLook(acc.userId, me.look);
+        if (me.photo) void savePhoto(acc.userId, me.photo);
       }
     };
     currentSession().then(adopt);
@@ -67,11 +72,18 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
     setMsg({ ok: true, text: `이제 "${saved.nickname}"으로 달린다.` });
   };
 
+  // Saved on the spot: a face has no "save" button to forget to press.
   const applyLook = (next: Look | null) => {
     setLookState(next);
-    setLook(next);                    // saved on the spot: a face has no
-    if (account) void saveLook(account.userId, next);   // "save" button to
-  };                                                    // forget to press
+    setLook(next);
+    if (account) void saveLook(account.userId, next);
+  };
+
+  const applyPhoto = (next: string | null) => {
+    const saved = setPhoto(next);
+    setPhotoState(saved.photo);
+    if (account) void savePhoto(account.userId, saved.photo);
+  };
 
   const link = async () => {
     setBusy(true);
@@ -108,7 +120,7 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
         {/* The face reacts to the name as you type it, so it is obvious that
             the two are the same thing. */}
         <div className="lg-me">
-          <Avatar id={myId} nickname={nick || "나"} look={look} size={56} />
+          <Avatar id={myId} nickname={nick || "나"} look={look} photo={photo} size={56} />
           <div>
             <b>{nick.trim() || "나"}</b>
             <span>{account ? (account.email ?? "로그인됨") : "게스트"}</span>
@@ -117,7 +129,11 @@ export default function LoginScreen({ onBack }: { onBack: () => void }) {
 
         <div className="field">
           <label>프로필 사진</label>
-          <AvatarPicker id={myId} nickname={nick || "나"} look={look} onChange={applyLook} />
+          <AvatarPicker
+            id={myId} nickname={nick || "나"}
+            look={look} photo={photo}
+            onChange={applyLook} onPhoto={applyPhoto}
+          />
         </div>
 
         <div className="field">

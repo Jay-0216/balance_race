@@ -1,6 +1,14 @@
 .result {
   position: absolute;
   inset: 0;
+  /* Above everything on the stage.
+     The overlay had no z-index at all, so it sat at level 0 while the score
+     chip inside the stage sat at 4 - and a z-index of 4 in a parent with
+     `z-index: auto` competes in the same stacking context. The score printed
+     straight through the translucent overlay, on top of the final standings.
+     Naming a level here fixes it for every HUD piece, including ones that do
+     not exist yet. */
+  z-index: 20;
   display: grid;
   place-items: center;
   padding: 20px;
@@ -154,4 +162,17 @@
 
 @media (prefers-reduced-motion: reduce) {
   .result-stamp { animation: none; opacity: 1; transform: rotate(-7deg); }
+}
+
+/* Shared with the quiz record screen, which imports this file: a piece earned
+   is a piece earned, whichever screen you were on when it happened. */
+.unlock-note {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: rgba(240, 180, 41, 0.12);
+  border: 1px solid rgba(240, 180, 41, 0.45);
 }

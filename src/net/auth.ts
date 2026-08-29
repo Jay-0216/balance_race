@@ -1,5 +1,5 @@
 import type { Session } from "@supabase/supabase-js";
-import type { Look } from "./identity";
+import { cleanPhoto, type Look } from "./identity";
 import { isOnlineAvailable, supabase } from "./supabase";
 
 /**
@@ -23,6 +23,8 @@ export type Account = {
   nickname: string;
   /** the chosen face, or null for the one derived from the id */
   look: Look | null;
+  /** an uploaded picture as a small data URL, readable only by this account */
+  photo: string | null;
 };
 
 /** Where the magic link comes back to. Must match Supabase's allow-list. */
@@ -44,7 +46,7 @@ export async function loadAccount(session: Session): Promise<Account> {
 
   const { data } = await sb
     .from("profiles")
-    .select("nickname, avatar_emoji, avatar_hue")
+    .select("nickname, avatar_emoji, avatar_hue, avatar_photo")
     .eq("id", session.user.id)
     .maybeSingle();
 
@@ -59,6 +61,9 @@ export async function loadAccount(session: Session): Promise<Account> {
         data.avatar_emoji && data.avatar_hue !== null
           ? { emoji: data.avatar_emoji, hue: data.avatar_hue }
           : null,
+      // whatever is in the row has to clear the same shape check as anything
+      // out of localStorage before it becomes an <img> src
+      photo: cleanPhoto(data.avatar_photo),
     };
   }
 
@@ -68,7 +73,13 @@ export async function loadAccount(session: Session): Promise<Account> {
     email: session.user.email ?? null,
     nickname: fallback,
     look: null,
+    photo: null,
   };
+}
+
+export async function savePhoto(userId: string, photo: string | null) {
+  if (!isOnlineAvailable()) return;
+  await supabase().from("profiles").update({ avatar_photo: photo }).eq("id", userId);
 }
 
 /** Clearing it (null) is a real choice, so both columns go back to null. */
