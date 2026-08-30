@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "필기왕인데 이해는 못함", "emoji": "📝"}, "b": {"text": "이해왕인데 필기 못함", "emoji": "🧠"}, "popularBias": 0.42},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "베프가 전학감", "emoji": "🚌"}, "b": {"text": "새 친구가 안 생김", "emoji": "🚪"}, "popularBias": 0.58},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "떡볶이 맵기 조절 불가", "emoji": "🌶️"}, "b": {"text": "떡볶이 양 조절 불가", "emoji": "🍢"}, "popularBias": 0.5},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 시험지 몰래 보여주기", "emoji": "👀"}, "b": {"text": "거절하고 서먹해지기", "emoji": "🥶"}, "popularBias": 0.35},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "꿈은 이뤘는데 외로움", "emoji": "🏆"}, "b": {"text": "꿈은 못 이뤘는데 행복함", "emoji": "😊"}, "popularBias": 0.4},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 불꽃놀이", "emoji": "🎆"}, "b": {"text": "하품할 때마다 무지개", "emoji": "🌈"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물 말 알아듣기", "emoji": "🐾"}, "b": {"text": "식물 말 알아듣기", "emoji": "🌿"}, "popularBias": 0.65},
+  {"id": "money_13", "category": "돈", "a": {"text": "용돈 대신 갖고 싶은 거 다 사주기", "emoji": "🛍️"}, "b": {"text": "용돈 두 배로 받기", "emoji": "💵"}, "popularBias": 0.4},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "챌린지 영상 조회수 1위", "emoji": "📈"}, "b": {"text": "평생 광고 하나도 안 봄", "emoji": "🚫"}, "popularBias": 0.4},
+  {"id": "family_01", "category": "가족", "a": {"text": "매년 가족여행", "emoji": "✈️"}, "b": {"text": "용돈 두 배 인상", "emoji": "💰"}, "popularBias": 0.45}
 ]

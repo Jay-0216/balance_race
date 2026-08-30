@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "물이 끓는 온도는 고도가 높아지면?", "a": {"text": "낮아진다", "emoji": "🏔️"}, "b": {"text": "높아진다", "emoji": "🌊"}, "answer": "a", "note": "기압이 낮아져 끓는점이 내려간다. 그래서 높은 산에서는 밥이 설익기 쉽다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 몸에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🧑"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 몸 전체를 덮는 가장 크고 무거운 장기다."},
+  {"id": "his_13", "category": "역사", "question": "조선시대 신분 중 가장 낮은 계급은?", "a": {"text": "천민", "emoji": "⛓️"}, "b": {"text": "상민", "emoji": "🌾"}, "answer": "a", "note": "천민은 노비 등 가장 낮은 신분이었고, 상민은 그 위의 평민 계층이다."},
+  {"id": "his_14", "category": "역사", "question": "고려가 세워진 해는?", "a": {"text": "918년", "emoji": "📜"}, "b": {"text": "935년", "emoji": "⚔️"}, "answer": "a", "note": "918년 왕건이 고려를 세웠고, 935년은 신라가 항복한 해다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🌊"}, "b": {"text": "아마존강", "emoji": "🐊"}, "answer": "a", "note": "약 6,650km로 가장 길다고 알려져 있다(측정 기준에 따라 아마존강이라는 주장도 있다)."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 나라는?", "a": {"text": "프랑스", "emoji": "🇫🇷"}, "b": {"text": "영국", "emoji": "🇬🇧"}, "answer": "a", "note": "1889년 파리 만국박람회 때 세워졌다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "😊"}, "b": {"text": "되요", "emoji": "🙂"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "안 돼", "emoji": "🚫"}, "b": {"text": "안되", "emoji": "❌"}, "answer": "a", "note": "'되어'로 풀어써도 말이 되는 자리라 '돼'로 줄여 쓴다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 추운 바다는?", "a": {"text": "썰렁해", "emoji": "🥶"}, "b": {"text": "동해", "emoji": "🌊"}, "answer": "a", "note": "썰렁하니까 썰렁해."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 제일 잘 웃는 나라는?", "a": {"text": "하와이", "emoji": "🌺"}, "b": {"text": "타이완", "emoji": "🇹🇼"}, "answer": "a", "note": "하하하 웃는다고 하와이."}
 ]
