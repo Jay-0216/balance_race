@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GameLike } from "../game/useGame";
 import { CELLS, KIND_LABEL, placements, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
-import { equippedPiece, PIECES, recordBoost, recordRace } from "../game/garage";
+import { equippedPiece, PIECES, recordBoost, recordRace, recordRoundSide } from "../game/garage";
 import type { PieceId } from "../race/pieces";
 import RaceView from "../race/RaceView";
 import type { RaceEffect } from "../race/effects";
@@ -108,7 +108,11 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
   useEffect(() => {
     if (!g.outcome || g.outcomeSeq === boostSeen.current) return;
     boostSeen.current = g.outcomeSeq;
-    if (g.outcome.moves.some((m) => m.playerId === 0 && m.boosterFired)) {
+    // g.meId, not a bare 0: online, "me" is whichever seat I hold, and a
+    // fixed 0 here counted seat 0's boosters as mine in every room where I
+    // was not sitting in it - solo never surfaced this, since there meId is
+    // always 0.
+    if (g.outcome.moves.some((m) => m.playerId === g.meId && m.boosterFired)) {
       // recorded here, not inside the updater below: a state updater must be
       // pure, and React is entitled to call it more than once. Under
       // StrictMode it does exactly that, and the garage counted two boosters
@@ -117,6 +121,19 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
       if (won.length) setUnlocked((u) => [...u, ...won]);
     }
   }, [g.outcome, g.outcomeSeq, g.meId]);
+
+  // How often I side with the crowd, tallied one round at a time so a race
+  // left unfinished still keeps the rounds actually read. sideStory already
+  // knows about reverse rounds - "majority" means picked with the crowd, not
+  // "picked the side that moved" - which is exactly the distinction the
+  // reveal stamp needed too, so the same function decides both.
+  const sideSeen = useRef(0);
+  useEffect(() => {
+    if (!g.outcome || g.outcomeSeq === sideSeen.current) return;
+    sideSeen.current = g.outcomeSeq;
+    const side = sideStory(g.outcome, g.myChoice);
+    recordRoundSide(side === "tie" ? null : side.startsWith("majority"));
+  }, [g.outcome, g.outcomeSeq, g.myChoice]);
 
   const tallied = useRef(false);
   useEffect(() => {

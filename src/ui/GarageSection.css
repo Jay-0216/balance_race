@@ -96,3 +96,20 @@
   line-height: 1.55;
   color: var(--ink-3);
 }
+
+/* The one identity stat: which side you actually read the room onto. Set
+   apart from the plain stat line below it rather than folded into the same
+   sentence, since this is the one line meant to be read as "this is you",
+   not as a tally. */
+.gr-lean {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 2px 0 0;
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: rgba(240, 180, 41, 0.08);
+  border: 1px solid rgba(240, 180, 41, 0.3);
+}
+.gr-lean b { font-size: 14px; font-weight: 800; color: var(--gold); }
+.gr-lean span { font-size: 11px; color: var(--ink-3); }

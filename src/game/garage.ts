@@ -33,6 +33,21 @@ export type Stats = {
   quizBest: number;
   /** a full-marks quiz run */
   quizPerfect: boolean;
+  /**
+   * How often I side with the crowd - the thing this whole game is scoring,
+   * kept as a running total rather than a percentage so two saves of it can
+   * still be merged by addition (a percentage cannot be averaged correctly
+   * without also knowing the two counts it came from, and storing only the
+   * result would throw that away).
+   *
+   * Counted from sideStory(), which already knows whether the round was
+   * reversed - so "majority" here means picked with the crowd, not "picked
+   * the side that moved forward". A tie is nobody reading the room
+   * correctly, which is not evidence either way, so it is not counted.
+   */
+  majorityRounds: number;
+  /** rounds counted toward majorityRounds - i.e. not a tie */
+  readRounds: number;
 };
 
 export type GarageState = {
@@ -81,6 +96,7 @@ const KEY = "ddr.garage";
 const EMPTY: Stats = {
   games: 0, wins: 0, lasts: 0, finishes: 0, boosts: 0,
   quizPlays: 0, quizBest: 0, quizPerfect: false,
+  majorityRounds: 0, readRounds: 0,
 };
 
 const FRESH: GarageState = {
@@ -305,6 +321,29 @@ export function recordRace(r: {
   };
   write(next);
   return { bolts, unlocked: newlyOwned(state, next) };
+}
+
+/**
+ * Counted per round, not per race - a game you quit at round 4 still keeps
+ * the 4 rounds you actually read. Takes a plain boolean rather than the
+ * SideStory union so this module does not have to import game/rules just to
+ * name a type; the caller (which already computed sideStory for the stamp)
+ * decides what "on the majority" means.
+ *
+ * No 볼트 here on purpose - this is a stat about how you played, not a prize
+ * for it, so there is nothing here worth gaming.
+ */
+export function recordRoundSide(onMajority: boolean | null): void {
+  if (onMajority === null) return;        // a tie: nobody read the room either way
+  const state = read();
+  write({
+    ...state,
+    stats: {
+      ...state.stats,
+      readRounds: state.stats.readRounds + 1,
+      majorityRounds: state.stats.majorityRounds + (onMajority ? 1 : 0),
+    },
+  });
 }
 
 /** Boosters are counted as they fire, not at the end - a game you quit still

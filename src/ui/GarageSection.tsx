@@ -37,6 +37,7 @@ export default function GarageSection({
   const locked = PIECES.filter((p) => !isOwned(p.id, garage));
   const paints = PAINTS.filter((p) => ownsPaint(p.id, garage));
   const hex = paintHex(garage.paint);
+  const lean = leanStat(garage.stats);
 
   const pick = (id: PieceId) => setGarage(equipPiece(id));
 
@@ -104,6 +105,17 @@ export default function GarageSection({
 
       <p className="gr-sync">{synced}</p>
 
+      {/* The one line the whole game is actually about: not "wins" but "did
+          you read the room". Held back until there is enough of a sample to
+          say something true - one round decided is 0% or 100%, and neither
+          number means anything yet. */}
+      {lean && (
+        <p className="gr-lean">
+          <b>{lean.majority ? "다수파" : "소수파"} {lean.pct}%</b>
+          <span>{lean.rounds}라운드 중 {lean.majority ? "다수" : "소수"}를 골랐다</span>
+        </p>
+      )}
+
       <p className="gr-stats">
         {garage.stats.games}판 · {garage.stats.wins}승
         {garage.stats.quizPlays > 0 && ` · 퀴즈 최고 ${garage.stats.quizBest}개`}
@@ -111,4 +123,13 @@ export default function GarageSection({
       </p>
     </section>
   );
+}
+
+/** null until there have been enough non-tie rounds for a percentage to mean
+ *  anything - a single round decided is 0% or 100%, neither of them real. */
+function leanStat(stats: { readRounds: number; majorityRounds: number }) {
+  if (stats.readRounds < 8) return null;
+  const majorityPct = Math.round((stats.majorityRounds / stats.readRounds) * 100);
+  const majority = majorityPct >= 50;
+  return { majority, pct: majority ? majorityPct : 100 - majorityPct, rounds: stats.readRounds };
 }
