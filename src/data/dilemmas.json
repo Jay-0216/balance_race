@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 똑같은 시간표", "emoji": "📋"}, "b": {"text": "매일 랜덤 시간표", "emoji": "🎲"}, "popularBias": 0.45},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "쉬는 시간 없이 일찍 하교", "emoji": "🏃"}, "b": {"text": "쉬는 시간 늘리고 늦게 하교", "emoji": "🐢"}, "popularBias": 0.5},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친한 친구랑 다른 반", "emoji": "🚪"}, "b": {"text": "안 친한 애랑 같은 반", "emoji": "🚻"}, "popularBias": 0.4},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "매일 급식 두 그릇", "emoji": "🍱"}, "b": {"text": "매일 매점 무제한", "emoji": "🏪"}, "popularBias": 0.55},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "떡볶이 맵기 10단계", "emoji": "🌶️"}, "b": {"text": "떡볶이 평생 못 먹는 몸", "emoji": "🚫"}, "popularBias": 0.3},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 시험지 답 알려주기", "emoji": "📝"}, "b": {"text": "모르는 척 넘어가기", "emoji": "🙊"}, "popularBias": 0.35},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "AI가 대신 일하는 세상에서 놀기", "emoji": "🤖"}, "b": {"text": "사람만 할 수 있는 일 찾기", "emoji": "🧑‍🎨"}, "popularBias": 0.42},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 말하기", "emoji": "🐕"}, "b": {"text": "식물과 말하기", "emoji": "🌳"}, "popularBias": 0.63},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "구독자 100만 유튜버 되기", "emoji": "📹"}, "b": {"text": "친한 친구 100명 사귀기", "emoji": "🧑‍🤝‍🧑"}, "popularBias": 0.3},
+  {"id": "money_13", "category": "돈", "a": {"text": "매일 만원씩 10년간", "emoji": "🪙"}, "b": {"text": "지금 당장 천만원", "emoji": "💵"}, "popularBias": 0.48}
 ]

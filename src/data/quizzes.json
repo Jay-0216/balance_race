@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_18", "category": "과학", "question": "인체에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🖐️"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 성인 기준 약 2㎡, 체중의 약 16%를 차지하는 가장 큰 장기다."},
+  {"id": "sci_19", "category": "과학", "question": "물이 끓는 온도는 고도가 높아지면?", "a": {"text": "낮아진다", "emoji": "⛰️"}, "b": {"text": "높아진다", "emoji": "🌋"}, "answer": "a", "note": "기압이 낮아지기 때문에 높은 산에서는 100℃보다 낮은 온도에서 끓는다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "이성계", "emoji": "🗡️"}, "answer": "a", "note": "왕건이 918년 고려를 세웠다. 이성계는 훗날 조선을 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "대한민국 정부가 수립된 해는?", "a": {"text": "1948년", "emoji": "🇰🇷"}, "b": {"text": "1950년", "emoji": "💥"}, "answer": "a", "note": "1948년 8월 15일 대한민국 정부가 수립되었다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년 인도가 중국을 넘어 세계 1위 인구 대국이 되었다."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 도시는?", "a": {"text": "파리", "emoji": "🗼"}, "b": {"text": "런던", "emoji": "🎡"}, "answer": "a", "note": "에펠탑은 프랑스 파리에 있다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "안 돼", "emoji": "✅"}, "b": {"text": "안 되", "emoji": "❌"}, "answer": "a", "note": "문장을 끝맺을 때는 '되' 대신 '돼'를 쓴다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 억울한 사람은?", "a": {"text": "홍길동", "emoji": "🥷"}, "b": {"text": "심청이", "emoji": "🌊"}, "answer": "a", "note": "아버지를 아버지라 부르지 못했기 때문이다."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 추운 바다는?", "a": {"text": "썰렁해", "emoji": "🥶"}, "b": {"text": "동해", "emoji": "🌊"}, "answer": "a", "note": "썰렁하다는 표현과 바다를 합친 말장난이다."}
 ]
