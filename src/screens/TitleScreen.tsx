@@ -12,7 +12,7 @@ const MENU: { key: Screen; label: string; hint: string }[] = [
   { key: "live", label: "라이브 만들기", hint: "코드로 초대 · 인원 무제한" },
   { key: "room", label: "같이 레이스", hint: "친구 최대 8명 · 빈자리는 봇" },
   { key: "join", label: "참가하기", hint: "받은 코드로 들어가기" },
-  { key: "cards", label: "카드 만들기", hint: "밸런스 게임을 직접 낸다" },
+  { key: "cards", label: "카드 만들기", hint: "직접 내거나, 남이 낸 카드에 투표한다" },
   { key: "proto", label: "레이스 미리보기", hint: "트랙만 따로 보기" },
 ];
 

@@ -3,6 +3,7 @@ import { getIdentity } from "../net/identity";
 import { submitCard } from "../net/submissions";
 import { isOnlineAvailable } from "../net/supabase";
 import Offline from "../ui/Offline";
+import CardVoteList from "./CardVoteList";
 import "../ui/Form.css";
 import "./CardSubmitScreen.css";
 
@@ -17,6 +18,7 @@ import "./CardSubmitScreen.css";
 const CATEGORIES = ["학교", "친구", "가족", "음식", "미래", "돈", "자유"];
 
 export default function CardSubmitScreen({ onBack }: { onBack: () => void }) {
+  const [tab, setTab] = useState<"write" | "vote">("write");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [aEmoji, setAEmoji] = useState("🅰️");
   const [aText, setAText] = useState("");
@@ -60,7 +62,16 @@ export default function CardSubmitScreen({ onBack }: { onBack: () => void }) {
         </div>
       </header>
 
-      {!online ? (
+      <div className="seg" role="tablist" aria-label="카드">
+        <button aria-pressed={tab === "write"} onClick={() => setTab("write")}>카드 내기</button>
+        <button aria-pressed={tab === "vote"} onClick={() => setTab("vote")}>투표하기</button>
+      </div>
+
+      {tab === "vote" ? (
+        <div className="form-body">
+          <CardVoteList />
+        </div>
+      ) : !online ? (
         <Offline what="카드를 낼 수" />
       ) : (
         <>
