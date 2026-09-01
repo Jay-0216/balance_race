@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "체육복 입고 등교", "emoji": "🎽"}, "b": {"text": "교복 입고 체육하기", "emoji": "👔"}, "popularBias": 0.45},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구랑 매일 붙어다니기", "emoji": "👯"}, "b": {"text": "친구랑 가끔 만나기", "emoji": "🌤️"}, "popularBias": 0.42},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "매일 급식 두 그릇", "emoji": "🍱"}, "b": {"text": "매일 매점 간식", "emoji": "🍪"}, "popularBias": 0.5},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "떡볶이 국물 진하게", "emoji": "🌶️"}, "b": {"text": "떡볶이 국물 없이 볶음", "emoji": "🍢"}, "popularBias": 0.6},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 대신 청소하기", "emoji": "🧹"}, "b": {"text": "선생님께 사실대로 말하기", "emoji": "🙋"}, "popularBias": 0.48},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모르고 명문대", "emoji": "🏫"}, "b": {"text": "적성 알고 평범한 대학", "emoji": "🎯"}, "popularBias": 0.55},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 번개", "emoji": "⚡"}, "b": {"text": "하품할 때마다 무지개", "emoji": "🌈"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 말하기", "emoji": "🐾"}, "b": {"text": "식물 초고속으로 키우기", "emoji": "🌱"}, "popularBias": 0.44},
+  {"id": "money_13", "category": "돈", "a": {"text": "용돈 한 번에 다 쓰기", "emoji": "💸"}, "b": {"text": "용돈 조금씩 모으기", "emoji": "🐷"}, "popularBias": 0.4},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "인기 스트리머 되기", "emoji": "🎥"}, "b": {"text": "인기 프로게이머 되기", "emoji": "🕹️"}, "popularBias": 0.52}
 ]

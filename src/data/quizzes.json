@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "지구에서 가장 큰 동물은?", "a": {"text": "대왕고래", "emoji": "🐋"}, "b": {"text": "아프리카코끼리", "emoji": "🐘"}, "answer": "a", "note": "대왕고래는 지구 역사상 가장 큰 동물로 알려져 있다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 몸에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🧴"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 몸 전체를 덮고 있는 가장 큰 장기다."},
+  {"id": "his_13", "category": "역사", "question": "거중기를 만든 사람은?", "a": {"text": "정약용", "emoji": "⚙️"}, "b": {"text": "장영실", "emoji": "🔧"}, "answer": "a", "note": "정약용은 수원 화성을 지을 때 거중기를 활용했다."},
+  {"id": "his_14", "category": "역사", "question": "대한민국 임시정부가 세워진 곳은?", "a": {"text": "상하이", "emoji": "🇨🇳"}, "b": {"text": "도쿄", "emoji": "🇯🇵"}, "answer": "a", "note": "1919년 중국 상하이에서 수립되었다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🌊"}, "b": {"text": "아마존강", "emoji": "🌴"}, "answer": "a", "note": "나일강은 약 6,650km로 세계에서 가장 긴 강으로 꼽힌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 나라는?", "a": {"text": "프랑스", "emoji": "🇫🇷"}, "b": {"text": "영국", "emoji": "🇬🇧"}, "answer": "a", "note": "1889년 파리 만국박람회 때 세워졌다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되다'에 '어요'가 붙으면 '돼요'가 된다."},
+  {"id": "kor_10", "category": "우리말", "question": "'감기가 다 ___'", "a": {"text": "나았다", "emoji": "🤒"}, "b": {"text": "낳았다", "emoji": "🍼"}, "answer": "a", "note": "병이 낫는 것은 '낫다', 아이를 낳는 것은 '낳다'다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 추운 바다는?", "a": {"text": "썰렁해", "emoji": "🥶"}, "b": {"text": "동해", "emoji": "🌊"}, "answer": "a", "note": "'썰렁하다'와 발음이 비슷해서 나온 말장난이다."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 잘 웃는 동물은?", "a": {"text": "하하나", "emoji": "🐴"}, "b": {"text": "하이에나", "emoji": "🐆"}, "answer": "b", "note": "하이에나는 웃는 듯한 울음소리로 유명하다."}
 ]
