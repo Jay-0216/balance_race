@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "인체에서 가장 큰 기관은?", "a": {"text": "피부", "emoji": "🧴"}, "b": {"text": "간", "emoji": "🫘"}, "answer": "a", "note": "피부는 성인 기준 약 2㎡, 체중의 약 15%를 차지하는 가장 큰 기관이다."},
+  {"id": "sci_18", "category": "과학", "question": "가장 가벼운 기체는?", "a": {"text": "수소", "emoji": "🎈"}, "b": {"text": "헬륨", "emoji": "🎪"}, "answer": "a", "note": "수소는 우주에서 가장 가볍고 흔한 원소다."},
+  {"id": "sci_19", "category": "과학", "question": "지구 대기의 대부분을 차지하는 기체는?", "a": {"text": "산소", "emoji": "🫁"}, "b": {"text": "질소", "emoji": "💨"}, "answer": "b", "note": "질소가 약 78%, 산소는 약 21%를 차지한다."},
+  {"id": "his_13", "category": "역사", "question": "대한민국 임시정부가 처음 수립된 도시는?", "a": {"text": "상하이", "emoji": "🏙️"}, "b": {"text": "충칭", "emoji": "🏔️"}, "answer": "a", "note": "1919년 상하이에서 수립되어 이후 여러 차례 옮겨 다니다 충칭에서 광복을 맞았다."},
+  {"id": "his_14", "category": "역사", "question": "고조선을 세운 인물은?", "a": {"text": "단군왕검", "emoji": "👑"}, "b": {"text": "주몽", "emoji": "🏹"}, "answer": "a", "note": "주몽은 고구려를 세운 시조다."},
+  {"id": "his_15", "category": "역사", "question": "임진왜란 때 조선에 원군을 보낸 나라는?", "a": {"text": "명나라", "emoji": "🇨🇳"}, "b": {"text": "청나라", "emoji": "🐉"}, "answer": "a", "note": "청나라는 그보다 나중인 병자호란 때 조선을 침략한 나라다."},
+  {"id": "wor_13", "category": "세계상식", "question": "기자의 피라미드가 있는 나라는?", "a": {"text": "이집트", "emoji": "🇪🇬"}, "b": {"text": "이란", "emoji": "🇮🇷"}, "answer": "a", "note": "카이로 근교 기자 지역에 있다."},
+  {"id": "wor_14", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🏞️"}, "b": {"text": "아마존강", "emoji": "🌴"}, "answer": "a", "note": "나일강이 약 6650km로 가장 길다고 알려져 있다. 다만 아마존강과의 근소한 차이로 이견도 있다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "안 되요", "emoji": "❌"}, "b": {"text": "안 돼요", "emoji": "✅"}, "answer": "b", "note": "'되어요'가 줄어든 말이므로 '돼요'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "웬만하면", "emoji": "🙂"}, "b": {"text": "왠만하면", "emoji": "🤨"}, "answer": "a", "note": "'왠'은 '왠지'에만 쓰고, 나머지는 '웬'을 쓴다."}
 ]

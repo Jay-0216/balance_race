@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 쪽지시험", "emoji": "📝"}, "b": {"text": "한 달에 한 번 큰 시험", "emoji": "📚"}, "popularBias": 0.42},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "시험 답 미리 알지만 못 씀", "emoji": "🔒"}, "b": {"text": "모르고 그냥 풀기", "emoji": "🎲"}, "popularBias": 0.3},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 흉내 냄", "emoji": "🎭"}, "b": {"text": "친구가 날 무시함", "emoji": "🙄"}, "popularBias": 0.63},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "치킨 식어서 먹기", "emoji": "🍗"}, "b": {"text": "떡볶이 다 불어서 먹기", "emoji": "🌶️"}, "popularBias": 0.46},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 SNS 몰래 보기", "emoji": "📱"}, "b": {"text": "궁금해도 안 보기", "emoji": "🙅"}, "popularBias": 0.35},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모르고 대학 가기", "emoji": "🎓"}, "b": {"text": "1년 쉬고 적성 찾기", "emoji": "🧭"}, "popularBias": 0.4},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 번개침", "emoji": "🤧"}, "b": {"text": "하품할 때마다 지진남", "emoji": "🥱"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물 말 알아듣기", "emoji": "🐶"}, "b": {"text": "식물 마음 느끼기", "emoji": "🌿"}, "popularBias": 0.58},
+  {"id": "money_13", "category": "돈", "a": {"text": "매일 만원씩 90일", "emoji": "📆"}, "b": {"text": "한 번에 백만원", "emoji": "💵"}, "popularBias": 0.45},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "와이파이 무제한 느림", "emoji": "🐌"}, "b": {"text": "데이터 5기가 빠름", "emoji": "⚡"}, "popularBias": 0.4}
 ]
