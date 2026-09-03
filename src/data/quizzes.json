@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "자연에서 가장 단단한 물질은?", "a": {"text": "다이아몬드", "emoji": "💎"}, "b": {"text": "강철", "emoji": "🔩"}, "answer": "a", "note": "탄소 원자가 빽빽하게 결합해서 자연 물질 중 가장 단단하다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 심장은 하루에 몇 번 뛸까?", "a": {"text": "약 10만 번", "emoji": "❤️"}, "b": {"text": "약 1만 번", "emoji": "💓"}, "answer": "a", "note": "평균 분당 60~100회씩 하루 종일 뛰면 약 10만 번이 된다."},
+  {"id": "his_13", "category": "역사", "question": "한글을 창제한 왕은?", "a": {"text": "세종대왕", "emoji": "👑"}, "b": {"text": "정조대왕", "emoji": "📚"}, "answer": "a", "note": "1443년 집현전 학자들과 함께 만들었다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "🐴"}, "b": {"text": "이성계", "emoji": "⚔️"}, "answer": "a", "note": "이성계는 고려를 무너뜨리고 조선을 세웠다."},
+  {"id": "wor_13", "category": "세계상식", "question": "에펠탑이 있는 도시는?", "a": {"text": "파리", "emoji": "🗼"}, "b": {"text": "런던", "emoji": "🎡"}, "answer": "a", "note": "1889년 만국박람회를 위해 세워졌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년에 인도가 중국을 제치고 1위가 되었다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어들면 '돼요'가 된다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "안돼", "emoji": "🙅"}, "b": {"text": "않되", "emoji": "🚫"}, "answer": "a", "note": "'안 돼'는 '아니 되어'가 줄어든 말이다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 뜨거운 바다는?", "a": {"text": "사랑바다", "emoji": "💕"}, "b": {"text": "열바다", "emoji": "🔥"}, "answer": "b", "note": "열받다에서 나온 말장난, 열(뜨거움)이 나는 바다."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 추운 바다는?", "a": {"text": "썰렁바다", "emoji": "🧊"}, "b": {"text": "얼음바다", "emoji": "❄️"}, "answer": "a", "note": "썰렁한 개그에서 나온 말장난이다."}
 ]
