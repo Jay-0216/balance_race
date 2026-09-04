@@ -89,7 +89,15 @@ export function baseGain(majorityShare: number): number {
  * what makes choosing when to use it interesting.
  */
 export const BOOSTER_CHARGE_MAX = 2;
-export const BOOSTER_MULTIPLIER = 4;
+/**
+ * Was 4 - an 8-cell round on a 24-cell track (gain 2 x 4), a third of the
+ * whole race in one move. That is the exact size of the old flat-+6 windfall
+ * the comment above says this gauge replaced for being too strong; the
+ * multiplier just never got re-tuned once it was gated behind a gauge
+ * instead. A booster should read as a real jump ahead, not a second race
+ * layered on top of the first one.
+ */
+export const BOOSTER_MULTIPLIER = 3;
 
 /** charge earned for being on the losing side, by how small that side was */
 export function chargeFor(minorityShare: number): number {
