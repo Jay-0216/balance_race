@@ -20,9 +20,20 @@
   background: #121a20;
   /* The vanishing point sits above centre - the far edge of the track (top
      of the box) recedes more than the near edge, which is what makes the
-     tilt below read as "looking down the road" and not just "squashed". */
-  perspective: 480px;
+     tilt below read as "looking down the road" and not just "squashed".
+     A bigger number here is a *weaker*, more distant-camera perspective -
+     this was 480px and read as too steep for a racing feel. */
+  perspective: 780px;
   perspective-origin: 50% 8%;
+  /* How much bigger .race-tilt is drawn than this box, to make up for
+     rotateX() foreshortening it. This used to be a plain CSS scale() on
+     .race-tilt, which blew pixels up *after* they were already rasterised -
+     sharp on a laptop, visibly soft on a real phone. Sizing the box for
+     real instead (below) means the SVG and canvas are rasterised at the
+     bigger size to begin with, so there is nothing left to blur. RaceView.tsx
+     reads this same custom property to size the particle canvas's backing
+     store to match - change it here and both follow. */
+  --tilt-scale: 1.16;
 }
 
 /* Short screens: the band yields first. A cramped race is still a race; a
@@ -33,13 +44,17 @@
 
 /* Everything the race actually draws, tilted back as one flat plane. This
    is pure GPU compositing on top of pixels the render loop already
-   produced - it does not add a single per-frame cost of its own. The scale
-   compensates for rotateX() foreshortening the plane, so the tilted road
-   still fills the same window it did flat. */
+   produced - it does not add a single per-frame cost of its own.
+   Genuinely bigger than its own parent (not scale()d up to look bigger),
+   and re-centred with the matching negative inset, so the SVG and canvas
+   inside are laid out - and rasterised - at that larger size directly. */
 .race-tilt {
   position: absolute;
-  inset: 0;
-  transform: rotateX(30deg) scale(1.4);
+  width: calc(var(--tilt-scale) * 100%);
+  height: calc(var(--tilt-scale) * 100%);
+  left: calc((1 - var(--tilt-scale)) * 50%);
+  top: calc((1 - var(--tilt-scale)) * 50%);
+  transform: rotateX(18deg);
   transform-origin: 50% 82%;
 }
 

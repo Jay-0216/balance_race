@@ -161,9 +161,17 @@ export default function RaceView({
       const r = box.getBoundingClientRect();
       px = r.width; py = r.height;
       dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.max(1, Math.round(px * dpr));
-      canvas.height = Math.max(1, Math.round(py * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // .race-tilt (and the canvas inside it) is laid out at --tilt-scale
+      // times this box's size, in real CSS pixels - see RaceView.css. The
+      // camera math below still works in this box's own (untilted) px/py,
+      // so everything sx()/sy() draws to the canvas is scaled up to match
+      // its actual larger backing store here, in one place, rather than
+      // ever changing the coordinates themselves.
+      const tiltScale = parseFloat(getComputedStyle(box).getPropertyValue("--tilt-scale")) || 1;
+      const d = dpr * tiltScale;
+      canvas.width = Math.max(1, Math.round(px * d));
+      canvas.height = Math.max(1, Math.round(py * d));
+      ctx.setTransform(d, 0, 0, d, 0, 0);
       cam.setAspect(px, py);
     };
     resize();
