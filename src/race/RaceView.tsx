@@ -438,62 +438,70 @@ export default function RaceView({
 
   return (
     <div className="race-view" ref={boxRef}>
-      <svg
-        ref={svgRef}
-        className="race-svg"
-        viewBox={`0 0 260 ${WORLD.h}`}
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <Backdrop themeRef={setTheme} bandRef={setBand} />
-        <Track measureRef={(el) => (measureRef.current = el)} roadRef={setRoad} />
-        <Markers
-          tickRef={(i) => (el) => (tickRefs.current[i] = el)}
-          startRef={(el) => (startRef.current = el)}
-          finishRef={(el) => (finishRef.current = el)}
-        />
+      {/* The tilt lives on this wrapper, not on .race-view itself: boxRef
+          measures .race-view for the world<->pixel mapping, and that math
+          is plain 2D. Tilting a level below just re-projects the already-
+          correct 2D paint as a tabletop seen from above - a free GPU
+          compositing effect that costs nothing on top of the render loop
+          this file already runs. */}
+      <div className="race-tilt">
+        <svg
+          ref={svgRef}
+          className="race-svg"
+          viewBox={`0 0 260 ${WORLD.h}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <Backdrop themeRef={setTheme} bandRef={setBand} />
+          <Track measureRef={(el) => (measureRef.current = el)} roadRef={setRoad} />
+          <Markers
+            tickRef={(i) => (el) => (tickRefs.current[i] = el)}
+            startRef={(el) => (startRef.current = el)}
+            finishRef={(el) => (finishRef.current = el)}
+          />
 
-        {racers.map((r, i) => (
-          <g key={r.id} ref={setNode(i, "root")}>
-            <g ref={setNode(i, "spin")}>
-              <g ref={setNode(i, "squash")}>
-                <Piece piece={r.piece} color={r.color} />
+          {racers.map((r, i) => (
+            <g key={r.id} ref={setNode(i, "root")}>
+              <g ref={setNode(i, "spin")}>
+                <g ref={setNode(i, "squash")}>
+                  <Piece piece={r.piece} color={r.color} />
+                </g>
               </g>
-            </g>
-            {/* Everyone is named, not just me. Knowing that the car half a
-                length ahead is 청개구리 is the whole reason to watch the pack -
-                without it the race is eight anonymous dots and the standings
-                below are the only thing worth reading.
+              {/* Everyone is named, not just me. Knowing that the car half a
+                  length ahead is 청개구리 is the whole reason to watch the pack -
+                  without it the race is eight anonymous dots and the standings
+                  below are the only thing worth reading.
 
-                A rival's plate is tinted with its own car colour and set
-                small; mine is white, bigger and heavier, so my car is still
-                the one the eye finds first. The heavy dark stroke is what
-                keeps a plate legible where it overlaps the next lane's
-                wheels - at this lane gap it always will. */}
-            <text
-              y={r.me ? -14 : -11}
-              textAnchor="middle"
-              fill={r.me ? "#f2f6f8" : r.color}
-              fontSize={r.me ? 10.5 : 7.6}
-              fontWeight={r.me ? 600 : 600}
-              opacity={r.me ? 1 : 0.92}
-              stroke="#0b1015"
-              // A stroke this close to the font size is what read as too bold
-              // on a real phone: at 2.2/10.5 the outline was a fifth of the
-              // glyph's own size, which fattens every stroke of the letterform
-              // rather than just edging it. Halving it keeps the plate legible
-              // against the road without thickening the letters themselves.
-              strokeWidth={r.me ? 1.1 : 0.95}
-              paintOrder="stroke"
-              strokeLinejoin="round"
-              fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
-            >
-              {r.name}
-            </text>
-          </g>
-        ))}
-      </svg>
-      <canvas ref={canvasRef} className="race-fx" />
+                  A rival's plate is tinted with its own car colour and set
+                  small; mine is white, bigger and heavier, so my car is still
+                  the one the eye finds first. The heavy dark stroke is what
+                  keeps a plate legible where it overlaps the next lane's
+                  wheels - at this lane gap it always will. */}
+              <text
+                y={r.me ? -14 : -11}
+                textAnchor="middle"
+                fill={r.me ? "#f2f6f8" : r.color}
+                fontSize={r.me ? 10.5 : 7.6}
+                fontWeight={r.me ? 600 : 600}
+                opacity={r.me ? 1 : 0.92}
+                stroke="#0b1015"
+                // A stroke this close to the font size is what read as too bold
+                // on a real phone: at 2.2/10.5 the outline was a fifth of the
+                // glyph's own size, which fattens every stroke of the letterform
+                // rather than just edging it. Halving it keeps the plate legible
+                // against the road without thickening the letters themselves.
+                strokeWidth={r.me ? 1.1 : 0.95}
+                paintOrder="stroke"
+                strokeLinejoin="round"
+                fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
+              >
+                {r.name}
+              </text>
+            </g>
+          ))}
+        </svg>
+        <canvas ref={canvasRef} className="race-fx" />
+      </div>
     </div>
   );
 }

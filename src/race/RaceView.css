@@ -18,12 +18,29 @@
      the canvas was free to paint past its own edge. */
   overflow: hidden;
   background: #121a20;
+  /* The vanishing point sits above centre - the far edge of the track (top
+     of the box) recedes more than the near edge, which is what makes the
+     tilt below read as "looking down the road" and not just "squashed". */
+  perspective: 480px;
+  perspective-origin: 50% 8%;
 }
 
 /* Short screens: the band yields first. A cramped race is still a race; a
    leaderboard you have to scroll to is not a leaderboard. */
 @media (max-height: 760px) {
   .race-view { max-height: 32vh; }
+}
+
+/* Everything the race actually draws, tilted back as one flat plane. This
+   is pure GPU compositing on top of pixels the render loop already
+   produced - it does not add a single per-frame cost of its own. The scale
+   compensates for rotateX() foreshortening the plane, so the tilted road
+   still fills the same window it did flat. */
+.race-tilt {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(30deg) scale(1.4);
+  transform-origin: 50% 82%;
 }
 
 .race-svg,
@@ -36,3 +53,19 @@
 }
 
 .race-fx { pointer-events: none; }
+
+/* Aerial haze: the far edge of a tilted plane reads as farther away when it
+   fades toward the sky colour, the same cue real distance haze gives a
+   photo. A static gradient, painted once, never touches the render loop. */
+.race-view::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 14, 20, 0.32) 0%,
+    rgba(10, 14, 20, 0.1) 18%,
+    rgba(10, 14, 20, 0) 38%
+  );
+}

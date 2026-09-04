@@ -188,8 +188,18 @@ export class Particles {
   draw(ctx: CanvasRenderingContext2D, w: number, h: number, project: Project) {
     ctx.clearRect(0, 0, w, h);
 
-    const buckets: number[][] = [];
-    for (let i = 0; i < Particles.ALPHA_STEPS; i++) buckets.push([]);
+    const pathBuckets: number[][] = [];
+    for (let i = 0; i < Particles.ALPHA_STEPS; i++) pathBuckets.push([]);
+    // dust/trail/flame/burst, grouped by colour + fade step + shape so each
+    // group costs one fill() instead of one per particle - the same trick as
+    // the path-streak buckets below. A booster flare landing on a full
+    // pack's dust and trails puts several hundred of these on screen in the
+    // same frame, and beginPath/arc/fill per particle was the next thing
+    // (after the wind-streak fix) quietly costing real frames on a phone.
+    const shapeBuckets = new Map<
+      string,
+      { color: string; alpha: number; isLine: boolean; ids: number[] }
+    >();
 
     for (let i = 0; i < this.pool.length; i++) {
       const p = this.pool[i];
@@ -217,25 +227,44 @@ export class Particles {
           Particles.ALPHA_STEPS - 1,
           Math.floor(fade * Particles.ALPHA_STEPS)
         );
-        buckets[step].push(i);
+        pathBuckets[step].push(i);
         continue;
       }
 
-      ctx.fillStyle = p.color;
-      if (p.gravity === 0) {
-        ctx.globalAlpha = fade * 0.85;
-        ctx.fillRect(p.x, p.y, 26, p.r * 1.4);   // speed line
-      } else {
-        ctx.globalAlpha = fade * 0.55;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+      const isLine = p.gravity === 0;              // speed line vs. dot
+      const step = Math.min(
+        Particles.ALPHA_STEPS - 1,
+        Math.floor(fade * Particles.ALPHA_STEPS)
+      );
+      const alpha = ((step + 0.5) / Particles.ALPHA_STEPS) * (isLine ? 0.85 : 0.55);
+      const key = (isLine ? "L" : "C") + p.color + step;
+      let b = shapeBuckets.get(key);
+      if (!b) shapeBuckets.set(key, (b = { color: p.color, alpha, isLine, ids: [] }));
+      b.ids.push(i);
+    }
+
+    for (const b of shapeBuckets.values()) {
+      ctx.fillStyle = b.color;
+      ctx.globalAlpha = b.alpha;
+      ctx.beginPath();
+      for (const i of b.ids) {
+        const p = this.pool[i];
+        if (b.isLine) {
+          ctx.rect(p.x, p.y, 26, p.r * 1.4);
+        } else {
+          // moveTo first: arc() alone would draw a connecting line from the
+          // previous circle's edge, stitching every dot in the bucket into
+          // one jagged shape instead of leaving them as separate circles.
+          ctx.moveTo(p.x + p.r, p.y);
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        }
       }
+      ctx.fill();
     }
 
     ctx.lineCap = "round";
-    for (let step = 0; step < buckets.length; step++) {
-      const ids = buckets[step];
+    for (let step = 0; step < pathBuckets.length; step++) {
+      const ids = pathBuckets[step];
       if (!ids.length) continue;
       ctx.globalAlpha = ((step + 0.5) / Particles.ALPHA_STEPS) * 0.6;
       ctx.strokeStyle = this.pool[ids[0]].color;
