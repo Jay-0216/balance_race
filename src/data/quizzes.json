@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "무지개는 몇 가지 색?", "a": {"text": "7가지", "emoji": "🌈"}, "b": {"text": "5가지", "emoji": "🎨"}, "answer": "a", "note": "뉴턴이 7가지 색으로 정리했다. 실제로는 색이 끊김 없이 이어진다."},
+  {"id": "sci_18", "category": "과학", "question": "인체에서 가장 큰 장기는?", "a": {"text": "간", "emoji": "🫀"}, "b": {"text": "피부", "emoji": "🫱"}, "answer": "b", "note": "피부도 하나의 장기이며 몸 전체를 덮어 가장 크다."},
+  {"id": "his_13", "category": "역사", "question": "경복궁을 세운 왕은?", "a": {"text": "태조 이성계", "emoji": "👑"}, "b": {"text": "세종대왕", "emoji": "📜"}, "answer": "a", "note": "1395년 태조 때 조선의 법궁으로 지어졌다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "⚔️"}, "b": {"text": "궁예", "emoji": "🗡️"}, "answer": "a", "note": "왕건이 궁예를 몰아내고 918년 고려를 세웠다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년 인도가 중국 인구를 넘어섰다."},
+  {"id": "wor_14", "category": "세계상식", "question": "월드컵은 몇 년마다 열릴까?", "a": {"text": "2년", "emoji": "🏆"}, "b": {"text": "4년", "emoji": "⚽"}, "answer": "b", "note": "1930년부터 4년마다 열리고 있다(전쟁 시기는 제외)."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "어의없다", "emoji": "😑"}, "b": {"text": "어이없다", "emoji": "🙄"}, "answer": "b", "note": "'어이'는 어처구니라는 뜻으로, '어이없다'가 맞는 표현이다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "바램", "emoji": "🙏"}, "b": {"text": "바람", "emoji": "💭"}, "answer": "b", "note": "'바라다'의 명사형은 '바람'이다."},
+  {"id": "non_05", "category": "넌센스", "question": "화장실에서만 신는 신발은?", "a": {"text": "쉬리퍼", "emoji": "🚻"}, "b": {"text": "응가스", "emoji": "👟"}, "answer": "a", "note": "'쉬'하러 갈 때 신는 슬리퍼라서 쉬리퍼."},
+  {"id": "non_06", "category": "넌센스", "question": "가장 도망을 잘 치는 동물은?", "a": {"text": "치타", "emoji": "🐆"}, "b": {"text": "도마뱀", "emoji": "🦎"}, "answer": "b", "note": "'도망'+'뱀' → 도마뱀."}
 ]

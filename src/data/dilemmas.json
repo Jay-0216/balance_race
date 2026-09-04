@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "power_15", "category": "초능력", "a": {"text": "날씨를 마음대로 바꾸기", "emoji": "🌦️"}, "b": {"text": "동물과 자유롭게 대화하기", "emoji": "🐦"}, "popularBias": 0.5},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "좋아하는 게임 신작 매년 출시", "emoji": "🎮"}, "b": {"text": "옛날 게임 무제한 즐기기", "emoji": "🕹️"}, "popularBias": 0.5},
+  {"id": "money_13", "category": "돈", "a": {"text": "매달 용돈 두 배로", "emoji": "💵"}, "b": {"text": "용돈 반으로 줄고 자유시간 두 배", "emoji": "⏰"}, "popularBias": 0.4},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 시험지 몰래 보게 해주기", "emoji": "👀"}, "b": {"text": "거절하고 사이 서먹해지기", "emoji": "🙅"}, "popularBias": 0.65},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 몰라도 안정적인 직업", "emoji": "🏢"}, "b": {"text": "적성은 확실한데 불안정한 직업", "emoji": "🎨"}, "popularBias": 0.5},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "매 끼니 배달음식", "emoji": "🛵"}, "b": {"text": "매 끼니 직접 요리", "emoji": "👩‍🍳"}, "popularBias": 0.55},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "좋아하는 반찬만 한가득", "emoji": "🍖"}, "b": {"text": "골고루인데 조금씩", "emoji": "🥗"}, "popularBias": 0.5},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 순간이동", "emoji": "🤧"}, "b": {"text": "딸꾹질할 때마다 시간정지", "emoji": "⏸️"}, "popularBias": 0.5},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 쪽지시험", "emoji": "📄"}, "b": {"text": "한 달에 한 번 큰 시험", "emoji": "📚"}, "popularBias": 0.45},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 SNS 다 봄", "emoji": "📱"}, "b": {"text": "내가 친구 SNS 다 봄", "emoji": "🔍"}, "popularBias": 0.5}
 ]
