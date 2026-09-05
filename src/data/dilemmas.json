@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "선생님이 맨날 칭찬", "emoji": "👏"}, "b": {"text": "선생님이 신경도 안 씀", "emoji": "😶"}, "popularBias": 0.4},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "쉬는 시간 10분 늘리기", "emoji": "🛋️"}, "b": {"text": "점심시간 10분 늘리기", "emoji": "🍱"}, "popularBias": 0.35},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구랑 6년 내내 같은 반", "emoji": "🧑‍🤝‍🧑"}, "b": {"text": "친구랑 한 번도 같은 반 아님", "emoji": "🚶"}, "popularBias": 0.68},
+  {"id": "friend_22", "category": "인간관계", "a": {"text": "여행 계획 내가 다 짜기", "emoji": "🗺️"}, "b": {"text": "친구 계획대로 따라가기", "emoji": "🎒"}, "popularBias": 0.46},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "떡볶이 매운맛만", "emoji": "🌶️"}, "b": {"text": "떡볶이 순한맛만", "emoji": "🥛"}, "popularBias": 0.53},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "핫도그 케첩만", "emoji": "🍅"}, "b": {"text": "핫도그 머스타드만", "emoji": "🌭"}, "popularBias": 0.65},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "채점 실수로 더 받은 점수 말하기", "emoji": "🙋"}, "b": {"text": "모르는 척 그냥 받기", "emoji": "🤐"}, "popularBias": 0.6},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "꿈은 확실한데 재능 없음", "emoji": "🎯"}, "b": {"text": "재능은 있는데 하고 싶은 게 없음", "emoji": "🌫️"}, "popularBias": 0.48},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물 말 알아듣기", "emoji": "🐾"}, "b": {"text": "식물 마음 느끼기", "emoji": "🌿"}, "popularBias": 0.57},
+  {"id": "money_13", "category": "돈", "a": {"text": "친구랑 반씩 100만원", "emoji": "🤝"}, "b": {"text": "혼자 다 갖는 50만원", "emoji": "🙋"}, "popularBias": 0.6}
 ]

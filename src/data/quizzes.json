@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_18", "category": "과학", "question": "우리 몸에서 가장 단단한 부분은?", "a": {"text": "치아 겉면(사기질)", "emoji": "🦷"}, "b": {"text": "뼈", "emoji": "🦴"}, "answer": "a", "note": "치아 겉면의 사기질(에나멜)이 뼈보다 단단하다."},
+  {"id": "sci_19", "category": "과학", "question": "지구에 살았던 동물 중 가장 큰 것은?", "a": {"text": "대왕고래", "emoji": "🐋"}, "b": {"text": "아프리카코끼리", "emoji": "🐘"}, "answer": "a", "note": "대왕고래(흰수염고래)는 공룡보다도 커서 지구 역사상 가장 큰 동물로 꼽힌다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 인물은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "견훤", "emoji": "⚔️"}, "answer": "a", "note": "왕건이 918년에 고려를 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "대한민국 정부가 수립된 해는?", "a": {"text": "1948년", "emoji": "🇰🇷"}, "b": {"text": "1950년", "emoji": "💥"}, "answer": "a", "note": "1950년은 6·25 전쟁이 시작된 해다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🌊"}, "b": {"text": "아마존강", "emoji": "🐊"}, "answer": "a", "note": "나일강은 길이가 약 6,650km로 가장 긴 강으로 꼽힌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 나라는?", "a": {"text": "프랑스", "emoji": "🇫🇷"}, "b": {"text": "영국", "emoji": "🇬🇧"}, "answer": "a", "note": "1889년 파리 만국박람회를 기념해 세워졌다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "바라요", "emoji": "🙏"}, "b": {"text": "바래요", "emoji": "🎨"}, "answer": "a", "note": "'바라다'가 기본형이라 '바라요'가 맞다. '바래다'는 색이 변한다는 뜻이다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 추운 바다는?", "a": {"text": "썰렁해", "emoji": "🥶"}, "b": {"text": "동해", "emoji": "🌊"}, "answer": "a", "note": "'썰물'의 '썰'과 분위기가 싸늘하다는 '썰렁하다'를 합친 말장난이다."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 슬픈 면은?", "a": {"text": "울면", "emoji": "😭"}, "b": {"text": "짬뽕", "emoji": "🍜"}, "answer": "a", "note": "음식 이름 '울면'이 '울면(운다면)'과 발음이 같아서 나온 말장난이다."}
 ]
