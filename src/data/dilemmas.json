@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "travel_01", "category": "여행", "a": {"text": "해외여행 매년 한 번", "emoji": "✈️"}, "b": {"text": "국내여행 매달 한 번", "emoji": "🚗"}, "popularBias": 0.5},
+  {"id": "travel_02", "category": "여행", "a": {"text": "계획 빡빡한 여행", "emoji": "🗺️"}, "b": {"text": "즉흥적인 여행", "emoji": "🎒"}, "popularBias": 0.42},
+  {"id": "pet_01", "category": "반려동물", "a": {"text": "강아지 키우기", "emoji": "🐶"}, "b": {"text": "고양이 키우기", "emoji": "🐱"}, "popularBias": 0.55},
+  {"id": "pet_02", "category": "반려동물", "a": {"text": "내 말을 알아듣는 강아지", "emoji": "🐕"}, "b": {"text": "나만 따르는 고양이", "emoji": "🐈"}, "popularBias": 0.5},
+  {"id": "season_01", "category": "계절", "a": {"text": "사계절 뚜렷한 나라", "emoji": "🍁"}, "b": {"text": "일 년 내내 여름인 나라", "emoji": "🏖️"}, "popularBias": 0.45},
+  {"id": "sleep_01", "category": "잠", "a": {"text": "매일 5시간 자고 개운", "emoji": "😃"}, "b": {"text": "매일 9시간 자고 피곤", "emoji": "😪"}, "popularBias": 0.68},
+  {"id": "sleep_02", "category": "잠", "a": {"text": "알람 없이 저절로 눈뜨기", "emoji": "⏰"}, "b": {"text": "알람 10개 맞추고 겨우 일어나기", "emoji": "📢"}, "popularBias": 0.7},
+  {"id": "family_01", "category": "가족", "a": {"text": "형제자매 있기", "emoji": "👫"}, "b": {"text": "외동으로 자라기", "emoji": "🧍"}, "popularBias": 0.5},
+  {"id": "family_02", "category": "가족", "a": {"text": "엄격한 부모님 밑에서 크기", "emoji": "📏"}, "b": {"text": "자유방임 부모님 밑에서 크기", "emoji": "🕊️"}, "popularBias": 0.4},
+  {"id": "dream_01", "category": "꿈·상상", "a": {"text": "매일 원하는 꿈 꾸기", "emoji": "💭"}, "b": {"text": "꿈 안 꾸고 푹 자기", "emoji": "😴"}, "popularBias": 0.55}
 ]
