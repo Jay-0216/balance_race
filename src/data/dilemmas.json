@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "선생님이 내 편이지만 친구들 눈치", "emoji": "🧑‍🏫"}, "b": {"text": "친구들이 내 편이지만 선생님 눈치", "emoji": "🧑‍🎓"}, "popularBias": 0.46},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "매일 자리 바꾸기", "emoji": "🔀"}, "b": {"text": "1년 내내 같은 자리", "emoji": "📌"}, "popularBias": 0.4},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 SNS 몰래 봄", "emoji": "👀"}, "b": {"text": "내가 친구 SNS 몰래 봄", "emoji": "🕵️"}, "popularBias": 0.3},
+  {"id": "friend_22", "category": "인간관계", "a": {"text": "그룹 채팅 나만 빼고 있음", "emoji": "🚪"}, "b": {"text": "그룹 채팅에 나 혼자만 있음", "emoji": "🫥"}, "popularBias": 0.58},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "평생 뜨거운 음식만", "emoji": "🔥"}, "b": {"text": "평생 차가운 음식만", "emoji": "🧊"}, "popularBias": 0.43},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 시험 답 몰래 알려주기", "emoji": "👀"}, "b": {"text": "모르는 척 넘기기", "emoji": "🙅"}, "popularBias": 0.65},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "부모님이 정해준 안전한 길", "emoji": "🧭"}, "b": {"text": "내가 정한 위험한 길", "emoji": "🎢"}, "popularBias": 0.48},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 말하기", "emoji": "🐾"}, "b": {"text": "식물을 빨리 자라게 하기", "emoji": "🌱"}, "popularBias": 0.53},
+  {"id": "money_13", "category": "돈", "a": {"text": "친구보다 용돈 두 배", "emoji": "💰"}, "b": {"text": "친구랑 용돈 똑같이", "emoji": "🤝"}, "popularBias": 0.37},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "내 플레이 영상 실수만 모음", "emoji": "🎥"}, "b": {"text": "내 사진 다 잠금화면으로", "emoji": "🔒"}, "popularBias": 0.31}
 ]

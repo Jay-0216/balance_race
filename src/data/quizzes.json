@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "몸에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🧑"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 성인 기준 약 2㎡, 몸무게의 15% 정도를 차지한다."},
+  {"id": "sci_18", "category": "과학", "question": "무지개는 몇 가지 색?", "a": {"text": "7가지로 정한 것", "emoji": "🌈"}, "b": {"text": "정확히 7가지", "emoji": "🎨"}, "answer": "a", "note": "빛은 연속적으로 이어져 있고, 뉴턴이 음악 음계에 맞춰 7색으로 구분했다."},
+  {"id": "his_13", "category": "역사", "question": "한글날은?", "a": {"text": "10월 9일", "emoji": "📅"}, "b": {"text": "10월 3일", "emoji": "🗓️"}, "answer": "a", "note": "10월 3일은 개천절이다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "왕규", "emoji": "🏯"}, "answer": "a", "note": "918년 왕건이 고려를 건국했다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년경 인도가 중국을 넘어섰다."},
+  {"id": "wor_14", "category": "세계상식", "question": "이집트 피라미드가 있는 대륙은?", "a": {"text": "아프리카", "emoji": "🌍"}, "b": {"text": "아시아", "emoji": "🌏"}, "answer": "a", "note": "이집트는 아프리카 북동부에 있다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "낫다", "emoji": "🆙"}, "b": {"text": "낳다", "emoji": "🐣"}, "answer": "b", "note": "아이를 '낳다', 감기가 '낫다'로 뜻이 다르다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 억울한 도형은?", "a": {"text": "원", "emoji": "⭕"}, "b": {"text": "삼각김밥", "emoji": "🍙"}, "answer": "b", "note": "삼각인데 김밥으로만 취급받아서."},
+  {"id": "non_06", "category": "넌센스", "question": "물고기 반 마리는?", "a": {"text": "반쪽 물고기", "emoji": "🐟"}, "b": {"text": "생선가스", "emoji": "🍤"}, "answer": "b", "note": "물고기가 반해서 생선(生鮮)이 됐다는 말장난."}
 ]
