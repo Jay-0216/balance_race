@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "좋아하는 선생님 무서운 과목", "emoji": "😰"}, "b": {"text": "싫어하는 선생님 재밌는 과목", "emoji": "😄"}, "popularBias": 0.46},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 흉내 자주 냄", "emoji": "🎭"}, "b": {"text": "친구가 나를 아예 신경 안 씀", "emoji": "🙄"}, "popularBias": 0.4},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "떡볶이 매일 먹고 안 질림", "emoji": "🌶️"}, "b": {"text": "가끔 먹는데 매번 최고로 맛있음", "emoji": "🤩"}, "popularBias": 0.52},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "선의의 거짓말로 놀라게 하기", "emoji": "🎊"}, "b": {"text": "미리 솔직하게 말해주기", "emoji": "🗒️"}, "popularBias": 0.59},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모르고 대학 먼저", "emoji": "🏫"}, "b": {"text": "적성 찾을 때까지 쉬기", "emoji": "🧭"}, "popularBias": 0.34},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 순간이동", "emoji": "🤧"}, "b": {"text": "웃을 때마다 불꽃놀이", "emoji": "🎆"}, "popularBias": 0.53},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물 말 알아듣기", "emoji": "🐾"}, "b": {"text": "식물 마음 느끼기", "emoji": "🌿"}, "popularBias": 0.47},
+  {"id": "money_13", "category": "돈", "a": {"text": "매일 만원씩 10년", "emoji": "🪙"}, "b": {"text": "10년 뒤 한 번에 3천만원", "emoji": "🏦"}, "popularBias": 0.43},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "구독자 수 나만 볼 수 있음", "emoji": "📊"}, "b": {"text": "좋아요 수 아예 안 보임", "emoji": "🙈"}, "popularBias": 0.5},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "쉬는 시간 5분씩 자주", "emoji": "⏱️"}, "b": {"text": "쉬는 시간 20분 한 번에", "emoji": "🛋️"}, "popularBias": 0.44}
 ]

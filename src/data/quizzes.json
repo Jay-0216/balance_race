@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "사람 몸에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🖐️"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 성인 기준 약 2㎡, 몸무게의 약 16%를 차지한다."},
+  {"id": "sci_18", "category": "과학", "question": "무지개는 몇 가지 색?", "a": {"text": "빛의 파장에 따라 무수히 많음", "emoji": "🌈"}, "b": {"text": "정확히 7가지", "emoji": "🎨"}, "answer": "a", "note": "7색은 뉴턴이 음계에 맞춰 편의상 나눈 것일 뿐, 실제 경계는 연속적이다."},
+  {"id": "his_13", "category": "역사", "question": "한글날은 언제?", "a": {"text": "10월 9일", "emoji": "🍂"}, "b": {"text": "9월 10일", "emoji": "🌤️"}, "answer": "a", "note": "훈민정음 반포를 기념해 정해졌다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "궁예", "emoji": "🗡️"}, "answer": "a", "note": "궁예는 왕건 이전 후고구려를 세운 인물이다."},
+  {"id": "wor_13", "category": "세계상식", "question": "이집트를 가로지르는 강은?", "a": {"text": "나일강", "emoji": "🐊"}, "b": {"text": "아마존강", "emoji": "🌴"}, "answer": "a", "note": "세계에서 가장 긴 강으로 꼽힌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 도시는?", "a": {"text": "파리", "emoji": "🗼"}, "b": {"text": "런던", "emoji": "🎡"}, "answer": "a", "note": "1889년 만국박람회를 위해 세워졌다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼지고기", "emoji": "🐷"}, "b": {"text": "됀지고기", "emoji": "🥩"}, "answer": "a", "note": "'되'와 '돼'는 '되어'로 바꿔 말이 되면 '돼'다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "역활", "emoji": "🎬"}, "b": {"text": "역할", "emoji": "🎭"}, "answer": "b", "note": "한자 '役割'에서 온 말로 '역할'이 맞다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 게으른 개는?", "a": {"text": "누워", "emoji": "🐕"}, "b": {"text": "그대로 개", "emoji": "🛌"}, "answer": "b", "note": "그대로 있으니까 그대로 개."},
+  {"id": "non_06", "category": "넌센스", "question": "고양이가 화나면?", "a": {"text": "냥냥편치", "emoji": "🐱"}, "b": {"text": "고양이짜증", "emoji": "😾"}, "answer": "a", "note": "냥냥펀치로 응징한다."}
 ]
