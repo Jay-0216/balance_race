@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "치킨 다리만 평생", "emoji": "🍗"}, "b": {"text": "치킨 날개만 평생", "emoji": "🍖"}, "popularBias": 0.68},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "배달비 내고 배달", "emoji": "🛵"}, "b": {"text": "귀찮아도 포장하러 가기", "emoji": "🚶"}, "popularBias": 0.42},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "동물 실험으로 신약 빨리", "emoji": "🐭"}, "b": {"text": "실험 없이 신약 늦게", "emoji": "🌱"}, "popularBias": 0.4},
+  {"id": "moral_16", "category": "도덕적 딜레마", "a": {"text": "친구 SNS 몰래 훔쳐보기", "emoji": "👀"}, "b": {"text": "궁금해도 참고 안 보기", "emoji": "🙅"}, "popularBias": 0.3},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모른 채 대학 가기", "emoji": "🎓"}, "b": {"text": "적성 찾을 때까지 쉬기", "emoji": "🧭"}, "popularBias": 0.45},
+  {"id": "future_16", "category": "미래·진로", "a": {"text": "하고픈 일 없지만 편함", "emoji": "😌"}, "b": {"text": "하고픈 일 있지만 고됨", "emoji": "🔥"}, "popularBias": 0.55},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 대화하기", "emoji": "🐾"}, "b": {"text": "식물과 대화하기", "emoji": "🌿"}, "popularBias": 0.66},
+  {"id": "power_16", "category": "초능력", "a": {"text": "날씨 마음대로 바꾸기", "emoji": "🌦️"}, "b": {"text": "중력 마음대로 바꾸기", "emoji": "🪐"}, "popularBias": 0.5},
+  {"id": "money_13", "category": "돈", "a": {"text": "용돈 기입장 쓰며 저축", "emoji": "📒"}, "b": {"text": "그때그때 바로 쓰기", "emoji": "💸"}, "popularBias": 0.4},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "와이파이 없는 여행", "emoji": "🏕️"}, "b": {"text": "폰 없는 여행", "emoji": "📵"}, "popularBias": 0.35}
 ]

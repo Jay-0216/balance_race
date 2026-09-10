@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "인체에서 가장 큰 장기는?", "a": {"text": "피부", "emoji": "🫱"}, "b": {"text": "간", "emoji": "🫀"}, "answer": "a", "note": "피부는 몸무게의 약 15~16%를 차지하는 가장 큰 장기다."},
+  {"id": "sci_18", "category": "과학", "question": "지구에서 가장 큰 동물은?", "a": {"text": "흰긴수염고래", "emoji": "🐋"}, "b": {"text": "아프리카코끼리", "emoji": "🐘"}, "answer": "a", "note": "대왕고래(흰긴수염고래)는 지금까지 알려진 동물 중 가장 크다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "궁예", "emoji": "⚔️"}, "answer": "a", "note": "왕건이 918년 고려를 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "한글날은?", "a": {"text": "10월 9일", "emoji": "📅"}, "b": {"text": "9월 10일", "emoji": "🗓️"}, "answer": "a", "note": "훈민정음 반포를 기려 10월 9일로 정했다."},
+  {"id": "wor_13", "category": "세계상식", "question": "에펠탑이 있는 나라는?", "a": {"text": "프랑스", "emoji": "🇫🇷"}, "b": {"text": "영국", "emoji": "🇬🇧"}, "answer": "a", "note": "1889년 파리 만국박람회 때 세워졌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🌊"}, "b": {"text": "아마존강", "emoji": "🌴"}, "answer": "a", "note": "나일강이 약 6,650km로 세계에서 가장 긴 강으로 꼽힌다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "됐어", "emoji": "👍"}, "b": {"text": "됬어", "emoji": "👎"}, "answer": "a", "note": "'되었어'가 줄어든 말이라 '됐어'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "뵈요", "emoji": "🙇"}, "b": {"text": "봬요", "emoji": "🙋"}, "answer": "b", "note": "'뵈어요'가 줄어들면 '봬요'가 된다."},
+  {"id": "non_05", "category": "넌센스", "question": "도둑이 싫어하는 아이스크림은?", "a": {"text": "누가바", "emoji": "🍦"}, "b": {"text": "메로나", "emoji": "🍧"}, "answer": "a", "note": "'누구'와 발음이 비슷한 '누가'가 들어가서."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 슬픈 나무는?", "a": {"text": "청승나무", "emoji": "🌲"}, "b": {"text": "소나무", "emoji": "🌳"}, "answer": "a", "note": "'청승맞다'와 발음이 비슷한 말장난."}
 ]
