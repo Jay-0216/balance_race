@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "북극곰의 털은 실제로 무슨 색?", "a": {"text": "투명하다", "emoji": "🔍"}, "b": {"text": "하얗다", "emoji": "⬜"}, "answer": "a", "note": "털은 속이 빈 투명한 관 모양이라 빛을 산란시켜 하얗게 보인다. 피부는 검은색이다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 몸에서 가장 단단한 부분은?", "a": {"text": "치아 법랑질", "emoji": "🦷"}, "b": {"text": "허벅지 뼈", "emoji": "🦴"}, "answer": "a", "note": "이빨 표면의 법랑질이 뼈보다 단단하다."},
+  {"id": "his_13", "category": "역사", "question": "세종대왕이 학자들을 모아 훈민정음을 만든 기관은?", "a": {"text": "집현전", "emoji": "📖"}, "b": {"text": "성균관", "emoji": "🏫"}, "answer": "a", "note": "성균관은 고려 때부터 있던 국립 교육기관이다."},
+  {"id": "his_14", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "이성계", "emoji": "⚔️"}, "answer": "a", "note": "이성계는 훗날 조선을 세운 인물이다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 가장 긴 강은?", "a": {"text": "나일강", "emoji": "🐊"}, "b": {"text": "아마존강", "emoji": "🌴"}, "answer": "a", "note": "약 6,650km로 세계에서 가장 길다고 알려져 있다."},
+  {"id": "wor_14", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년 인도가 중국을 앞질러 세계 1위 인구 대국이 됐다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "웃어른", "emoji": "🧓"}, "b": {"text": "윗어른", "emoji": "🙅"}, "answer": "a", "note": "아래-위 대립이 없는 말이라 '웃-'을 쓴다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 놀란 개는?", "a": {"text": "허스키", "emoji": "🐕"}, "b": {"text": "헉스키", "emoji": "😲"}, "answer": "b", "note": "'헉!' 하고 놀라서 헉스키."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 슬픈 면 요리는?", "a": {"text": "울면", "emoji": "😭"}, "b": {"text": "짜장면", "emoji": "🍜"}, "answer": "a", "note": "'울다'와 발음이 비슷한 중국 요리 이름."}
 ]

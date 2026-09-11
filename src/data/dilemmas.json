@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 단원평가", "emoji": "📝"}, "b": {"text": "한 달에 한 번 중간고사", "emoji": "📚"}, "popularBias": 0.4},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 SNS 다 보기", "emoji": "📱"}, "b": {"text": "내가 친구 SNS 다 보기", "emoji": "🔍"}, "popularBias": 0.46},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "떡볶이 매운맛 3단계", "emoji": "🌶️"}, "b": {"text": "떡볶이 순한맛만", "emoji": "🥛"}, "popularBias": 0.5},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 시험지 몰래 보여주기", "emoji": "👀"}, "b": {"text": "선생님께 알리기", "emoji": "🙋"}, "popularBias": 0.35},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "꿈이 확실한데 늦게 이룸", "emoji": "🎯"}, "b": {"text": "꿈이 자주 바뀌는데 빨리 성공", "emoji": "🔄"}, "popularBias": 0.48},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 순간이동", "emoji": "🤧"}, "b": {"text": "딸꾹질할 때마다 시간정지", "emoji": "😳"}, "popularBias": 0.55},
+  {"id": "silly_20", "category": "완전 헛소리", "a": {"text": "그림자가 따로 움직임", "emoji": "🕴️"}, "b": {"text": "메아리가 진심을 말함", "emoji": "🗣️"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 말하기", "emoji": "🐾"}, "b": {"text": "식물 쑥쑥 키우기", "emoji": "🌱"}, "popularBias": 0.42},
+  {"id": "money_13", "category": "돈", "a": {"text": "용돈 대신 원하는 거 다 사줌", "emoji": "🛒"}, "b": {"text": "용돈 두 배로 받기", "emoji": "💵"}, "popularBias": 0.44},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "구독자 100만 유튜버", "emoji": "🎬"}, "b": {"text": "친한 친구 100만 명", "emoji": "🧑‍🤝‍🧑"}, "popularBias": 0.5}
 ]
