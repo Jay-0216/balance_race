@@ -161,17 +161,9 @@ export default function RaceView({
       const r = box.getBoundingClientRect();
       px = r.width; py = r.height;
       dpr = Math.min(2, window.devicePixelRatio || 1);
-      // .race-tilt (and the canvas inside it) is laid out at --tilt-scale
-      // times this box's size, in real CSS pixels - see RaceView.css. The
-      // camera math below still works in this box's own (untilted) px/py,
-      // so everything sx()/sy() draws to the canvas is scaled up to match
-      // its actual larger backing store here, in one place, rather than
-      // ever changing the coordinates themselves.
-      const tiltScale = parseFloat(getComputedStyle(box).getPropertyValue("--tilt-scale")) || 1;
-      const d = dpr * tiltScale;
-      canvas.width = Math.max(1, Math.round(px * d));
-      canvas.height = Math.max(1, Math.round(py * d));
-      ctx.setTransform(d, 0, 0, d, 0, 0);
+      canvas.width = Math.max(1, Math.round(px * dpr));
+      canvas.height = Math.max(1, Math.round(py * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cam.setAspect(px, py);
     };
     resize();
@@ -446,70 +438,62 @@ export default function RaceView({
 
   return (
     <div className="race-view" ref={boxRef}>
-      {/* The tilt lives on this wrapper, not on .race-view itself: boxRef
-          measures .race-view for the world<->pixel mapping, and that math
-          is plain 2D. Tilting a level below just re-projects the already-
-          correct 2D paint as a tabletop seen from above - a free GPU
-          compositing effect that costs nothing on top of the render loop
-          this file already runs. */}
-      <div className="race-tilt">
-        <svg
-          ref={svgRef}
-          className="race-svg"
-          viewBox={`0 0 260 ${WORLD.h}`}
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <Backdrop themeRef={setTheme} bandRef={setBand} />
-          <Track measureRef={(el) => (measureRef.current = el)} roadRef={setRoad} />
-          <Markers
-            tickRef={(i) => (el) => (tickRefs.current[i] = el)}
-            startRef={(el) => (startRef.current = el)}
-            finishRef={(el) => (finishRef.current = el)}
-          />
+      <svg
+        ref={svgRef}
+        className="race-svg"
+        viewBox={`0 0 260 ${WORLD.h}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <Backdrop themeRef={setTheme} bandRef={setBand} />
+        <Track measureRef={(el) => (measureRef.current = el)} roadRef={setRoad} />
+        <Markers
+          tickRef={(i) => (el) => (tickRefs.current[i] = el)}
+          startRef={(el) => (startRef.current = el)}
+          finishRef={(el) => (finishRef.current = el)}
+        />
 
-          {racers.map((r, i) => (
-            <g key={r.id} ref={setNode(i, "root")}>
-              <g ref={setNode(i, "spin")}>
-                <g ref={setNode(i, "squash")}>
-                  <Piece piece={r.piece} color={r.color} />
-                </g>
+        {racers.map((r, i) => (
+          <g key={r.id} ref={setNode(i, "root")}>
+            <g ref={setNode(i, "spin")}>
+              <g ref={setNode(i, "squash")}>
+                <Piece piece={r.piece} color={r.color} />
               </g>
-              {/* Everyone is named, not just me. Knowing that the car half a
-                  length ahead is 청개구리 is the whole reason to watch the pack -
-                  without it the race is eight anonymous dots and the standings
-                  below are the only thing worth reading.
-
-                  A rival's plate is tinted with its own car colour and set
-                  small; mine is white, bigger and heavier, so my car is still
-                  the one the eye finds first. The heavy dark stroke is what
-                  keeps a plate legible where it overlaps the next lane's
-                  wheels - at this lane gap it always will. */}
-              <text
-                y={r.me ? -14 : -11}
-                textAnchor="middle"
-                fill={r.me ? "#f2f6f8" : r.color}
-                fontSize={r.me ? 10.5 : 7.6}
-                fontWeight={r.me ? 600 : 600}
-                opacity={r.me ? 1 : 0.92}
-                stroke="#0b1015"
-                // A stroke this close to the font size is what read as too bold
-                // on a real phone: at 2.2/10.5 the outline was a fifth of the
-                // glyph's own size, which fattens every stroke of the letterform
-                // rather than just edging it. Halving it keeps the plate legible
-                // against the road without thickening the letters themselves.
-                strokeWidth={r.me ? 1.1 : 0.95}
-                paintOrder="stroke"
-                strokeLinejoin="round"
-                fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
-              >
-                {r.name}
-              </text>
             </g>
-          ))}
-        </svg>
-        <canvas ref={canvasRef} className="race-fx" />
-      </div>
+            {/* Everyone is named, not just me. Knowing that the car half a
+                length ahead is 청개구리 is the whole reason to watch the pack -
+                without it the race is eight anonymous dots and the standings
+                below are the only thing worth reading.
+
+                A rival's plate is tinted with its own car colour and set
+                small; mine is white, bigger and heavier, so my car is still
+                the one the eye finds first. The heavy dark stroke is what
+                keeps a plate legible where it overlaps the next lane's
+                wheels - at this lane gap it always will. */}
+            <text
+              y={r.me ? -14 : -11}
+              textAnchor="middle"
+              fill={r.me ? "#f2f6f8" : r.color}
+              fontSize={r.me ? 10.5 : 7.6}
+              fontWeight={r.me ? 600 : 600}
+              opacity={r.me ? 1 : 0.92}
+              stroke="#0b1015"
+              // A stroke this close to the font size is what read as too bold
+              // on a real phone: at 2.2/10.5 the outline was a fifth of the
+              // glyph's own size, which fattens every stroke of the letterform
+              // rather than just edging it. Halving it keeps the plate legible
+              // against the road without thickening the letters themselves.
+              strokeWidth={r.me ? 1.1 : 0.95}
+              paintOrder="stroke"
+              strokeLinejoin="round"
+              fontFamily='"IBM Plex Sans KR", system-ui, sans-serif'
+            >
+              {r.name}
+            </text>
+          </g>
+        ))}
+      </svg>
+      <canvas ref={canvasRef} className="race-fx" />
     </div>
   );
 }
