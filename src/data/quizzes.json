@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_18", "category": "과학", "question": "지구 대기에서 가장 많은 기체는?", "a": {"text": "질소", "emoji": "🌫️"}, "b": {"text": "산소", "emoji": "🫧"}, "answer": "a", "note": "대기의 약 78%가 질소, 산소는 약 21%다."},
+  {"id": "sci_19", "category": "과학", "question": "재채기할 때 눈은?", "a": {"text": "저절로 감긴다", "emoji": "😌"}, "b": {"text": "뜬 채로 있다", "emoji": "👀"}, "answer": "a", "note": "반사작용으로 눈 주변 근육도 같이 수축한다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "견훤", "emoji": "🗡️"}, "answer": "a", "note": "918년 왕건이 고려를 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "임진왜란 때 조선에 원군을 보낸 나라는?", "a": {"text": "명나라", "emoji": "🐉"}, "b": {"text": "청나라", "emoji": "🏯"}, "answer": "a", "note": "청나라는 임진왜란 이후에 세워진 나라다."},
+  {"id": "wor_13", "category": "세계상식", "question": "에펠탑이 있는 도시는?", "a": {"text": "파리", "emoji": "🗼"}, "b": {"text": "런던", "emoji": "🎡"}, "answer": "a", "note": "1889년 파리 만국박람회 때 세워졌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "기자의 대피라미드가 있는 나라는?", "a": {"text": "이집트", "emoji": "🐫"}, "b": {"text": "이란", "emoji": "🕌"}, "answer": "a", "note": "카이로 근교 기자 지구에 있다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "삼가다", "emoji": "🙏"}, "b": {"text": "삼가하다", "emoji": "🚫"}, "answer": "a", "note": "'삼가하다'는 잘못된 표현, '삼가다'가 표준어다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "되물림", "emoji": "🔁"}, "b": {"text": "대물림", "emoji": "👨‍👦"}, "answer": "b", "note": "'대대로 물려준다'는 뜻이라 '대물림'이 맞다."},
+  {"id": "non_05", "category": "넌센스", "question": "화장실에 있는 소는?", "a": {"text": "미소", "emoji": "😊"}, "b": {"text": "젖소", "emoji": "🐄"}, "answer": "a", "note": "아름다울 미(美) + 소, 합치면 '미소'."},
+  {"id": "non_06", "category": "넌센스", "question": "세상에서 가장 빠른 개는?", "a": {"text": "번개", "emoji": "⚡"}, "b": {"text": "진돗개", "emoji": "🐕"}, "answer": "a", "note": "번개처럼 빠르다는 뜻."}
 ]

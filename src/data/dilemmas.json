@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 쪽지시험", "emoji": "📝"}, "b": {"text": "한 달에 한 번 큰 시험", "emoji": "📓"}, "popularBias": 0.44},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 내 흉내 잘 냄", "emoji": "🎭"}, "b": {"text": "친구가 내 얘기 잘 들어줌", "emoji": "👂"}, "popularBias": 0.3},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "평생 무료 배달", "emoji": "🛵"}, "b": {"text": "평생 무료 외식", "emoji": "🍽️"}, "popularBias": 0.47},
+  {"id": "food_20", "category": "먹을거", "a": {"text": "매운맛 단계 끝판왕 도전", "emoji": "🔥"}, "b": {"text": "극강으로 단 디저트 완식", "emoji": "🍮"}, "popularBias": 0.46},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "착한 거짓말로 위로하기", "emoji": "🫂"}, "b": {"text": "불편한 진실 말하기", "emoji": "🗯️"}, "popularBias": 0.58},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모르고 취업 빨리", "emoji": "⏱️"}, "b": {"text": "적성 찾느라 취업 늦게", "emoji": "🧭"}, "popularBias": 0.4},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "방귀 뀌면 폭죽 소리", "emoji": "🎆"}, "b": {"text": "재채기하면 번개", "emoji": "⚡"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물과 말하기", "emoji": "🐾"}, "b": {"text": "식물 키우기 마스터", "emoji": "🌱"}, "popularBias": 0.63},
+  {"id": "money_13", "category": "돈", "a": {"text": "매일 로또 한 장 공짜", "emoji": "🎫"}, "b": {"text": "매달 문화상품권 5만원", "emoji": "🎟️"}, "popularBias": 0.55},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "팔로워 10만 명", "emoji": "⭐"}, "b": {"text": "찐친 10명", "emoji": "🤝"}, "popularBias": 0.22}
 ]
