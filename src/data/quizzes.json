@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_18", "category": "과학", "question": "몸에서 가장 단단한 부분은?", "a": {"text": "치아 법랑질", "emoji": "🦷"}, "b": {"text": "뼈", "emoji": "🦴"}, "answer": "a", "note": "법랑질(에나멜)이 뼈보다 단단하다."},
+  {"id": "sci_19", "category": "과학", "question": "지구 대기에 가장 많은 기체는?", "a": {"text": "산소", "emoji": "💨"}, "b": {"text": "질소", "emoji": "🌬️"}, "answer": "b", "note": "대기의 약 78%가 질소다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "궁예", "emoji": "🗡️"}, "answer": "a", "note": "918년 왕건이 고려를 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "한글을 창제한 왕은?", "a": {"text": "세종대왕", "emoji": "📜"}, "b": {"text": "정조대왕", "emoji": "📖"}, "answer": "a", "note": "세종대왕이 1443년에 창제했다."},
+  {"id": "wor_13", "category": "세계상식", "question": "피라미드가 있는 대륙은?", "a": {"text": "아프리카", "emoji": "🌍"}, "b": {"text": "아시아", "emoji": "🌏"}, "answer": "a", "note": "이집트는 아프리카 대륙 북동부에 있다."},
+  {"id": "wor_14", "category": "세계상식", "question": "에펠탑이 있는 도시는?", "a": {"text": "파리", "emoji": "🗼"}, "b": {"text": "런던", "emoji": "🎡"}, "answer": "a", "note": "1889년 프랑스 파리에 세워졌다."},
+  {"id": "kor_09", "category": "우리말", "question": "'병이 다 ___'에 맞는 말은?", "a": {"text": "나았다", "emoji": "😊"}, "b": {"text": "낳았다", "emoji": "👶"}, "answer": "a", "note": "'낫다'는 병이 회복되는 것, '낳다'는 아이를 출산하는 것이다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "✅"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 제일 화난 바다는?", "a": {"text": "열바다", "emoji": "😡"}, "b": {"text": "동해바다", "emoji": "🌊"}, "answer": "a", "note": "'열받다'에서 나온 말장난이다."},
+  {"id": "non_06", "category": "넌센스", "question": "도둑이 가장 좋아하는 채소는?", "a": {"text": "부추", "emoji": "🥬"}, "b": {"text": "오이", "emoji": "🥒"}, "answer": "a", "note": "남을 '부추기는' 채소라서."}
 ]

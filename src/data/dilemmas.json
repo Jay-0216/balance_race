@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "매일 자리 바꾸기", "emoji": "🔄"}, "b": {"text": "1년 내내 같은 자리", "emoji": "📌"}, "popularBias": 0.4},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "쪽지시험 매일", "emoji": "📝"}, "b": {"text": "중간고사만", "emoji": "📚"}, "popularBias": 0.35},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "베프랑 같은 반 되기", "emoji": "👯"}, "b": {"text": "새 친구 사귀기", "emoji": "🆕"}, "popularBias": 0.65},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "디저트 먼저 먹기", "emoji": "🍰"}, "b": {"text": "밥 먼저 먹기", "emoji": "🍚"}, "popularBias": 0.3},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "친구 대신 혼나기", "emoji": "😔"}, "b": {"text": "사실대로 밝히기", "emoji": "🗣️"}, "popularBias": 0.42},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "적성 모르고 취업 빨리", "emoji": "🏢"}, "b": {"text": "적성 찾다가 취업 늦게", "emoji": "🔎"}, "popularBias": 0.48},
+  {"id": "silly_19", "category": "완전 헛소리", "a": {"text": "재채기할 때마다 번개", "emoji": "🤧"}, "b": {"text": "하품할 때마다 지진", "emoji": "🥱"}, "popularBias": 0.5},
+  {"id": "power_15", "category": "초능력", "a": {"text": "동물이랑 말하기", "emoji": "🐶"}, "b": {"text": "식물 자라게 하기", "emoji": "🌱"}, "popularBias": 0.6},
+  {"id": "money_13", "category": "돈", "a": {"text": "용돈 두 배로 오르기", "emoji": "📈"}, "b": {"text": "심부름 전부 면제받기", "emoji": "🙅"}, "popularBias": 0.55},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "와이파이 무제한인데 느림", "emoji": "🐌"}, "b": {"text": "데이터 무제한인데 빠름", "emoji": "🚀"}, "popularBias": 0.45}
 ]
