@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_18", "category": "과학", "question": "문어의 심장은 몇 개일까?", "a": {"text": "3개", "emoji": "🐙"}, "b": {"text": "1개", "emoji": "❤️"}, "answer": "a", "note": "2개는 아가미로, 1개는 온몸으로 피를 보낸다."},
+  {"id": "sci_19", "category": "과학", "question": "가장 빠른 육상 동물은?", "a": {"text": "치타", "emoji": "🐆"}, "b": {"text": "영양", "emoji": "🦌"}, "answer": "a", "note": "치타는 최고 시속 110km 이상까지 낼 수 있다."},
+  {"id": "his_13", "category": "역사", "question": "고려를 세운 사람은?", "a": {"text": "왕건", "emoji": "👑"}, "b": {"text": "궁예", "emoji": "⚔️"}, "answer": "a", "note": "왕건이 918년 고려를 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "몽골의 침입을 물리치길 기원하며 만든 것은?", "a": {"text": "팔만대장경", "emoji": "📿"}, "b": {"text": "직지심체요절", "emoji": "📕"}, "answer": "a", "note": "고려 때 부처의 힘으로 몽골을 물리치길 바라며 만들었다."},
+  {"id": "wor_13", "category": "세계상식", "question": "에펠탑이 있는 나라는?", "a": {"text": "프랑스", "emoji": "🇫🇷"}, "b": {"text": "이탈리아", "emoji": "🇮🇹"}, "answer": "a", "note": "1889년 파리 만국박람회를 위해 세워졌다."},
+  {"id": "wor_14", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년 인도가 중국을 앞질러 세계 1위 인구 대국이 되었다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "안 돼요", "emoji": "🙅"}, "b": {"text": "안 되요", "emoji": "🙆"}, "answer": "a", "note": "'되어요'가 줄면 '돼요'가 된다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "역할", "emoji": "🎭"}, "b": {"text": "역활", "emoji": "🎬"}, "answer": "a", "note": "'역활'은 흔한 오타일 뿐, 표준어는 '역할'이다."},
+  {"id": "non_05", "category": "넌센스", "question": "세상에서 가장 추운 나라는?", "a": {"text": "몽골", "emoji": "🥶"}, "b": {"text": "브라질", "emoji": "🇧🇷"}, "answer": "b", "note": "'브르르(추워)'랑 발음이 비슷해서 나온 아재개그다."},
+  {"id": "non_06", "category": "넌센스", "question": "도둑이 가장 싫어하는 아이스크림은?", "a": {"text": "누가바", "emoji": "🍦"}, "b": {"text": "메로나", "emoji": "🍈"}, "answer": "a", "note": "'누가 봐?'라는 말과 발음이 비슷해서다."}
 ]
