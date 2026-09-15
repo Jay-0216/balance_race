@@ -26,6 +26,11 @@
   .race-view { max-height: 32vh; }
 }
 
+/* Four layers, bottom to top: scenery, tarmac, cars, dust. Scenery and cars
+   are vector so they stay sharp at any size; the two canvases are sized to the
+   device's own pixels, so they do too. */
+.race-bg,
+.race-road,
 .race-svg,
 .race-fx {
   position: absolute;
@@ -35,4 +40,6 @@
   display: block;
 }
 
+.race-road,
+.race-svg,
 .race-fx { pointer-events: none; }

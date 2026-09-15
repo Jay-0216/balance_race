@@ -48,28 +48,6 @@ export const ROAD_W = 129;
 export const TRACK_CELLS = 200;
 /** road drawn behind cell 0, so the start line is never the end of the road */
 export const LEAD_CELLS = 12;
-export const TRACK_START = -300;
-export const TRACK_END = 5700;
-
-/** A deterministic wave, so the track is the same every run. */
-export function buildTrackPath(): string {
-  const segs = 20;
-  const step = (TRACK_END - TRACK_START) / segs;
-  let y = WORLD.h / 2;
-  let d = `M ${TRACK_START} ${y}`;
-
-  for (let i = 0; i < segs; i++) {
-    // gentle: the camera does not track vertically, so a steep road would
-    // swing the cars up and down the band
-    const amp = 20 + ((i * 7) % 13);
-    const ny = WORLD.h / 2 + (i % 2 === 0 ? -1 : 1) * amp;
-    const x0 = TRACK_START + step * i;
-    const x1 = x0 + step;
-    d += ` C ${x0 + step * 0.5} ${y} ${x1 - step * 0.5} ${ny} ${x1} ${ny}`;
-    y = ny;
-  }
-  return d;
-}
 
 export const RACER_COLORS = [
   "#f0b429", "#9aa9b4", "#7fb89a", "#b79acb",
