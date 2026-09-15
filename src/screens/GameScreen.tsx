@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GameLike } from "../game/useGame";
-import { CELLS, KIND_LABEL, placements, ROUNDS, sideStory, TIME_LIMIT } from "../game/rules";
+import {
+  CELLS, KIND_LABEL, placements, ranked, ROUNDS, sideStory, TIME_LIMIT,
+} from "../game/rules";
 import { equippedPiece, PIECES, recordBoost, recordRace, recordRoundSide } from "../game/garage";
 import type { PieceId } from "../race/pieces";
-import RaceView from "../race/RaceView";
+import RaceView, { OUTRO_MS } from "../race/RaceView";
 import type { RaceEffect } from "../race/effects";
 import type { RacerView } from "../race/world";
 import BoosterGauge from "../ui/BoosterGauge";
@@ -40,6 +42,18 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
   const [muted, setMutedState] = useState(isMuted);
   const [buzzing, setBuzzing] = useState(buzzOn);
   const onFps = useCallback((v: number) => setFps(v), []);
+
+  /**
+   * The race gets the last word before the scoreboard does. When the game ends
+   * the camera drops back behind the winner for a couple of seconds, and the
+   * result screen - which covers the whole stage - waits that long to appear.
+   */
+  const [shownResult, setShownResult] = useState(false);
+  useEffect(() => {
+    if (g.phase !== "done") { setShownResult(false); return; }
+    const id = window.setTimeout(() => setShownResult(true), OUTRO_MS);
+    return () => clearTimeout(id);
+  }, [g.phase]);
 
   // the stage jolts on the stamp, not the page - jolting the chrome of a phone
   // game reads as a bug rather than a hit
@@ -203,7 +217,8 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
         <RaceView
           racers={racers}
           effects={effects}
-          paused={g.phase === "done"}
+          outro={g.phase === "done" ? ranked(g.players)[0]?.id ?? null : null}
+          paused={shownResult}
           onFps={onFps}
         />
         <div className="game-hud">
@@ -270,7 +285,7 @@ export default function GameScreen({ game, onBack }: { game: GameLike; onBack: (
         <Leaderboard players={g.players} cells={CELLS} />
       </div>
 
-      {g.phase === "done" && (
+      {shownResult && (
         <ResultScreen
           players={g.players}
           meId={g.meId}

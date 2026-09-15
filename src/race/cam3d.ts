@@ -98,10 +98,10 @@ export function topShot(centreCell: number, px: number, py: number, zoom = 1): S
  * at the lane offset alone leaves the subject sliding off to one side, because
  * the road itself is rarely where it started.
  */
-export function chaseShot(cell: number, x: number, px: number): Shot {
+export function chaseShot(cell: number, x: number, px: number, dist = 132): Shot {
   return {
     fx: x, fy: 11, fz: cell * CELL_LEN,
-    dist: 132,
+    dist,
     elev: 0.19,
     roll: 0,
     f: px * 1.05,

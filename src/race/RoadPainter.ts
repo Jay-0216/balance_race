@@ -50,12 +50,16 @@ type Strip = { from: number; to: number };
  */
 function visible(cam: Cam, centreCell: number, span: number): Strip {
   const reach = span / CELL_LEN;
-  const overhead = cam.pitch > 1.2;
+  // Always start well behind the subject. Trimming the near end by camera
+  // angle was a false economy: it left the tarmac ending in a straight vertical
+  // cut partway across the overhead view, and points behind the lens are
+  // thrown away by the projection anyway, so the only thing the trim saved was
+  // a handful of arithmetic.
   return {
-    from: centreCell - (overhead ? reach : 1),
+    from: centreCell - reach,
     // Low down, the road has to run to the horizon or it ends in mid-air with
     // sky underneath it - which is exactly what the first attempt looked like.
-    to: centreCell + reach * (overhead ? 1 : 9),
+    to: centreCell + reach * (cam.pitch > 1.2 ? 1.2 : 9),
   };
 }
 
@@ -67,12 +71,15 @@ function visible(cam: Cam, centreCell: number, span: number): Strip {
  */
 function ribbon(
   ctx: CanvasRenderingContext2D, cam: Cam, px: number, py: number,
-  strip: Strip, half: number, fill: string, offset: number
+  strip: Strip, half: number, fill: string, offset: number, ref: number
 ) {
   const left: { sx: number; sy: number }[] = [];
   const right: { sx: number; sy: number }[] = [];
 
-  for (let c = strip.from; c <= strip.to; c += growth(c - strip.from)) {
+  // Steps coarsen with distance *from the subject*, not from the start of the
+  // strip: the strip now begins well behind the camera, and measuring from
+  // there would have the road already coarse by the time it reaches the car.
+  for (let c = strip.from; c <= strip.to; c += growth(c - ref)) {
     const a = roadPoint(c + offset, -half);
     const b = roadPoint(c + offset, half);
     const pa = project(cam, a.x, a.y, a.z, px, py);
@@ -130,7 +137,7 @@ export function drawRoad(
   ctx.clearRect(0, 0, px, py);
   const strip = visible(cam, s.centre, s.span);
   const off = s.cruise;
-  const detailTo = Math.min(strip.to, strip.from + DETAIL_REACH);
+  const detailTo = Math.min(strip.to, s.centre + DETAIL_REACH);
 
   // Ground either side, but only once the camera is low enough to see past
   // the tarmac. From overhead the backdrop is the scenery and always has
@@ -138,13 +145,13 @@ export function drawRoad(
   const low = Math.max(0, Math.min(1, (1.15 - cam.pitch) / 0.45));
   if (low > 0) {
     ctx.globalAlpha = low;
-    ribbon(ctx, cam, px, py, strip, KERB_HALF * 11, s.ground, off);
+    ribbon(ctx, cam, px, py, strip, KERB_HALF * 11, s.ground, off, s.centre);
     ctx.globalAlpha = 1;
   }
 
   // kerbs: white all the way down, then red teeth on alternate steps - the
   // old track got this from one dashed stroke over a solid one
-  ribbon(ctx, cam, px, py, strip, KERB_HALF, "#d8dee2", off);
+  ribbon(ctx, cam, px, py, strip, KERB_HALF, "#d8dee2", off, s.centre);
   const tooth = STEP * 2;
   const first = Math.ceil(strip.from / tooth) * tooth;
   for (let c = first; c < detailTo; c += tooth * 2) {
@@ -152,12 +159,12 @@ export function drawRoad(
     patch(ctx, cam, px, py, c + off, tooth, EDGE_HALF - 1, KERB_HALF, "#c8564a");
   }
 
-  ribbon(ctx, cam, px, py, strip, EDGE_HALF, s.colors.edge, off);
-  ribbon(ctx, cam, px, py, strip, ROAD_HALF, s.colors.surface, off);
+  ribbon(ctx, cam, px, py, strip, EDGE_HALF, s.colors.edge, off, s.centre);
+  ribbon(ctx, cam, px, py, strip, ROAD_HALF, s.colors.surface, off, s.centre);
 
   // a soft sheen down the middle, so a wide road is not a flat slab
   ctx.globalAlpha = 0.045;
-  ribbon(ctx, cam, px, py, strip, SHEEN_HALF, "#ffffff", off);
+  ribbon(ctx, cam, px, py, strip, SHEEN_HALF, "#ffffff", off, s.centre);
   ctx.globalAlpha = 1;
 
   // centre dashes - 10 on, 15 off in world units, as they were

@@ -3,7 +3,7 @@ import { Particles } from "./Particles";
 import Backdrop, { PARALLAX_FACTORS, THEMES, mixColors, themeWeights } from "./Backdrop";
 import { TICKS } from "./Markers";
 import type { RaceEffect } from "./effects";
-import Piece from "./Racer";
+import Piece, { PieceRear } from "./Racer";
 import { drawRoad } from "./RoadPainter";
 import {
   CELL_LEN, chaseShot, mixShot, project, roadPoint, shotCam, topShot, topSpan,
@@ -18,6 +18,10 @@ const MOVE_MS = 800;
 const INTRO_MS = 3000;
 /** how much of it is spent sitting behind the car before the crane starts */
 const INTRO_HOLD = 0.33;
+/** the closing move, back down behind whoever won */
+export const OUTRO_MS = 2600;
+/** how much of that is the descent; the rest is held on the winner */
+const OUTRO_FALL = 0.52;
 const EASE = (k: number) => 1 - Math.pow(1 - k, 3);
 
 type Tween = { from: number; to: number; t0: number };
@@ -27,17 +31,38 @@ type Node = {
   spin: SVGGElement | null;
   squash: SVGGElement | null;
   plate: SVGGElement | null;
+  /** the overhead drawing, lying on the road */
+  flat: SVGGElement | null;
+  /** the same piece from behind, standing up */
+  rear: SVGGElement | null;
 };
+
+/**
+ * How much of the piece is the standing-up drawing rather than the flat one,
+ * from how far over the camera is. Flat art seen from the tarmac reads as a
+ * sticker on the road; the rear billboard seen from overhead reads as a car
+ * lying on its back. Neither is ever asked to do the other's job.
+ */
+function rearMix(pitch: number) {
+  return Math.max(0, Math.min(1, (0.95 - pitch) / 0.5));
+}
 
 export default function RaceView({
   racers,
   effects,
+  outro,
   paused,
   onFps,
 }: {
   racers: RacerView[];
   /** one-shot flourishes: a gust for the winners, a flare for a booster */
   effects?: RaceEffect[];
+  /**
+   * Whose win to go and look at. Set the moment the game ends and the camera
+   * drops back down behind them; the screen that announces the result waits
+   * for OUTRO_MS so the shot is not cut off by its own scoreboard.
+   */
+  outro?: number | null;
   /**
    * Stops the loop entirely. The result overlay sits on a backdrop-filter, and
    * blurring a canvas that is still repainting at 60fps costs more than the
@@ -67,6 +92,8 @@ export default function RaceView({
   /** smoothed camera centre, in cells - the camera lags the pack */
   const centreRef = useRef<number | null>(null);
   const zoomRef = useRef(1);
+  /** who the closing shot is about, and when it started */
+  const outroRef = useRef<{ playerId: number; t0: number } | null>(null);
 
   const activeFx = useRef<
     { playerId: number; kind: RaceEffect["kind"]; t0: number; dur: number }[]
@@ -110,6 +137,18 @@ export default function RaceView({
     }
     if (seenFx.current.size > 400) seenFx.current.clear();
   }, [effects]);
+
+  // Stamped once, when the winner is named. Keeping the clock in a ref rather
+  // than in the render loop means a re-render mid-shot cannot restart it.
+  useEffect(() => {
+    if (outro === null || outro === undefined) {
+      outroRef.current = null;
+      return;
+    }
+    if (outroRef.current?.playerId !== outro) {
+      outroRef.current = { playerId: outro, t0: performance.now() };
+    }
+  }, [outro]);
 
   useEffect(() => {
     const box = boxRef.current;
@@ -199,7 +238,19 @@ export default function RaceView({
       const intro = reduce ? 1 : Math.min(1, (now - t0) / INTRO_MS);
       const top = topShot(centre, px, py, zoomRef.current);
       let shot = top;
-      if (intro < 1) {
+      if (outroRef.current !== null && !reduce) {
+        // The closing shot is the opening one run backwards, aimed at the
+        // winner instead of at me: down off the crane, in behind them, and
+        // hold there while the chequered flag goes by.
+        const k = Math.min(1, (now - outroRef.current.t0) / (OUTRO_MS * OUTRO_FALL));
+        const fall = k * k * (3 - 2 * k);
+        const idx = list.findIndex((r) => r.id === outroRef.current!.playerId);
+        const seatIdx = idx < 0 ? 0 : idx;
+        const cell = (drawRef.current[seatIdx] ?? 0) + cruise;
+        const lateral = (seatIdx - (list.length - 1) / 2) * LANE_GAP;
+        const at = roadPoint(cell, lateral);
+        shot = mixShot(top, chaseShot(cell, at.x, px), fall);
+      } else if (intro < 1) {
         // The opening shot sits on the tarmac behind my own car, holds there
         // long enough to be a shot rather than a flicker, and only then cranes
         // out to the overhead framing the game is actually played in. Without
@@ -209,8 +260,12 @@ export default function RaceView({
         const rise = k * k * (3 - 2 * k);      // gentle at both ends
         const myLane = list.findIndex((r) => r.me);
         const lateral = (myLane < 0 ? 0 : myLane - (list.length - 1) / 2) * LANE_GAP;
-        const seat = roadPoint(mine + cruise, lateral);
-        shot = mixShot(chaseShot(mine + cruise, seat.x, px), top, rise);
+        // Aimed most of the way back to the middle of the grid, and far enough
+        // back to hold all eight: pointed straight at my own car the row runs
+        // off the side of the screen, and the opening shot is the whole field
+        // lined up, not a portrait of one car.
+        const seat = roadPoint(mine + cruise, lateral * 0.3);
+        shot = mixShot(chaseShot(mine + cruise, seat.x, px, 205), top, rise);
       }
       const cam = shotCam(shot);
 
@@ -331,14 +386,28 @@ export default function RaceView({
         // running, and it revs: the harder a car is pulling, the faster it
         // shakes. Phase is accumulated rather than read off the clock, so
         // changing the rate never snaps the car sideways.
+        let bob = 0;
         if (!reduce && node.squash) {
           bobRef.current[i] =
             (bobRef.current[i] ?? 0) + dt * Math.max(2.5, 7.4 + lean * 9);
-          const bob = Math.sin(bobRef.current[i] + i * 1.7) * (0.4 + Math.abs(lean) * 0.5);
+          bob = Math.sin(bobRef.current[i] + i * 1.7) * (0.4 + Math.abs(lean) * 0.5);
           node.squash.setAttribute(
             "transform",
             `translate(0 ${bob}) scale(${1 + lean * 0.62} ${1 - lean * 0.28})`
           );
+        }
+
+        // Which drawing of this piece is the honest one right now. Both stay
+        // in the tree and trade places by opacity - swapping nodes instead
+        // would pop, and the swap happens mid-move every single game.
+        const rear = rearMix(cam.pitch);
+        if (node.flat) node.flat.setAttribute("opacity", (1 - rear).toFixed(3));
+        if (node.rear) {
+          node.rear.setAttribute("opacity", rear.toFixed(3));
+          // The billboard stands on the road, so it takes the engine bob but
+          // none of the squash: stretching a car along a length it is no
+          // longer showing just makes it fat.
+          node.rear.setAttribute("transform", `translate(0 ${bob.toFixed(2)})`);
         }
 
         if (!reduce) {
@@ -425,7 +494,7 @@ export default function RaceView({
 
   const setNode = (i: number, k: keyof Node) => (el: SVGGElement | null) => {
     nodesRef.current[i] = nodesRef.current[i] ??
-      { root: null, spin: null, squash: null, plate: null };
+      { root: null, spin: null, squash: null, plate: null, flat: null, rear: null };
     nodesRef.current[i][k] = el;
   };
 
@@ -460,10 +529,15 @@ export default function RaceView({
       <svg ref={svgRef} className="race-svg" aria-hidden="true">
         {racers.map((r, i) => (
           <g key={r.id} ref={setNode(i, "root")}>
-            <g ref={setNode(i, "spin")}>
-              <g ref={setNode(i, "squash")}>
-                <Piece piece={r.piece} color={r.color} />
+            <g ref={setNode(i, "flat")}>
+              <g ref={setNode(i, "spin")}>
+                <g ref={setNode(i, "squash")}>
+                  <Piece piece={r.piece} color={r.color} />
+                </g>
               </g>
+            </g>
+            <g ref={setNode(i, "rear")} opacity={0}>
+              <PieceRear piece={r.piece} color={r.color} />
             </g>
             {/* Everyone is named, not just me. Knowing that the car half a
                 length ahead is 청개구리 is the whole reason to watch the pack -
