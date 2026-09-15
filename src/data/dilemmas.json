@@ -140,5 +140,15 @@
   {"id": "net_09", "category": "인터넷·게임", "a": {"text": "와이파이가 항상 느림", "emoji": "📶"}, "b": {"text": "배터리가 30분만 감", "emoji": "🔋"}, "popularBias": 0.5},
   {"id": "net_10", "category": "인터넷·게임", "a": {"text": "익명으로 엄청 유명", "emoji": "👤"}, "b": {"text": "실명인데 아무도 모름", "emoji": "🪪"}, "popularBias": 0.33},
   {"id": "net_11", "category": "인터넷·게임", "a": {"text": "모든 화면이 흑백", "emoji": "🖥️"}, "b": {"text": "모든 소리가 사라짐", "emoji": "🔇"}, "popularBias": 0.52},
-  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44}
+  {"id": "net_12", "category": "인터넷·게임", "a": {"text": "완벽하게 맞는 AI 친구", "emoji": "🤖"}, "b": {"text": "가끔 싸우는 사람 친구", "emoji": "🧑"}, "popularBias": 0.44},
+  {"id": "school_21", "category": "학교생활", "a": {"text": "월요일 1교시 시험", "emoji": "😩"}, "b": {"text": "금요일 7교시 시험", "emoji": "🥱"}, "popularBias": 0.28},
+  {"id": "school_22", "category": "학교생활", "a": {"text": "좋아하는 과목에서 꼴등", "emoji": "😭"}, "b": {"text": "싫어하는 과목에서 1등", "emoji": "🏆"}, "popularBias": 0.4},
+  {"id": "friend_21", "category": "인간관계", "a": {"text": "친구가 나한테만 잘해줌", "emoji": "🥰"}, "b": {"text": "친구가 모두에게 잘해줌", "emoji": "🤗"}, "popularBias": 0.58},
+  {"id": "friend_22", "category": "인간관계", "a": {"text": "자주 만나지만 가벼운 친구", "emoji": "🤙"}, "b": {"text": "가끔 만나지만 깊은 친구", "emoji": "🫂"}, "popularBias": 0.35},
+  {"id": "food_19", "category": "먹을거", "a": {"text": "떡볶이 순한맛만 평생", "emoji": "😌"}, "b": {"text": "떡볶이 매운맛만 평생", "emoji": "🥵"}, "popularBias": 0.47},
+  {"id": "moral_15", "category": "도덕적 딜레마", "a": {"text": "시험 문제 오류로 이득 보기", "emoji": "🤫"}, "b": {"text": "바로 선생님께 알리기", "emoji": "🙋"}, "popularBias": 0.33},
+  {"id": "future_15", "category": "미래·진로", "a": {"text": "평생 안정적인 회사원", "emoji": "💼"}, "b": {"text": "성공할지 모르는 창업가", "emoji": "🚀"}, "popularBias": 0.55},
+  {"id": "power_15", "category": "초능력", "a": {"text": "날씨를 내 맘대로 바꾸기", "emoji": "🌦️"}, "b": {"text": "시간을 느리거나 빠르게", "emoji": "⏱️"}, "popularBias": 0.48},
+  {"id": "money_13", "category": "돈", "a": {"text": "쉬운데 재미없는 알바", "emoji": "😐"}, "b": {"text": "힘든데 재밌는 알바", "emoji": "😆"}, "popularBias": 0.4},
+  {"id": "net_13", "category": "인터넷·게임", "a": {"text": "좋아하는 게임 서비스 종료", "emoji": "😭"}, "b": {"text": "싫어하는 게임 평생 광고", "emoji": "📢"}, "popularBias": 0.6}
 ]

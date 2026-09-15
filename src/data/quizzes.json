@@ -50,5 +50,15 @@
   {"id": "non_01", "category": "넌센스", "question": "세상에서 가장 뜨거운 과일은?", "a": {"text": "천도복숭아", "emoji": "🍑"}, "b": {"text": "파인애플", "emoji": "🍍"}, "answer": "a", "note": "천 도니까."},
   {"id": "non_02", "category": "넌센스", "question": "세상에서 가장 빠른 닭은?", "a": {"text": "꼬끼오", "emoji": "🐓"}, "b": {"text": "후다닭", "emoji": "🏃"}, "answer": "b", "note": "후다닥."},
   {"id": "non_03", "category": "넌센스", "question": "소가 웃으면?", "a": {"text": "우하하", "emoji": "🐄"}, "b": {"text": "음메", "emoji": "🐮"}, "answer": "a", "note": "소가 웃으면 우하하."},
-  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."}
+  {"id": "non_04", "category": "넌센스", "question": "임금님이 넘어지면?", "a": {"text": "왕꽈당", "emoji": "🤴"}, "b": {"text": "킹콩", "emoji": "👑"}, "answer": "b", "note": "킹(king)이 콩 하고 넘어져서."},
+  {"id": "sci_17", "category": "과학", "question": "물이 얼면 부피는?", "a": {"text": "커진다", "emoji": "🧊"}, "b": {"text": "작아진다", "emoji": "💧"}, "answer": "a", "note": "얼면 분자 배열이 느슨해져 부피가 약 9% 늘어난다. 그래서 얼음이 물에 뜬다."},
+  {"id": "sci_18", "category": "과학", "question": "사람 심장은 하루에 몇 번 뛸까?", "a": {"text": "약 10만 번", "emoji": "💓"}, "b": {"text": "약 1만 번", "emoji": "🫀"}, "answer": "a", "note": "분당 약 70회씩 뛰면 하루에 10만 번 가까이 된다."},
+  {"id": "sci_19", "category": "과학", "question": "문어의 심장은 몇 개?", "a": {"text": "3개", "emoji": "🐙"}, "b": {"text": "1개", "emoji": "❤️"}, "answer": "a", "note": "하나는 온몸에, 나머지 두 개는 아가미에 피를 보낸다."},
+  {"id": "his_13", "category": "역사", "question": "조선을 세운 사람은?", "a": {"text": "이성계", "emoji": "🐎"}, "b": {"text": "왕건", "emoji": "🏇"}, "answer": "a", "note": "왕건은 고려를 세웠다. 이성계가 1392년 조선을 세웠다."},
+  {"id": "his_14", "category": "역사", "question": "삼국 중 가장 나중까지 남은 나라는?", "a": {"text": "신라", "emoji": "👑"}, "b": {"text": "고구려", "emoji": "🐴"}, "answer": "a", "note": "고구려 668년, 백제 660년에 멸망했지만 신라는 935년까지 이어졌다."},
+  {"id": "wor_13", "category": "세계상식", "question": "세계에서 인구가 가장 많은 나라는?", "a": {"text": "인도", "emoji": "🇮🇳"}, "b": {"text": "중국", "emoji": "🇨🇳"}, "answer": "a", "note": "2023년경 인도가 중국을 넘어 인구 1위가 되었다."},
+  {"id": "wor_14", "category": "세계상식", "question": "강수량 기준으로 세계에서 가장 넓은 사막은?", "a": {"text": "사하라", "emoji": "🏜️"}, "b": {"text": "남극", "emoji": "🇦🇶"}, "answer": "b", "note": "사막은 강수량으로 정의되며, 이 기준으로는 남극이 가장 넓은 사막이다."},
+  {"id": "kor_09", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "낚시꾼", "emoji": "🎣"}, "b": {"text": "낚싯꾼", "emoji": "🐟"}, "answer": "a", "note": "'-꾼'이 붙는 말에는 사이시옷을 넣지 않는다."},
+  {"id": "kor_10", "category": "우리말", "question": "맞는 표기는?", "a": {"text": "돼요", "emoji": "👍"}, "b": {"text": "되요", "emoji": "❌"}, "answer": "a", "note": "'되어요'가 줄어든 말이라 '돼요'가 맞다."},
+  {"id": "non_05", "category": "넌센스", "question": "빵 중에서 가장 안전한 빵은?", "a": {"text": "안전빵", "emoji": "🍞"}, "b": {"text": "단팥빵", "emoji": "🥟"}, "answer": "a", "note": "확실하고 안전한 선택을 뜻하는 말장난이다."}
 ]
